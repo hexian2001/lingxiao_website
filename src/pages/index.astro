@@ -1,0 +1,184 @@
+---
+import LandingLayout from '../layouts/LandingLayout.astro';
+const base = import.meta.env.BASE_URL;
+
+const baseUrl = base || '/';
+const docsUrl = `${baseUrl}docs/zh/getting-started/introduction`;
+---
+
+<LandingLayout title="凌霄剑域 · LingXiao — AI 工程指挥系统">
+  <!-- === Hero === -->
+  <section class="lx-hero">
+    <div class="lx-hero-content">
+      <img src={`${baseUrl}logo.svg`} alt="凌霄 Logo" class="lx-hero-logo" />
+      <h1>凌霄剑域</h1>
+      <p class="lx-hero-tagline">
+        <span class="lx-accent">AI 工程指挥系统</span> · 不是聊天壳，而是
+        <span class="lx-gold">可观测、可恢复、可审查</span>的专家团编排内核
+      </p>
+      <div class="lx-install-cmd">
+        <code>git clone https://github.com/hexian2001/lingxiao.git && npm install && npm run build && npm link</code>
+      </div>
+      <div class="lx-hero-cta">
+        <a href={docsUrl} class="lx-btn lx-btn-primary">🚀 开始使用</a>
+        <a href="https://github.com/hexian2001/lingxiao" class="lx-btn lx-btn-secondary" target="_blank" rel="noopener">⭐ GitHub</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- === 核心特性卡片 === -->
+  <section class="lx-features">
+    <h2 class="lx-section-title">核心特性</h2>
+    <p class="lx-section-subtitle">从单 Agent 独白到专家团协同编排</p>
+    <div class="lx-feature-grid">
+      <div class="lx-feature-card">
+        <div class="lx-icon">👥</div>
+        <h3>专家团系统</h3>
+        <p>Leader + Worker 专家团架构。13 种预设角色：架构师、后端、前端、研究员、QA、审查员等。每个 Worker 拥有独立身份、上下文、工具调用和运行状态。</p>
+      </div>
+      <div class="lx-feature-card">
+        <div class="lx-icon">🔀</div>
+        <h3>任务 DAG 编排</h3>
+        <p>复杂目标自动拆解为带依赖关系的任务图。可并行任务并行执行，有依赖任务按序解锁。每个任务拥有 owner、状态、阻塞关系和结果回执。</p>
+      </div>
+      <div class="lx-feature-card">
+        <div class="lx-icon">📡</div>
+        <h3>全状态同步</h3>
+        <p>WebUI / TUI / CLI 三端实时同步完整运行态。SSE 事件流 + ACP JSON-RPC 协议，所有任务、工具、权限、证据和会话状态进入同一工程内核。</p>
+      </div>
+      <div class="lx-feature-card">
+        <div class="lx-icon">🔧</div>
+        <h3>工具内核</h3>
+        <p>100+ 内置工具：文件读写、代码搜索、Shell 执行、浏览器自动化、截图、网页抓取、Office/PDF/PPTX/DOCX/XLSX、Workflow 画布、MCP 统一入口。</p>
+      </div>
+      <div class="lx-feature-card">
+        <div class="lx-icon">✅</div>
+        <h3>编排验收</h3>
+        <p>投机执行、对抗验证、自适应编排。契约循环：contract → implement → evaluate → repair → reset 五阶段闭环。可验证假设自动重验。</p>
+      </div>
+      <div class="lx-feature-card">
+        <div class="lx-icon">🔨</div>
+        <h3>MCP Forge</h3>
+        <p>模板驱动的 MCP Server 生成引擎。状态机管线：需求 → 模板 → 生成 → 沙箱 → Inspector → 注册。支持分享码导入导出和 bundle 打包。</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- === 功能展示区 === -->
+  <section class="lx-showcase">
+    <div class="lx-showcase-grid">
+      <div class="lx-showcase-image">
+        <img src={`${baseUrl}screenshots/chat.png`} alt="凌霄 WebUI 指挥中心" loading="lazy" />
+      </div>
+      <div class="lx-showcase-text">
+        <h3>WebUI 指挥中心</h3>
+        <p>实时查看任务面板、Agent 状态、工具调用、代码变更和审查证据。所有运行态可视化，像指挥一个工程团队一样指挥 AI。</p>
+        <ul>
+          <li>任务 DAG 实时可视化</li>
+          <li>Agent 面板与角色管理</li>
+          <li>工具调用全链路追踪</li>
+          <li>审查证据与验收报告</li>
+          <li>设计市场与插件管理</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- === 架构图 === -->
+  <section class="lx-architecture">
+    <h2 class="lx-section-title">架构概览</h2>
+    <p class="lx-section-subtitle">Leader-Worker 编排内核 + 全状态同步</p>
+    <div class="lx-arch-diagram">
+      <pre>{`User ──→ TUI / CLI ──→ SessionManager ──→ SessionRuntime ──→ LeaderAgent
+                                                                    │
+                                     ┌──────────────────────────────┼──────────────────┐
+                                     ▼                              ▼                  ▼
+                               TaskBoard / DAG              AgentPool           ToolRegistry
+                                     │                      │                     │
+                                     ▼                      ▼                     ▼
+                              Worker Experts ←────────── Pool ←─────────── Git / Workbench
+                                     │
+                                     ▼
+                                SQLite DB
+
+User ──→ WebUI ──→ ACP JSON-RPC + SSE ──→ SessionManager (同上链路)`}</pre>
+    </div>
+  </section>
+
+  <!-- === 对比表 === -->
+  <section class="lx-comparison">
+    <h2 class="lx-section-title">凌霄 vs 普通 AI 编码工具</h2>
+    <p class="lx-section-subtitle">从聊天助手到工程指挥系统</p>
+    <table class="lx-comparison-table">
+      <thead>
+        <tr>
+          <th>能力</th>
+          <th>普通 AI 编码工具</th>
+          <th class="lx-highlight">凌霄剑域</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>架构模型</td>
+          <td class="lx-cross">✗ 单 Agent 对话</td>
+          <td class="lx-check">✓ Leader + Worker 专家团</td>
+        </tr>
+        <tr>
+          <td>任务编排</td>
+          <td class="lx-cross">✗ 线性对话流</td>
+          <td class="lx-check">✓ DAG 依赖图 + 并行执行</td>
+        </tr>
+        <tr>
+          <td>状态同步</td>
+          <td class="lx-cross">✗ 单端无同步</td>
+          <td class="lx-check">✓ WebUI/TUI/CLI 三端实时</td>
+        </tr>
+        <tr>
+          <td>验收闭环</td>
+          <td class="lx-cross">✗ 无结构化验收</td>
+          <td class="lx-check">✓ 契约循环 + 对抗验证</td>
+        </tr>
+        <tr>
+          <td>工具系统</td>
+          <td class="lx-cross">✗ 内置固定工具</td>
+          <td class="lx-check">✓ 100+ 工具 + MCP Forge</td>
+        </tr>
+        <tr>
+          <td>可恢复性</td>
+          <td class="lx-cross">✗ 会话丢失不可恢复</td>
+          <td class="lx-check">✓ SQLite 持久化 + 会话恢复</td>
+        </tr>
+        <tr>
+          <td>自治模式</td>
+          <td class="lx-cross">✗ 无自治能力</td>
+          <td class="lx-check">✓ Eternal 巡逻 + 自动重启</td>
+        </tr>
+        <tr>
+          <td>LLM 网关</td>
+          <td class="lx-cross">✗ 依赖外部 API</td>
+          <td class="lx-check">✓ 本地 Gateway + 虚拟密钥</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- === Footer === -->
+  <footer class="lx-footer">
+    <div class="lx-footer-content">
+      <div class="lx-footer-brand">
+        <img src={`${baseUrl}logo.svg`} alt="凌霄" />
+        <span>凌霄剑域 LingXiao v0.3.9</span>
+      </div>
+      <div class="lx-footer-links">
+        <a href={docsUrl}>文档</a>
+        <a href="https://github.com/hexian2001/lingxiao" target="_blank" rel="noopener">GitHub</a>
+        <a href={`${baseUrl}docs/zh/reference/changelog`}>更新日志</a>
+        <a href={`${baseUrl}docs/zh/reference/faq`}>FAQ</a>
+        <a href="https://github.com/hexian2001/lingxiao/issues" target="_blank" rel="noopener">问题反馈</a>
+      </div>
+      <div class="lx-footer-copy">
+        © 2025 LingXiao. MIT License.
+      </div>
+    </div>
+  </footer>
+</LandingLayout>

@@ -1,0 +1,79 @@
+---
+import '../styles/lingxiao-theme.css';
+
+interface Props {
+  title?: string;
+}
+
+const { title = '凌霄剑域 · LingXiao' } = Astro.props;
+const base = import.meta.env.BASE_URL;
+---
+
+<!doctype html>
+<html lang="zh-CN" data-theme="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="generator" content={Astro.generator} />
+    <link rel="icon" type="image/svg+xml" href={`${base}logo.svg`} />
+    <title>{title}</title>
+    <meta name="description" content="凌霄剑域 — AI 工程指挥系统。不是聊天壳，而是本地编排内核：专家团、任务 DAG、全状态同步、可审查可恢复。" />
+    <script is:inline>
+      // 主题切换
+      (function() {
+        const saved = localStorage.getItem('lx-theme');
+        if (saved) {
+          document.documentElement.setAttribute('data-theme', saved);
+        }
+      })();
+    </script>
+  </head>
+  <body>
+    <slot />
+
+    <!-- 主题切换按钮 -->
+    <button id="lx-theme-toggle" class="lx-theme-toggle" aria-label="切换主题">
+      <span class="lx-theme-icon-dark">🌙</span>
+      <span class="lx-theme-icon-light">☀️</span>
+    </button>
+
+    <script is:inline>
+      (function() {
+        const toggle = document.getElementById('lx-theme-toggle');
+        if (!toggle) return;
+        toggle.addEventListener('click', function() {
+          const current = document.documentElement.getAttribute('data-theme');
+          const next = current === 'dark' ? 'light' : 'dark';
+          document.documentElement.setAttribute('data-theme', next);
+          localStorage.setItem('lx-theme', next);
+        });
+      })();
+    </script>
+
+    <style>
+      .lx-theme-toggle {
+        position: fixed;
+        bottom: 1.5rem;
+        right: 1.5rem;
+        width: 44px;
+        height: 44px;
+        border-radius: 50%;
+        border: 1px solid var(--lx-border);
+        background: var(--lx-card-bg);
+        cursor: pointer;
+        z-index: 100;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.2rem;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+        transition: transform 0.2s ease;
+      }
+      .lx-theme-toggle:hover {
+        transform: scale(1.1);
+      }
+      [data-theme='dark'] .lx-theme-icon-light { display: none; }
+      [data-theme='light'] .lx-theme-icon-dark { display: none; }
+    </style>
+  </body>
+</html>

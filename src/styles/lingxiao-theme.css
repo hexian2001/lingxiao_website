@@ -1,0 +1,521 @@
+/* === 凌霄剑域主题 — 基于剑炉配色 === */
+
+/* 字体导入 */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+SC:wght@400;500;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
+
+/* === 设计令牌 === */
+:root {
+  /* 凌霄品牌色 */
+  --lx-ink: #0B0E11;       /* 墨黑 */
+  --lx-paper: #E8E4D8;     /* 纸白 */
+  --lx-blade: #5FE0C7;     /* 青锋 */
+  --lx-gold: #C9A86A;      /* 金箔 */
+
+  /* 亮色模式映射（Starlight light = default root） */
+  --lx-bg: var(--lx-paper);
+  --lx-bg-alt: #DDD8CA;
+  --lx-fg: var(--lx-ink);
+  --lx-fg-muted: #4A4D52;
+  --lx-accent: #0B8A74;    /* 青锋暗化（亮色可读性） */
+  --lx-accent-hover: #096B5A;
+  --lx-gold-decor: #9d682d; /* 金箔暗化 */
+  --lx-border: #C4BFAE;
+  --lx-card-bg: #F2EEE2;
+  --lx-code-bg: #1E2228;
+  --lx-code-fg: #E8E4D8;
+
+  /* Starlight 变量覆写 — 亮色 */
+  --sl-color-white: #0B0E11;
+  --sl-color-gray-1: #2A2D32;
+  --sl-color-gray-2: #4A4D52;
+  --sl-color-gray-3: #6A6D72;
+  --sl-color-gray-4: #9A9D9F;
+  --sl-color-gray-5: #C4BFAE;
+  --sl-color-gray-6: #DDD8CA;
+  --sl-color-gray-7: #E8E4D8;
+  --sl-color-black: #F8F5EC;
+  --sl-color-bg: #E8E4D8;
+  --sl-color-bg-nav: #DDD8CA;
+  --sl-color-bg-sidebar: #F2EEE2;
+  --sl-color-bg-inline-code: #DDD8CA;
+  --sl-color-accent: #0B8A74;
+  --sl-color-accent-low: rgba(11, 138, 116, 0.15);
+  --sl-color-accent-high: #096B5A;
+  --sl-color-text: #0B0E11;
+  --sl-color-heading: #0B0E11;
+
+  /* 字体 */
+  --sl-font-system: 'Inter', 'Noto Sans SC', system-ui, -apple-system, sans-serif;
+  --sl-font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+}
+
+/* === 暗色模式 === */
+:root[data-theme='dark'] {
+  --lx-bg: var(--lx-ink);
+  --lx-bg-alt: #15191E;
+  --lx-fg: var(--lx-paper);
+  --lx-fg-muted: #A0A0A0;
+  --lx-accent: var(--lx-blade);
+  --lx-accent-hover: #4DC9B0;
+  --lx-gold-decor: var(--lx-gold);
+  --lx-border: #2A2D32;
+  --lx-card-bg: #15191E;
+  --lx-code-bg: #0B0E11;
+  --lx-code-fg: #E8E4D8;
+
+  /* Starlight 变量覆写 — 暗色 */
+  --sl-color-white: #E8E4D8;
+  --sl-color-gray-1: #DDD8CA;
+  --sl-color-gray-2: #B0ABA0;
+  --sl-color-gray-3: #888880;
+  --sl-color-gray-4: #5A5D62;
+  --sl-color-gray-5: #3A3D42;
+  --sl-color-gray-6: #2A2D32;
+  --sl-color-gray-7: #15191E;
+  --sl-color-black: #0B0E11;
+  --sl-color-bg: #0B0E11;
+  --sl-color-bg-nav: #15191E;
+  --sl-color-bg-sidebar: #0E1115;
+  --sl-color-bg-inline-code: #15191E;
+  --sl-color-accent: #5FE0C7;
+  --sl-color-accent-low: rgba(95, 224, 199, 0.12);
+  --sl-color-accent-high: #7BE8D0;
+  --sl-color-text: #E8E4D8;
+  --sl-color-heading: #E8E4D8;
+}
+
+/* === 全局排版 === */
+body {
+  font-family: var(--sl-font-system);
+}
+
+/* 标题装饰 — 金箔下划线 */
+h1, h2, h3 {
+  font-weight: 700;
+}
+
+/* 代码字体 */
+code, pre {
+  font-family: var(--sl-font-mono);
+}
+
+/* 链接 */
+a {
+  color: var(--sl-color-accent);
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+a:hover {
+  color: var(--sl-color-accent-high);
+}
+
+/* === 首页专用样式 === */
+.lx-hero {
+  position: relative;
+  overflow: hidden;
+  text-align: center;
+  padding: 4rem 1.5rem 3rem;
+  background: linear-gradient(180deg, var(--lx-bg) 0%, var(--lx-bg-alt) 100%);
+  border-bottom: 1px solid var(--lx-border);
+}
+
+.lx-hero-content {
+  max-width: 720px;
+  margin: 0 auto;
+}
+
+.lx-hero-logo {
+  width: 120px;
+  height: 120px;
+  margin: 0 auto 1.5rem;
+  display: block;
+}
+
+.lx-hero h1 {
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin: 0 0 0.5rem;
+  color: var(--lx-fg);
+  letter-spacing: -0.02em;
+}
+
+.lx-hero-tagline {
+  font-size: 1.25rem;
+  color: var(--lx-fg-muted);
+  margin: 0 0 2rem;
+  font-weight: 400;
+}
+
+.lx-hero-tagline .lx-accent {
+  color: var(--lx-accent);
+  font-weight: 600;
+}
+
+.lx-hero-tagline .lx-gold {
+  color: var(--lx-gold-decor);
+  font-weight: 600;
+}
+
+.lx-install-cmd {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: var(--lx-code-bg);
+  color: var(--lx-code-fg);
+  border: 1px solid var(--lx-border);
+  border-radius: 8px;
+  padding: 0.75rem 1.25rem;
+  font-family: var(--sl-font-mono);
+  font-size: 0.9rem;
+  margin: 0 auto 1.5rem;
+}
+
+.lx-install-cmd code {
+  background: none;
+  padding: 0;
+  color: var(--lx-code-fg);
+}
+
+.lx-hero-cta {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.lx-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.625rem 1.5rem;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 0.95rem;
+  transition: all 0.2s ease;
+  border: 1px solid transparent;
+}
+
+.lx-btn-primary {
+  background: var(--lx-accent);
+  color: var(--lx-bg);
+  border-color: var(--lx-accent);
+}
+.lx-btn-primary:hover {
+  background: var(--lx-accent-hover);
+  border-color: var(--lx-accent-hover);
+  color: var(--lx-bg);
+}
+
+.lx-btn-secondary {
+  background: transparent;
+  color: var(--lx-fg);
+  border-color: var(--lx-border);
+}
+.lx-btn-secondary:hover {
+  border-color: var(--lx-accent);
+  color: var(--lx-accent);
+}
+
+/* === 特性卡片 === */
+.lx-features {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 4rem 1.5rem;
+}
+
+.lx-section-title {
+  text-align: center;
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+  color: var(--lx-fg);
+}
+
+.lx-section-subtitle {
+  text-align: center;
+  font-size: 1.1rem;
+  color: var(--lx-fg-muted);
+  margin-bottom: 2.5rem;
+}
+
+.lx-feature-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 1.5rem;
+}
+
+.lx-feature-card {
+  background: var(--lx-card-bg);
+  border: 1px solid var(--lx-border);
+  border-radius: 12px;
+  padding: 1.75rem;
+  transition: transform 0.2s ease, border-color 0.2s ease;
+}
+
+.lx-feature-card:hover {
+  transform: translateY(-2px);
+  border-color: var(--lx-accent);
+}
+
+.lx-feature-card .lx-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+  background: var(--lx-accent-low);
+}
+
+.lx-feature-card h3 {
+  font-size: 1.15rem;
+  margin: 0 0 0.5rem;
+  color: var(--lx-fg);
+}
+
+.lx-feature-card p {
+  font-size: 0.9rem;
+  line-height: 1.6;
+  color: var(--lx-fg-muted);
+  margin: 0;
+}
+
+/* === 功能展示区 === */
+.lx-showcase {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 3rem 1.5rem 4rem;
+}
+
+.lx-showcase-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+  align-items: center;
+}
+
+.lx-showcase-image {
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid var(--lx-border);
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.15);
+}
+
+.lx-showcase-image img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.lx-showcase-text h3 {
+  font-size: 1.5rem;
+  margin: 0 0 1rem;
+  color: var(--lx-fg);
+}
+
+.lx-showcase-text p {
+  font-size: 0.95rem;
+  line-height: 1.7;
+  color: var(--lx-fg-muted);
+  margin: 0 0 1rem;
+}
+
+.lx-showcase-text ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.lx-showcase-text li {
+  padding: 0.375rem 0;
+  font-size: 0.9rem;
+  color: var(--lx-fg-muted);
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+}
+
+.lx-showcase-text li::before {
+  content: '◆';
+  color: var(--lx-gold-decor);
+  flex-shrink: 0;
+}
+
+/* === 架构图 === */
+.lx-architecture {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 3rem 1.5rem 4rem;
+}
+
+.lx-arch-diagram {
+  background: var(--lx-card-bg);
+  border: 1px solid var(--lx-border);
+  border-radius: 12px;
+  padding: 2rem;
+  overflow-x: auto;
+}
+
+.lx-arch-diagram pre {
+  font-family: var(--sl-font-mono);
+  font-size: 0.85rem;
+  line-height: 1.6;
+  color: var(--lx-fg);
+  margin: 0;
+}
+
+/* === 对比表 === */
+.lx-comparison {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 3rem 1.5rem 4rem;
+}
+
+.lx-comparison-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+
+.lx-comparison-table th,
+.lx-comparison-table td {
+  padding: 0.875rem 1rem;
+  text-align: left;
+  border-bottom: 1px solid var(--lx-border);
+}
+
+.lx-comparison-table th {
+  font-weight: 700;
+  color: var(--lx-fg);
+  background: var(--lx-card-bg);
+}
+
+.lx-comparison-table td {
+  color: var(--lx-fg-muted);
+}
+
+.lx-comparison-table .lx-check {
+  color: var(--lx-accent);
+  font-weight: 700;
+}
+
+.lx-comparison-table .lx-cross {
+  color: #888;
+}
+
+.lx-comparison-table .lx-highlight {
+  color: var(--lx-gold-decor);
+  font-weight: 600;
+}
+
+/* === Footer === */
+.lx-footer {
+  border-top: 1px solid var(--lx-border);
+  background: var(--lx-bg-alt);
+  padding: 2.5rem 1.5rem;
+}
+
+.lx-footer-content {
+  max-width: 1100px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 2rem;
+}
+
+.lx-footer-brand {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.lx-footer-brand img {
+  width: 32px;
+  height: 32px;
+}
+
+.lx-footer-brand span {
+  font-weight: 600;
+  color: var(--lx-fg);
+  font-size: 0.95rem;
+}
+
+.lx-footer-links {
+  display: flex;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.lx-footer-links a {
+  font-size: 0.875rem;
+  color: var(--lx-fg-muted);
+}
+.lx-footer-links a:hover {
+  color: var(--lx-accent);
+}
+
+.lx-footer-copy {
+  width: 100%;
+  text-align: center;
+  margin-top: 1.5rem;
+  font-size: 0.8rem;
+  color: var(--lx-fg-muted);
+  opacity: 0.7;
+}
+
+/* === 响应式 === */
+@media (max-width: 768px) {
+  .lx-hero h1 {
+    font-size: 1.75rem;
+  }
+  .lx-hero-tagline {
+    font-size: 1rem;
+  }
+  .lx-feature-grid {
+    grid-template-columns: 1fr;
+  }
+  .lx-showcase-grid {
+    grid-template-columns: 1fr;
+  }
+  .lx-section-title {
+    font-size: 1.5rem;
+  }
+  .lx-hero-logo {
+    width: 80px;
+    height: 80px;
+  }
+  .lx-comparison-table {
+    font-size: 0.8rem;
+  }
+  .lx-comparison-table th,
+  .lx-comparison-table td {
+    padding: 0.5rem 0.625rem;
+  }
+}
+
+/* === Starlight 组件微调 === */
+header.header {
+  border-bottom: 1px solid var(--sl-color-gray-5);
+}
+
+.site-title {
+  font-weight: 700;
+}
+
+/* 侧边栏当前项 */
+.sidebar-panel-item[aria-current='page'] {
+  font-weight: 600;
+}
+
+/* 代码块 */
+.expressive-code pre {
+  border-radius: 8px;
+}
+
+/* 搜索框 */
+#starlight__search {
+  border-radius: 8px;
+}
