@@ -686,3 +686,110 @@ header.header {
 #starlight__search {
   border-radius: 10px;
 }
+
+/* === 官网首页 · 国风典雅 Landing === */
+.home-shell {
+  min-height: 100vh;
+  color: var(--lx-fg);
+  background:
+    radial-gradient(circle at 18% 8%, rgba(197, 168, 106, 0.18), transparent 28%),
+    radial-gradient(circle at 82% 12%, rgba(95, 224, 199, 0.12), transparent 30%),
+    linear-gradient(135deg, rgba(248, 246, 239, 0.96), rgba(234, 228, 214, 0.96));
+  overflow: hidden;
+}
+:root[data-theme='dark'] .home-shell {
+  background:
+    radial-gradient(circle at 16% 10%, rgba(201, 168, 106, 0.18), transparent 30%),
+    radial-gradient(circle at 82% 16%, rgba(95, 224, 199, 0.14), transparent 32%),
+    linear-gradient(135deg, #07090b, #11161a 48%, #090b0e);
+}
+.home-hero, .home-section, .home-cta { width: min(1180px, calc(100% - 40px)); margin: 0 auto; }
+.home-hero { padding: 24px 0 76px; position: relative; }
+.home-hero::before { content: "凌霄"; position: absolute; right: -54px; top: 92px; writing-mode: vertical-rl; font-size: 8rem; letter-spacing: .24em; color: rgba(128, 87, 48, .07); font-weight: 800; pointer-events: none; }
+.home-nav { display:flex; align-items:center; justify-content:space-between; gap:24px; padding:12px 16px; border:1px solid var(--lx-border); border-radius:999px; background:rgba(255,255,255,.55); backdrop-filter:blur(20px); box-shadow:0 18px 50px rgba(49,38,24,.08); }
+:root[data-theme='dark'] .home-nav { background:rgba(9,12,14,.62); }
+.home-brand, .home-links, .home-actions, .home-stats { display:flex; align-items:center; }
+.home-brand { gap:10px; font-weight:800; color:var(--lx-fg); }
+.home-brand img { width:30px; height:30px; border-radius:10px; box-shadow:0 8px 24px rgba(0,0,0,.12); }
+.home-links { gap:6px; flex-wrap:wrap; justify-content:flex-end; }
+.home-links a { padding:8px 12px; border-radius:999px; color:var(--lx-fg-muted); font-size:.92rem; }
+.home-links a:hover { color:var(--lx-accent); background:rgba(201,168,106,.10); }
+.home-hero-grid { display:grid; grid-template-columns:.92fr 1.08fr; gap:52px; align-items:center; padding-top:74px; }
+.home-kicker { margin:0 0 14px; color:var(--lx-accent); text-transform:uppercase; letter-spacing:.18em; font-size:.78rem; font-weight:800; }
+.home-copy h1, .home-section h2, .home-cta h2 { margin:0; font-family: Georgia, 'Noto Serif SC', serif; line-height:1.05; letter-spacing:-.04em; }
+.home-copy h1 { font-size:clamp(3.6rem, 8vw, 6.9rem); max-width:720px; }
+.home-lede { margin:28px 0 0; max-width:620px; color:var(--lx-fg-muted); font-size:1.14rem; line-height:1.9; }
+.home-actions { gap:14px; margin-top:30px; flex-wrap:wrap; }
+.home-btn { display:inline-flex; align-items:center; justify-content:center; min-height:44px; padding:0 20px; border-radius:999px; border:1px solid var(--lx-border); color:var(--lx-fg); background:rgba(255,255,255,.5); font-weight:750; box-shadow:0 12px 32px rgba(50,38,22,.08); }
+.home-btn.primary { color:#fff; border-color:#9e3d30; background:linear-gradient(135deg,#9e3d30,#c9a86a); }
+.home-btn:hover { transform:translateY(-2px); }
+.home-install { margin-top:24px; display:flex; gap:10px; align-items:center; max-width:560px; padding:13px 16px; border:1px solid var(--lx-border); border-radius:16px; background:rgba(255,255,255,.56); color:var(--lx-fg-muted); overflow:auto; }
+:root[data-theme='dark'] .home-install, :root[data-theme='dark'] .home-btn { background:rgba(255,255,255,.05); }
+.home-install span { color:var(--lx-accent); font-weight:900; }
+.home-install code { white-space:nowrap; }
+.home-stats { gap:10px; margin-top:22px; flex-wrap:wrap; }
+.home-stats div { min-width:108px; padding:14px 16px; border:1px solid var(--lx-border); border-radius:18px; background:rgba(255,255,255,.38); }
+:root[data-theme='dark'] .home-stats div { background:rgba(255,255,255,.04); }
+.home-stats strong { display:block; font-size:1.35rem; color:var(--lx-fg); }
+.home-stats span { color:var(--lx-fg-muted); font-size:.84rem; }
+.home-showcase { position:relative; min-height:540px; }
+.home-showcase::before { content:""; position:absolute; inset:8% 6% 6% 0; border-radius:999px; background:radial-gradient(circle,rgba(201,168,106,.26),transparent 63%); filter:blur(32px); }
+.shot { position:absolute; margin:0; border:1px solid rgba(156,128,82,.26); border-radius:26px; background:rgba(255,255,255,.42); box-shadow:0 34px 90px rgba(23,18,13,.22); overflow:hidden; backdrop-filter:blur(16px); }
+.shot figcaption { padding:10px 16px; color:var(--lx-fg-muted); font-size:.78rem; letter-spacing:.08em; border-bottom:1px solid var(--lx-border); }
+.shot img { display:block; width:100%; height:auto; }
+.shot.light { width:78%; right:0; top:8px; z-index:2; }
+.shot.dark { width:62%; left:0; bottom:0; z-index:3; }
+.home-section { padding:76px 0; }
+.home-section.intro { text-align:center; max-width:850px; }
+.home-section h2, .home-cta h2 { font-size:clamp(2rem,4vw,4rem); }
+.home-section p { color:var(--lx-fg-muted); line-height:1.9; font-size:1.05rem; }
+.section-head { margin-bottom:28px; }
+.cap-grid, .proof-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:18px; }
+.cap-grid article, .proof-grid article, .flow-card { border:1px solid var(--lx-border); border-radius:24px; background:rgba(255,255,255,.46); box-shadow:0 18px 52px rgba(43,32,20,.08); backdrop-filter:blur(18px); }
+:root[data-theme='dark'] .cap-grid article, :root[data-theme='dark'] .proof-grid article, :root[data-theme='dark'] .flow-card { background:rgba(255,255,255,.045); }
+.cap-grid article, .proof-grid article { padding:24px; }
+.cap-grid b { display:grid; place-items:center; width:44px; height:44px; border-radius:15px; color:#fff; background:linear-gradient(135deg,#9e3d30,#c9a86a); font-family:Georgia,serif; font-size:1.25rem; }
+.cap-grid h3, .proof-grid h3 { margin:18px 0 8px; font-size:1.2rem; }
+.cap-grid p, .proof-grid p { margin:0; font-size:.96rem; }
+.split { display:grid; grid-template-columns:.92fr 1.08fr; gap:42px; align-items:center; }
+.flow-card { padding:22px; display:grid; gap:12px; }
+.flow-card div { display:flex; align-items:center; gap:16px; padding:16px; border-radius:18px; background:linear-gradient(90deg,rgba(201,168,106,.12),transparent); }
+.flow-card span { color:var(--lx-accent); font-family:Georgia,serif; font-weight:900; font-size:1.45rem; }
+.flow-card strong { font-size:1.06rem; }
+.home-cta { margin-bottom:70px; padding:58px 28px; text-align:center; border:1px solid rgba(201,168,106,.34); border-radius:34px; background:linear-gradient(135deg,rgba(158,61,48,.10),rgba(201,168,106,.13)); box-shadow:0 24px 80px rgba(40,28,14,.10); }
+.home-cta .home-actions { justify-content:center; }
+@media (max-width: 900px) {
+  .home-nav { align-items:flex-start; border-radius:24px; }
+  .home-hero-grid, .split { grid-template-columns:1fr; }
+  .home-showcase { min-height:420px; }
+  .cap-grid, .proof-grid { grid-template-columns:1fr; }
+}
+@media (max-width: 640px) {
+  .home-hero, .home-section, .home-cta { width:min(100% - 24px, 1180px); }
+  .home-links { display:none; }
+  .home-copy h1 { font-size:3.2rem; }
+  .shot.light, .shot.dark { position:relative; width:100%; inset:auto; margin-bottom:16px; }
+  .home-showcase { min-height:auto; }
+}
+
+
+/* === Starlight 组件微调 === */
+header.header {
+  border-bottom: 1px solid var(--sl-color-gray-5);
+}
+
+.site-title {
+  font-weight: 700;
+}
+
+.sidebar-panel-item[aria-current='page'] {
+  font-weight: 600;
+}
+
+.expressive-code pre {
+  border-radius: 10px;
+}
+
+#starlight__search {
+  border-radius: 10px;
+}

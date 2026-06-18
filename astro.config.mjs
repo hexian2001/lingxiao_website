@@ -124,9 +124,9 @@ export default defineConfig({
     sitemap(),
     starlight({
       title: '凌霄剑域',
-      defaultLocale: 'zh',
+      defaultLocale: 'root',
       locales: {
-        zh: { label: '简体中文', lang: 'zh-CN' },
+        root: { label: '简体中文', lang: 'zh-CN' },
         en: { label: 'English', lang: 'en' },
       },
       sidebar: zhSidebar(),
