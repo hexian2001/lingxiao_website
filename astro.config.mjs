@@ -3,7 +3,7 @@ import starlight from '@astrojs/starlight';
 import sitemap from '@astrojs/sitemap';
 
 const siteUrl = 'https://hexian2001.github.io';
-const base = '/lingxiao';
+const base = '/lingxiao_website';
 
 function makeSidebar(prefix) {
   return [
