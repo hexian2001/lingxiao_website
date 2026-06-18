@@ -9,20 +9,11 @@ The basic unit of LingXiao is not "an assistant" but a **Leader + Worker expert 
 
 ## Leader-Worker Architecture
 
-```text
-flowchart TD
-  User["User Goal"] --> Leader["LeaderAgent"]
-  Leader --> DAG["TaskBoard / DAG"]
-  DAG --> W1["Worker: Backend"]
-  DAG --> W2["Worker: Frontend"]
-  DAG --> W3["Worker: Researcher"]
-  DAG --> W4["Worker: QA/Reviewer"]
-  W1 --> Result["Result + Evidence Receipt"]
-  W2 --> Result
-  W3 --> Result
-  W4 --> Result
-  Result --> Leader
-```
+<div class="doc-hub-flow" role="img" aria-label="Leader Worker architecture: user goal enters Leader, Leader builds a DAG and dispatches Backend, Frontend, Researcher, and QA Reviewer workers; results and evidence return to Leader.">
+  <div class="doc-hub-line"><span>User Goal</span><i>→</i><strong>LeaderAgent</strong><i>→</i><span>TaskBoard / DAG</span></div>
+  <div class="doc-hub-workers"><span>Backend</span><span>Frontend</span><span>Researcher</span><span>QA / Reviewer</span></div>
+  <div class="doc-hub-line"><span>Result + Evidence Receipt</span><i>→</i><strong>Leader Verification</strong></div>
+</div>
 
 ### Leader Responsibilities
 

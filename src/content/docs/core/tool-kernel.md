@@ -89,9 +89,9 @@ description: 100+ 内置工具、ToolRegistry 统一管理与权限系统
 
 工具调用遵循 9 层评估链：
 
-```text
-deny → allow → ask → yolo → always-allowed → network → hardened → strict → default allow
-```
+<div class="doc-flow doc-flow-long" role="img" aria-label="工具权限九层评估链：deny、allow、ask、yolo、always allowed、network、hardened、strict、default allow。">
+  <span>deny</span><i>→</i><span>allow</span><i>→</i><span>ask</span><i>→</i><span>yolo</span><i>→</i><span>always-allowed</span><i>→</i><span>network</span><i>→</i><span>hardened</span><i>→</i><span>strict</span><i>→</i><strong>default allow</strong>
+</div>
 
 ### 权限层级说明
 

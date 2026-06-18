@@ -9,53 +9,42 @@ LingXiao is a Node.js 24, TypeScript, React, Fastify, SQLite based AI engineerin
 
 ## Runtime Topology
 
-```text
-flowchart LR
-  User["User"]
-  CLI["CLI/TUI<br/>src/cli.ts"]
-  Web["React Web UI<br/>web/src"]
-  Server["Fastify Web Server<br/>src/server.ts"]
-  ACP["ACP JSON-RPC + SSE<br/>AcpRoutes + AcpHandler"]
-  Sessions["SessionManager + SessionRuntime<br/>src/runtime"]
-  Leader["LeaderAgent<br/>src/agents"]
-  DAG["TaskBoard / Orchestration DAG<br/>OrchestrationRuntime"]
-  Workers["Worker Expert Agents<br/>AgentPool"]
-  Tools["ToolRegistry<br/>src/tools"]
-  DB["SQLite<br/>DatabaseManager"]
-  RuntimeState["session:runtime_state<br/>Unified Snapshot"]
-  Browser["BrowserRuntime"]
-  Terminal["Terminal WS/PTY"]
-  Memory["Memory System<br/>FTS5 + AutoDream"]
-  Skills["Skills Catalog<br/>Phase Loader"]
-  McpForge["MCP Forge<br/>Server Generation"]
-  Eternal["Eternal Loop<br/>Autonomous Mode"]
-  Gateway["Local LLM Gateway<br/>OpenAI/Anthropic Proxy"]
+<div class="doc-runtime-topology" role="img" aria-label="LingXiao runtime topology: users enter through CLI/TUI or WebUI, pass through Web Server, ACP, SessionRuntime, then Leader dispatches DAG, Workers, tools, and persistence systems.">
+  <section class="topology-column topology-entry">
+    <small>Entry</small>
+    <strong>User Goal</strong>
+    <span>CLI / TUI / WebUI</span>
+  </section>
+  <i aria-hidden="true">→</i>
+  <section class="topology-column topology-server">
+    <small>Server</small>
+    <strong>Fastify Web Server</strong>
+    <span>ACP JSON-RPC · SSE · WebSocket · Gateway</span>
+  </section>
+  <i aria-hidden="true">→</i>
+  <section class="topology-column topology-runtime">
+    <small>Session Kernel</small>
+    <strong>SessionManager / SessionRuntime</strong>
+    <span>Create, recover, and sync sessions into a unified runtime snapshot.</span>
+  </section>
+  <i aria-hidden="true">→</i>
+  <section class="topology-column topology-leader">
+    <small>Command</small>
+    <strong>LeaderAgent</strong>
+    <span>Decomposes goals, builds DAGs, selects roles, and verifies evidence.</span>
+  </section>
+  <div class="topology-fanout">
+    <article><small>Orchestration</small><strong>TaskBoard / Orchestration DAG</strong><span>Dependencies, blocks, evaluation, repair, and speculation.</span></article>
+    <article><small>Execution</small><strong>Worker Expert Agents</strong><span>Research, coding, testing, review, and specialist roles.</span></article>
+    <article><small>Tools</small><strong>ToolRegistry</strong><span>Files, Shell, Git, browser, HTTP, Office, and MCP.</span></article>
+  </div>
+  <div class="topology-foundation">
+    <article><strong>SQLite / DatabaseManager</strong><span>Sessions, tasks, runtime state, and historical traces.</span></article>
+    <article><strong>Memory / Skills / MCP Forge</strong><span>Long-term memory, capability injection, and MCP generation.</span></article>
+    <article><strong>BrowserRuntime / Terminal</strong><span>Real browser, terminal, and user-visible execution evidence.</span></article>
+  </div>
+</div>
 
-  User --> CLI
-  User --> Web
-  CLI --> Sessions
-  Web --> Server
-  Server --> ACP
-  Server --> DB
-  Server --> Gateway
-  ACP --> Sessions
-  Sessions --> Leader
-  Sessions --> RuntimeState
-  Sessions --> Eternal
-  RuntimeState --> ACP
-  Leader --> DAG
-  Leader --> Workers
-  Leader --> Memory
-  Workers --> Skills
-  DAG --> DB
-  Leader --> Tools
-  Workers --> Tools
-  Sessions --> DB
-  Tools --> DB
-  Tools --> McpForge
-  Server --> Browser
-  Server --> Terminal
-```
 
 ## Main Processes
 
@@ -133,12 +122,15 @@ The UI is state-driven with Zustand stores:
 
 ### Message Flow
 
-```
-User input → SessionManager.sendUserInput → LeaderAgent.processGoal
-  → TaskBoard.createTask (DAG) → AgentPool.spawnWorker
-  → Worker.execute → ToolRegistry.invoke → results to DB
-  → RuntimeState.update → SSE/ACP push to all clients
-```
+<div class="doc-vertical-flow" role="img" aria-label="Message flow: user input enters SessionManager and LeaderAgent, creates a DAG task and worker, invokes tools, writes results to DB, then RuntimeState pushes to clients.">
+  <span>User input</span>
+  <em>SessionManager.sendUserInput</em>
+  <em>LeaderAgent.processGoal</em>
+  <em>TaskBoard.createTask (DAG)</em>
+  <em>AgentPool.spawnWorker</em>
+  <em>Worker.execute → ToolRegistry.invoke</em>
+  <strong>results to DB → RuntimeState.update → SSE / ACP push to clients</strong>
+</div>
 
 ### State Synchronization
 

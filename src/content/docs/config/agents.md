@@ -142,11 +142,10 @@ Leader 可在运行时通过 `define_agent_role` 动态创建角色：
 
 ### 任务状态流转
 
-```
-pending → ready → dispatched → in_progress → completed
-                                    ↓
-                               failed / cancelled
-```
+<div class="doc-flow doc-flow-status" role="img" aria-label="任务状态流转：pending、ready、dispatched、in_progress、completed；进行中可失败或取消。">
+  <span>pending</span><i>→</i><span>ready</span><i>→</i><span>dispatched</span><i>→</i><span>in_progress</span><i>→</i><strong>completed</strong>
+  <small>分支：in_progress → failed / cancelled</small>
+</div>
 
 ## Worker 运行时
 

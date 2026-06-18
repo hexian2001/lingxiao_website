@@ -11,20 +11,20 @@ LingXiao doesn't just dispatch tasks — it performs structured verification on 
 
 Task lifecycle events (create/update/dispatch/complete) automatically trigger the verification pipeline, extracting PASS/FAIL/BLOCKED verdicts:
 
-```text
-Task Complete → VerificationPipeline → Adversarial Verification → Adaptive Routing → verdict
-```
+<div class="doc-flow" role="img" aria-label="Orchestration verification flow: task complete enters VerificationPipeline, adversarial verification, adaptive routing, and verdict.">
+  <span>Task Complete</span><i>→</i><span>VerificationPipeline</span><i>→</i><span>Adversarial Verification</span><i>→</i><span>Adaptive Routing</span><i>→</i><strong>verdict</strong>
+</div>
 
 ## Speculative Execution
 
 The same task can run multiple parallel implementation branches, with the best one selected by strategy:
 
-```text
-Task T-3: Backend Implementation
-  ├─ Branch A (architect plan) → Verification passed ✓
-  ├─ Branch B (simplified plan) → Verification passed ✓
-  └─ Branch C (aggressive plan) → Verification failed ✗
-```
+<div class="doc-branch-flow" role="img" aria-label="Speculative execution branches: backend task T-3 runs three branches; A and B pass verification, C fails.">
+  <strong>Task T-3: Backend Implementation</strong>
+  <div><span>Branch A</span><em>architect plan</em><b>Verification passed ✓</b></div>
+  <div><span>Branch B</span><em>simplified plan</em><b>Verification passed ✓</b></div>
+  <div><span>Branch C</span><em>aggressive plan</em><b class="is-fail">Verification failed ✗</b></div>
+</div>
 
 ### Selection Strategies
 
@@ -87,11 +87,9 @@ Based on signals, execution strategy is auto-selected:
 
 A five-phase loop ensures cross-stack implementation consistency:
 
-```text
-contract → implement → evaluate → repair → reset
-    ↑                                      |
-    └──────────────────────────────────────┘
-```
+<div class="doc-flow doc-flow-loop" role="img" aria-label="Contract loop: contract, implement, evaluate, repair, reset, then reset returns to contract.">
+  <span>contract</span><i>→</i><span>implement</span><i>→</i><span>evaluate</span><i>→</i><span>repair</span><i>→</i><span>reset</span><i>↺</i><strong>contract</strong>
+</div>
 
 ### Five Phases
 

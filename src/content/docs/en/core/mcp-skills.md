@@ -13,9 +13,9 @@ MCP Forge is a template-driven MCP Server generation engine that automatically g
 
 ### Generation Pipeline
 
-```text
-Requirements → Template Selection → Code Generation → Sandbox Smoke Test → Inspector Validation → Registration
-```
+<div class="doc-flow" role="img" aria-label="MCP Forge generation pipeline: requirements, template selection, code generation, sandbox smoke test, inspector validation, registration.">
+  <span>Requirements</span><i>→</i><span>Template Selection</span><i>→</i><span>Code Generation</span><i>→</i><span>Sandbox Smoke Test</span><i>→</i><span>Inspector Validation</span><i>→</i><strong>Registration</strong>
+</div>
 
 | Phase | Description |
 | --- | --- |
@@ -65,9 +65,9 @@ Skills are execution knowledge, processes, and domain constraints injected into 
 
 ### 4-Layer Source Priority
 
-```text
-Project-level > Plugin-contributed > User-level > Built-in
-```
+<div class="doc-flow doc-flow-priority" role="img" aria-label="Skills source priority: project-level outranks plugin-contributed, user-level, and built-in.">
+  <strong>Project-level</strong><i>›</i><span>Plugin-contributed</span><i>›</i><span>User-level</span><i>›</i><span>Built-in</span>
+</div>
 
 | Source | Path | Description |
 | --- | --- | --- |
@@ -107,15 +107,15 @@ Generate security review report...
 
 Skills support per-phase file loading:
 
-```text
-skills/
-  security-review/
-    index.md          # Skill main file (frontmatter)
-    phases/
-      analyze.md      # Analysis phase knowledge
-      review.md       # Review phase knowledge
-      report.md       # Report phase knowledge
-```
+<div class="doc-file-tree" role="img" aria-label="Skill phase file structure: security-review contains index.md and analyze, review, report files under phases.">
+  <div><strong>skills/</strong></div>
+  <div><span>security-review/</span></div>
+  <div><span>index.md</span><em>Skill main file (frontmatter)</em></div>
+  <div><span>phases/</span></div>
+  <div><span>analyze.md</span><em>Analysis phase knowledge</em></div>
+  <div><span>review.md</span><em>Review phase knowledge</em></div>
+  <div><span>report.md</span><em>Report phase knowledge</em></div>
+</div>
 
 Each phase file passes Quality Gate validation before being injected into Worker prompts.
 

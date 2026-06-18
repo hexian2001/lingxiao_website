@@ -16,12 +16,23 @@ description: 从零搭建凌霄运行环境
 
 ## 安装步骤
 
+先取源码：
+
 ```bash
 git clone https://github.com/hexian2001/lingxiao.git
 cd lingxiao
-npm install
-npm run build
-npm link
+```
+
+再安装、构建并链接 CLI：
+
+```bash
+npm install && npm run build && npm link
+```
+
+最后启动凌霄：
+
+```bash
+lingxiao
 ```
 
 安装完成后，`lingxiao` 命令将全局可用。

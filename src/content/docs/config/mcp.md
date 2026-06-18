@@ -99,11 +99,10 @@ MCP Forge 通过 `/api/v1/mcp-forge/*` 路由暴露：
 
 任务状态流转：
 
-```
-pending → generating → compiling → validating → ready
-    ↓         ↓            ↓            ↓
-  failed   failed       failed       failed
-```
+<div class="doc-flow doc-flow-status" role="img" aria-label="MCP Forge 状态机：pending、generating、compiling、validating、ready；各阶段失败进入 failed。">
+  <span>pending</span><i>→</i><span>generating</span><i>→</i><span>compiling</span><i>→</i><span>validating</span><i>→</i><strong>ready</strong>
+  <small>任一生成、编译或校验阶段失败后进入 failed</small>
+</div>
 
 ### 模板库
 

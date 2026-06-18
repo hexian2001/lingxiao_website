@@ -9,15 +9,12 @@ LingXiao can serve as an OpenAI/Anthropic dual-format LLM proxy, providing virtu
 
 ## Architecture
 
-```text
-Client Request → LLM Gateway → Upstream LLM Provider
-                    ↓
-          Virtual Key Validation + Rate Limit Check
-                    ↓
-          Request Forwarding + Response Proxy
-                    ↓
-          Trace Recording to SQLite
-```
+<div class="doc-vertical-flow" role="img" aria-label="LLM Gateway architecture: client requests enter the Gateway, virtual key and rate limit checks run, requests are proxied upstream, and traces are recorded to SQLite.">
+  <span>Client Request</span><i>→</i><strong>LLM Gateway</strong><i>→</i><span>Upstream LLM Provider</span>
+  <em>Virtual Key Validation + Rate Limit Check</em>
+  <em>Request Forwarding + Response Proxy</em>
+  <em>Trace Recording to SQLite</em>
+</div>
 
 ## Dual-Format Proxy
 

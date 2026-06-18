@@ -9,13 +9,13 @@ description: session_runtime_state、SSE、ACP 与 WebUI/TUI 三端同步
 
 ## 同步架构
 
-```text
-SessionManager
-  -> session:runtime_state
-  -> SseBridge
-  -> ACP session/update: session_runtime_state
-  -> Web sessionStore / TUI event bridge
-```
+<div class="doc-vertical-flow" role="img" aria-label="状态同步架构：SessionManager 生成 session runtime state，经 SseBridge 和 ACP 推送到 Web sessionStore 与 TUI event bridge。">
+  <strong>SessionManager</strong>
+  <em>session:runtime_state</em>
+  <em>SseBridge</em>
+  <em>ACP session/update: session_runtime_state</em>
+  <em>Web sessionStore / TUI event bridge</em>
+</div>
 
 `session:runtime_state` 是统一运行态快照，覆盖 session status、leader busy/waiting/reviewing 状态、任务图、agent 面板、工具调用日志、消息流和审查结果。
 

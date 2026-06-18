@@ -9,21 +9,13 @@ description: 内置 Slash 命令完整列表与说明
 
 ## 命令生命周期
 
-```text
-sequenceDiagram
-  participant UI as Web/TUI 输入
-  participant R as slash_registry
-  participant ACP as AcpHandler session/command
-  participant D as dispatchCallbackCommand
-  participant SM as SessionManager
-
-  UI->>R: 检测 slash 命令和元数据
-  UI->>ACP: session/command {command, args}
-  ACP->>D: dispatchCallbackCommand(commandLine, context)
-  D->>SM: 可选运行时操作
-  D-->>ACP: CommandResult
-  ACP-->>UI: JSON-RPC 结果
-```
+<div class="doc-sequence" role="img" aria-label="Slash 命令生命周期：Web 或 TUI 输入先由 registry 识别，再经 ACP 到 dispatcher，必要时触发 SessionManager，最后返回 JSON RPC 结果。">
+  <div><span>Web / TUI 输入</span><i>→</i><span>slash_registry</span><em>检测 slash 命令和元数据</em></div>
+  <div><span>Web / TUI 输入</span><i>→</i><span>AcpHandler session/command</span><em>session/command {command, args}</em></div>
+  <div><span>AcpHandler</span><i>→</i><span>dispatchCallbackCommand</span><em>commandLine + context</em></div>
+  <div><span>dispatchCallbackCommand</span><i>→</i><span>SessionManager</span><em>可选运行时操作</em></div>
+  <div><span>CommandResult</span><i>→</i><strong>JSON-RPC 结果</strong></div>
+</div>
 
 ## 处理器类型
 

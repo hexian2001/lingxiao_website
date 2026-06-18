@@ -9,53 +9,42 @@ description: 运行时拓扑、模块职责、控制/数据流与失败边界
 
 ## 运行时拓扑
 
-```text
-flowchart LR
-  User["用户"]
-  CLI["CLI/TUI<br/>src/cli.ts"]
-  Web["React Web UI<br/>web/src"]
-  Server["Fastify Web Server<br/>src/server.ts"]
-  ACP["ACP JSON-RPC + SSE<br/>AcpRoutes + AcpHandler"]
-  Sessions["SessionManager + SessionRuntime<br/>src/runtime"]
-  Leader["LeaderAgent<br/>src/agents"]
-  DAG["TaskBoard / Orchestration DAG<br/>OrchestrationRuntime"]
-  Workers["Worker Expert Agents<br/>AgentPool"]
-  Tools["ToolRegistry<br/>src/tools"]
-  DB["SQLite<br/>DatabaseManager"]
-  RuntimeState["session:runtime_state<br/>统一快照"]
-  Browser["BrowserRuntime"]
-  Terminal["Terminal WS/PTY"]
-  Memory["Memory System<br/>FTS5 + AutoDream"]
-  Skills["Skills Catalog<br/>Phase Loader"]
-  McpForge["MCP Forge<br/>Server Generation"]
-  Eternal["Eternal Loop<br/>Autonomous Mode"]
-  Gateway["Local LLM Gateway<br/>OpenAI/Anthropic Proxy"]
+<div class="doc-runtime-topology" role="img" aria-label="凌霄运行时拓扑：用户从 CLI/TUI 或 WebUI 进入，经 Web Server、ACP、SessionRuntime 进入 Leader，再分派 DAG、Worker、工具和持久化系统。">
+  <section class="topology-column topology-entry">
+    <small>入口</small>
+    <strong>用户目标</strong>
+    <span>CLI / TUI / WebUI</span>
+  </section>
+  <i aria-hidden="true">→</i>
+  <section class="topology-column topology-server">
+    <small>服务入口</small>
+    <strong>Fastify Web Server</strong>
+    <span>ACP JSON-RPC · SSE · WebSocket · Gateway</span>
+  </section>
+  <i aria-hidden="true">→</i>
+  <section class="topology-column topology-runtime">
+    <small>会话内核</small>
+    <strong>SessionManager / SessionRuntime</strong>
+    <span>创建、恢复、同步会话，输出统一运行态快照。</span>
+  </section>
+  <i aria-hidden="true">→</i>
+  <section class="topology-column topology-leader">
+    <small>中枢</small>
+    <strong>LeaderAgent</strong>
+    <span>拆解目标、建立 DAG、选择角色、验收证据。</span>
+  </section>
+  <div class="topology-fanout">
+    <article><small>编排</small><strong>TaskBoard / Orchestration DAG</strong><span>依赖、阻塞、评估、修复和投机执行。</span></article>
+    <article><small>执行</small><strong>Worker Expert Agents</strong><span>研究、编码、测试、审查等角色并行推进。</span></article>
+    <article><small>百器</small><strong>ToolRegistry</strong><span>文件、Shell、Git、浏览器、HTTP、Office、MCP。</span></article>
+  </div>
+  <div class="topology-foundation">
+    <article><strong>SQLite / DatabaseManager</strong><span>会话、任务、运行态与历史轨迹。</span></article>
+    <article><strong>Memory / Skills / MCP Forge</strong><span>长期记忆、能力注入与 MCP 服务生成。</span></article>
+    <article><strong>BrowserRuntime / Terminal</strong><span>真实浏览器、终端和用户可见执行证据。</span></article>
+  </div>
+</div>
 
-  User --> CLI
-  User --> Web
-  CLI --> Sessions
-  Web --> Server
-  Server --> ACP
-  Server --> DB
-  Server --> Gateway
-  ACP --> Sessions
-  Sessions --> Leader
-  Sessions --> RuntimeState
-  Sessions --> Eternal
-  RuntimeState --> ACP
-  Leader --> DAG
-  Leader --> Workers
-  Leader --> Memory
-  Workers --> Skills
-  DAG --> DB
-  Leader --> Tools
-  Workers --> Tools
-  Sessions --> DB
-  Tools --> DB
-  Tools --> McpForge
-  Server --> Browser
-  Server --> Terminal
-```
 
 ## 核心进程
 
@@ -133,12 +122,15 @@ UI 是状态驱动的，使用 Zustand stores：
 
 ### 消息流
 
-```
-用户输入 → SessionManager.sendUserInput → LeaderAgent.processGoal
-  → TaskBoard.createTask (DAG) → AgentPool.spawnWorker
-  → Worker.execute → ToolRegistry.invoke → 结果写入 DB
-  → RuntimeState.update → SSE/ACP 推送到三端
-```
+<div class="doc-vertical-flow" role="img" aria-label="消息流：用户输入进入 SessionManager 和 LeaderAgent，创建 DAG 任务并启动 Worker，调用工具后写库，再通过 RuntimeState 推送到三端。">
+  <span>用户输入</span>
+  <em>SessionManager.sendUserInput</em>
+  <em>LeaderAgent.processGoal</em>
+  <em>TaskBoard.createTask（DAG）</em>
+  <em>AgentPool.spawnWorker</em>
+  <em>Worker.execute → ToolRegistry.invoke</em>
+  <strong>结果写入 DB → RuntimeState.update → SSE / ACP 推送到三端</strong>
+</div>
 
 ### 状态同步
 

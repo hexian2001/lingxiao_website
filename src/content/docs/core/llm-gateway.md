@@ -9,15 +9,12 @@ description: OpenAI/Anthropic 双格式代理、虚拟密钥、RPM/TPM 限制
 
 ## 架构
 
-```text
-客户端请求 → LLM Gateway → 上游 LLM Provider
-                ↓
-      虚拟密钥验证 + 限流检查
-                ↓
-      请求转发 + 响应代理
-                ↓
-      Trace 记录到 SQLite
-```
+<div class="doc-vertical-flow" role="img" aria-label="LLM Gateway 架构：客户端请求进入 Gateway，完成虚拟密钥和限流检查，转发上游响应，并记录 Trace 到 SQLite。">
+  <span>客户端请求</span><i>→</i><strong>LLM Gateway</strong><i>→</i><span>上游 LLM Provider</span>
+  <em>虚拟密钥验证 + 限流检查</em>
+  <em>请求转发 + 响应代理</em>
+  <em>Trace 记录到 SQLite</em>
+</div>
 
 ## 双格式代理
 

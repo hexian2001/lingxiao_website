@@ -9,9 +9,9 @@ Eternal mode lets the Leader self-patrol, continuously monitoring and managing e
 
 ## State Machine
 
-```text
-IDLE → CHECK → PATROL → THINK → WAIT → (loop)
-```
+<div class="doc-flow doc-flow-loop" role="img" aria-label="Eternal state machine: IDLE, CHECK, PATROL, THINK, WAIT, then loop.">
+  <span>IDLE</span><i>→</i><span>CHECK</span><i>→</i><span>PATROL</span><i>→</i><span>THINK</span><i>→</i><span>WAIT</span><i>↺</i><strong>loop</strong>
+</div>
 
 | State | Description |
 | --- | --- |
@@ -23,15 +23,11 @@ IDLE → CHECK → PATROL → THINK → WAIT → (loop)
 
 ### State Flow
 
-```text
-IDLE (30s) → CHECK → Issues found? → PATROL → THINK → Action needed? → Execute
-                      ↓                                ↓
-                   No issues                         Not needed
-                      ↓                                ↓
-                    WAIT ←─────────────────────────────┘
-                      ↓
-                    IDLE (backoff increases)
-```
+<div class="doc-decision-flow" role="img" aria-label="Eternal state flow: after idle check, issues trigger patrol, thinking, and optional execution; no issues or no action return to wait and idle.">
+  <div><span>IDLE (30s)</span><i>→</i><span>CHECK</span><i>→</i><span>Issues found?</span><i>→</i><span>PATROL</span><i>→</i><span>THINK</span><i>→</i><span>Action needed?</span><i>→</i><strong>Execute</strong></div>
+  <div><span>No issues</span><i>→</i><span>WAIT</span><i>→</i><span>IDLE (backoff increases)</span></div>
+  <div><span>Not needed</span><i>→</i><span>WAIT</span></div>
+</div>
 
 ## Budget Circuit Breaker
 
@@ -42,11 +38,11 @@ To prevent Eternal mode from running away, a budget circuit breaker is in place:
 - **Auto recovery**: After circuit breaking, requires manual restart or Supervisor auto-recovery
 - **Exponential backoff**: Cycle interval grows exponentially with failure count
 
-```text
-Base interval: 30s
-Backoff strategy: 30s × 2^n (n = consecutive failure count)
-Circuit breaker: 8 consecutive failures → pause
-```
+<dl class="doc-kv-flow" aria-label="Eternal budget circuit breaker parameters">
+  <div><dt>Base interval</dt><dd>30s</dd></div>
+  <div><dt>Backoff strategy</dt><dd>30s × 2^n (n = consecutive failure count)</dd></div>
+  <div><dt>Circuit breaker</dt><dd>8 consecutive failures → pause</dd></div>
+</dl>
 
 ## EternalSupervisor
 

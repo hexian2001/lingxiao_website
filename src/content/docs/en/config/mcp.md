@@ -99,11 +99,10 @@ MCP Forge is exposed via `/api/v1/mcp-forge/*` routes:
 
 Job state transitions:
 
-```
-pending → generating → compiling → validating → ready
-    ↓         ↓            ↓            ↓
-  failed   failed       failed       failed
-```
+<div class="doc-flow doc-flow-status" role="img" aria-label="MCP Forge state machine: pending, generating, compiling, validating, ready; failures enter failed from any active stage.">
+  <span>pending</span><i>→</i><span>generating</span><i>→</i><span>compiling</span><i>→</i><span>validating</span><i>→</i><strong>ready</strong>
+  <small>Any generation, compilation, or validation failure enters failed</small>
+</div>
 
 ### Template Library
 

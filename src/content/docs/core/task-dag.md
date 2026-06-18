@@ -9,14 +9,12 @@ description: 带依赖关系的任务图调度、并行执行与状态恢复
 
 ## 任务图结构
 
-```text
-T-1 需求澄清
-  ├─ T-2 架构设计
-  │    ├─ T-3 后端实现
-  │    └─ T-4 前端实现
-  ├─ T-5 测试验证
-  └─ T-6 文档与发布
-```
+<div class="doc-task-tree" role="img" aria-label="任务 DAG 示例：T-1 需求澄清下包含架构设计、测试验证、文档发布；架构设计下包含后端和前端实现。">
+  <strong>T-1 需求澄清</strong>
+  <div><span>T-2 架构设计</span><em>T-3 后端实现</em><em>T-4 前端实现</em></div>
+  <div><span>T-5 测试验证</span></div>
+  <div><span>T-6 文档与发布</span></div>
+</div>
 
 每个节点是一个任务，箭头表示依赖关系。无依赖的任务自动并行执行，有依赖的任务按顺序解锁。
 
@@ -30,11 +28,10 @@ T-1 需求澄清
 
 ## 任务状态流转
 
-```text
-pending → dispatched → in_progress → completed
-                                   → failed
-                                   → blocked
-```
+<div class="doc-flow doc-flow-status" role="img" aria-label="任务状态流转：pending、dispatched、in_progress、completed；进行中也可能 failed 或 blocked。">
+  <span>pending</span><i>→</i><span>dispatched</span><i>→</i><span>in_progress</span><i>→</i><strong>completed</strong>
+  <small>分支：in_progress → failed / blocked</small>
+</div>
 
 | 状态 | 说明 |
 | --- | --- |

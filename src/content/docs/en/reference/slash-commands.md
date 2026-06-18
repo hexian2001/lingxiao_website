@@ -9,21 +9,13 @@ LingXiao has 66 built-in slash commands available in both TUI and WebUI chat inp
 
 ## Command Lifecycle
 
-```text
-sequenceDiagram
-  participant UI as Web/TUI input
-  participant R as slash_registry
-  participant ACP as AcpHandler session/command
-  participant D as dispatchCallbackCommand
-  participant SM as SessionManager
-
-  UI->>R: Detect slash command and metadata
-  UI->>ACP: session/command {command, args}
-  ACP->>D: dispatchCallbackCommand(commandLine, context)
-  D->>SM: Optional runtime action
-  D-->>ACP: CommandResult
-  ACP-->>UI: JSON-RPC result
-```
+<div class="doc-sequence" role="img" aria-label="Slash command lifecycle: Web or TUI input is detected by the registry, sent through ACP to the dispatcher, optionally reaches SessionManager, and returns a JSON RPC result.">
+  <div><span>Web / TUI input</span><i>→</i><span>slash_registry</span><em>Detect slash command and metadata</em></div>
+  <div><span>Web / TUI input</span><i>→</i><span>AcpHandler session/command</span><em>session/command {command, args}</em></div>
+  <div><span>AcpHandler</span><i>→</i><span>dispatchCallbackCommand</span><em>commandLine + context</em></div>
+  <div><span>dispatchCallbackCommand</span><i>→</i><span>SessionManager</span><em>Optional runtime action</em></div>
+  <div><span>CommandResult</span><i>→</i><strong>JSON-RPC result</strong></div>
+</div>
 
 ## Handler Types
 

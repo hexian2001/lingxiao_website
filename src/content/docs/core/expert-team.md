@@ -9,20 +9,11 @@ description: Leader + Worker 专家团架构、13 种预设角色与自定义角
 
 ## Leader-Worker 架构
 
-```text
-flowchart TD
-  User["用户目标"] --> Leader["LeaderAgent"]
-  Leader --> DAG["TaskBoard / DAG"]
-  DAG --> W1["Worker: Backend"]
-  DAG --> W2["Worker: Frontend"]
-  DAG --> W3["Worker: Researcher"]
-  DAG --> W4["Worker: QA/Reviewer"]
-  W1 --> Result["结果 + 证据回执"]
-  W2 --> Result
-  W3 --> Result
-  W4 --> Result
-  Result --> Leader
-```
+<div class="doc-hub-flow" role="img" aria-label="Leader Worker 架构：用户目标进入 Leader，Leader 建立 DAG 并派发 Backend、Frontend、Researcher、QA Reviewer，结果和证据回到 Leader。">
+  <div class="doc-hub-line"><span>用户目标</span><i>→</i><strong>LeaderAgent</strong><i>→</i><span>TaskBoard / DAG</span></div>
+  <div class="doc-hub-workers"><span>Backend</span><span>Frontend</span><span>Researcher</span><span>QA / Reviewer</span></div>
+  <div class="doc-hub-line"><span>结果 + 证据回执</span><i>→</i><strong>Leader 验收</strong></div>
+</div>
 
 ### Leader 职责
 

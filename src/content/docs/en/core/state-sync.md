@@ -9,13 +9,13 @@ LingXiao consolidates WebUI, TUI, and backend runtime into a unified state pipel
 
 ## Sync Architecture
 
-```text
-SessionManager
-  -> session:runtime_state
-  -> SseBridge
-  -> ACP session/update: session_runtime_state
-  -> Web sessionStore / TUI event bridge
-```
+<div class="doc-vertical-flow" role="img" aria-label="State sync architecture: SessionManager produces session runtime state, routed through SseBridge and ACP to Web sessionStore and the TUI event bridge.">
+  <strong>SessionManager</strong>
+  <em>session:runtime_state</em>
+  <em>SseBridge</em>
+  <em>ACP session/update: session_runtime_state</em>
+  <em>Web sessionStore / TUI event bridge</em>
+</div>
 
 `session:runtime_state` is the unified runtime snapshot, covering session status, leader busy/waiting/reviewing state, task graph, agent panel, tool call logs, message flow, and review results.
 

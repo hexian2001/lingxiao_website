@@ -11,20 +11,20 @@ description: 投机执行、对抗验证、自适应编排、契约循环、Bug 
 
 任务生命周期事件（创建/更新/派发/完成）自动触发验收流程，提取 PASS/FAIL/BLOCKED verdict：
 
-```text
-任务完成 → VerificationPipeline → 对抗验证 → 自适应路由 → verdict
-```
+<div class="doc-flow" role="img" aria-label="编排验收流程：任务完成后进入 VerificationPipeline、对抗验证、自适应路由并产出 verdict。">
+  <span>任务完成</span><i>→</i><span>VerificationPipeline</span><i>→</i><span>对抗验证</span><i>→</i><span>自适应路由</span><i>→</i><strong>verdict</strong>
+</div>
 
 ## 投机执行
 
 同一任务可跑多个并行实现分支，按策略择优录取：
 
-```text
-Task T-3: 后端实现
-  ├─ Branch A (architect 方案) → 验证通过 ✓
-  ├─ Branch B (简化方案)       → 验证通过 ✓
-  └─ Branch C (激进方案)       → 验证失败 ✗
-```
+<div class="doc-branch-flow" role="img" aria-label="投机执行分支：T-3 后端实现并行运行三个分支，A 和 B 验证通过，C 验证失败。">
+  <strong>Task T-3：后端实现</strong>
+  <div><span>Branch A</span><em>architect 方案</em><b>验证通过 ✓</b></div>
+  <div><span>Branch B</span><em>简化方案</em><b>验证通过 ✓</b></div>
+  <div><span>Branch C</span><em>激进方案</em><b class="is-fail">验证失败 ✗</b></div>
+</div>
 
 ### 选择策略
 
@@ -87,11 +87,9 @@ interface BreakerStrategy {
 
 五阶段闭环确保跨栈实现的一致性：
 
-```text
-contract → implement → evaluate → repair → reset
-    ↑                                      |
-    └──────────────────────────────────────┘
-```
+<div class="doc-flow doc-flow-loop" role="img" aria-label="契约循环：contract、implement、evaluate、repair、reset，reset 后回到 contract。">
+  <span>contract</span><i>→</i><span>implement</span><i>→</i><span>evaluate</span><i>→</i><span>repair</span><i>→</i><span>reset</span><i>↺</i><strong>contract</strong>
+</div>
 
 ### 五阶段说明
 

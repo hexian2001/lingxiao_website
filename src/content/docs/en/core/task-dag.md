@@ -9,14 +9,12 @@ Complex goals are decomposed into a dependency-aware task graph (DAG). The Leade
 
 ## Task Graph Structure
 
-```text
-T-1 Requirements
-  ├─ T-2 Architecture
-  │    ├─ T-3 Backend
-  │    └─ T-4 Frontend
-  ├─ T-5 Testing
-  └─ T-6 Docs & Release
-```
+<div class="doc-task-tree" role="img" aria-label="Task DAG example: T-1 requirements contains architecture, testing, docs and release; architecture contains backend and frontend implementation.">
+  <strong>T-1 Requirements</strong>
+  <div><span>T-2 Architecture</span><em>T-3 Backend</em><em>T-4 Frontend</em></div>
+  <div><span>T-5 Testing</span></div>
+  <div><span>T-6 Docs & Release</span></div>
+</div>
 
 Each node is a task; arrows represent dependencies. Tasks without dependencies execute automatically in parallel; tasks with dependencies are unlocked in order.
 
@@ -30,11 +28,10 @@ Each node is a task; arrows represent dependencies. Tasks without dependencies e
 
 ## Task State Transitions
 
-```text
-pending → dispatched → in_progress → completed
-                                   → failed
-                                   → blocked
-```
+<div class="doc-flow doc-flow-status" role="img" aria-label="Task state transition: pending, dispatched, in progress, completed; in progress can also become failed or blocked.">
+  <span>pending</span><i>→</i><span>dispatched</span><i>→</i><span>in_progress</span><i>→</i><strong>completed</strong>
+  <small>Branch: in_progress → failed / blocked</small>
+</div>
 
 | State | Description |
 | --- | --- |

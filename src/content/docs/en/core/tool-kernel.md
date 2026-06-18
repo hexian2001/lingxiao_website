@@ -89,9 +89,9 @@ All tools are registered and managed through the ToolRegistry:
 
 Tool calls follow a 9-layer evaluation chain:
 
-```text
-deny → allow → ask → yolo → always-allowed → network → hardened → strict → default allow
-```
+<div class="doc-flow doc-flow-long" role="img" aria-label="Nine-layer tool permission evaluation chain: deny, allow, ask, yolo, always allowed, network, hardened, strict, default allow.">
+  <span>deny</span><i>→</i><span>allow</span><i>→</i><span>ask</span><i>→</i><span>yolo</span><i>→</i><span>always-allowed</span><i>→</i><span>network</span><i>→</i><span>hardened</span><i>→</i><span>strict</span><i>→</i><strong>default allow</strong>
+</div>
 
 ### Permission Levels
 

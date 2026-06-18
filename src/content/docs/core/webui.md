@@ -87,9 +87,9 @@ Git 仓库管理面板：
 
 WebUI 通过 SSE 事件流与后端实时同步，所有状态变更无需刷新即可看到：
 
-```text
-WebUI <-- SSE <-- SseBridge <-- SessionManager <-- Leader/Workers
-```
+<div class="doc-flow" role="img" aria-label="WebUI 实时同步：Leader 和 Workers 更新 SessionManager，经 SseBridge 和 SSE 推送到 WebUI。">
+  <span>Leader / Workers</span><i>→</i><span>SessionManager</span><i>→</i><span>SseBridge</span><i>→</i><span>SSE</span><i>→</i><strong>WebUI</strong>
+</div>
 
 ## 访问方式
 
