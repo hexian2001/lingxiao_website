@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Orchestration Verification Kernel | 凌霄剑域</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%E5%89%91%3C/text%3E%3C/svg%3E">
+<style>
+/* ===== 古籍宣纸设计令牌（与首页同步） ===== */
+:root{
+  --paper:#f4ede0;--paper-bright:#faf5ea;--paper-dim:#e8dfce;--paper-deep:#ddd2bc;
+  --ink:#2a2218;--ink-mid:#4a3f30;--ink-light:#6b5e4a;--ink-wash:#8a7d68;--ink-faint:#a89a82;
+  --gold:#a8895a;--gold-bright:#c4a468;--gold-deep:#8a6e42;
+  --gold-line:rgba(168,137,90,0.22);--gold-wash:rgba(168,137,90,0.06);
+  --cinnabar:#a04030;--cinnabar-light:#c25a48;--cinnabar-wash:rgba(160,64,48,0.06);
+  --jade:#5a8a6a;--jade-wash:rgba(90,138,106,0.06);
+  --fg:var(--ink);--fg-muted:var(--ink-light);--fg-dim:var(--ink-wash);
+  --font-sans:'Noto Sans SC','Inter',-apple-system,system-ui,sans-serif;
+  --font-serif:'Noto Serif SC','Songti SC','STSong',serif;
+  --font-mono:'JetBrains Mono','Fira Code','SF Mono',monospace;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;font-size:16px}
+body{font-family:var(--font-sans);background:var(--paper);color:var(--fg);position:relative;overflow-x:hidden;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;line-height:1.6}
+
+/* 宣纸纹理背景 */
+.paper-texture{position:fixed;inset:0;z-index:0;pointer-events:none;
+  background:radial-gradient(ellipse 1200px 800px at 50% 0%,rgba(250,245,234,0.6),transparent 70%),radial-gradient(ellipse 800px 600px at 20% 80%,rgba(168,137,90,0.03),transparent 60%),radial-gradient(ellipse 800px 600px at 80% 40%,rgba(160,64,48,0.02),transparent 60%)}
+.paper-grain{position:fixed;inset:0;z-index:0;pointer-events:none;opacity:0.4;
+  background-image:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(168,137,90,0.012) 2px,rgba(168,137,90,0.012) 3px),repeating-linear-gradient(90deg,transparent,transparent 3px,rgba(168,137,90,0.008) 3px,rgba(168,137,90,0.008) 4px)}
+
+/* 导航 */
+.nav{position:fixed;top:0;left:0;right:0;z-index:100;backdrop-filter:blur(20px) saturate(140%);-webkit-backdrop-filter:blur(20px) saturate(140%);background:rgba(244,237,224,0.85);border-bottom:1px solid var(--gold-line)}
+.nav-inner{max-width:1400px;margin:0 auto;padding:0.75rem 1.5rem;display:flex;align-items:center;justify-content:space-between}
+.nav-brand{display:flex;align-items:center;gap:0.625rem;font-weight:700;font-size:1.05rem;color:var(--ink);text-decoration:none}
+.nav-brand .brand-mark{width:32px;height:32px;border-radius:8px;background:linear-gradient(135deg,var(--gold),var(--gold-bright));display:flex;align-items:center;justify-content:center;font-family:var(--font-serif);font-size:1.1rem;color:var(--paper-bright);font-weight:900}
+.nav-brand .brand-sub{font-size:0.7rem;font-weight:500;color:var(--fg-dim);letter-spacing:0.05em}
+.nav-links{display:flex;align-items:center;gap:1.5rem}
+.nav-links a{font-size:0.875rem;color:var(--fg-muted);text-decoration:none;transition:color 0.2s}
+.nav-links a:hover{color:var(--gold-deep)}
+
+/* 文档布局 */
+.doc-layout{position:relative;z-index:1;display:flex;max-width:1400px;margin:0 auto;padding-top:64px;min-height:100vh}
+
+/* 侧栏 */
+.doc-sidebar{position:sticky;top:64px;width:260px;height:calc(100vh - 64px);overflow-y:auto;padding:1.5rem 0.75rem;border-right:1px solid var(--gold-line);flex-shrink:0}
+.sidebar-group{margin-bottom:1.5rem}
+.sidebar-group-label{font-size:0.7rem;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:var(--fg-dim);padding:0 0.875rem 0.5rem}
+.sidebar-link{display:block;padding:0.4rem 0.875rem;border-radius:6px;font-size:0.82rem;color:var(--fg-muted);text-decoration:none;transition:all 0.15s;line-height:1.5}
+.sidebar-link:hover{background:var(--gold-wash);color:var(--ink)}
+.sidebar-link.active{background:var(--gold-wash);color:var(--gold-deep);font-weight:600;border-left:2px solid var(--gold)}
+
+/* 主内容 */
+.doc-main{flex:1;padding:2rem 3rem;max-width:900px;min-width:0}
+.doc-content h1{font-family:var(--font-serif);font-size:2.2rem;font-weight:700;margin-bottom:1.5rem;color:var(--ink);letter-spacing:0.02em}
+.doc-content h2{font-family:var(--font-serif);font-size:1.5rem;font-weight:600;margin:2rem 0 1rem;color:var(--ink-mid);border-bottom:1px solid var(--gold-line);padding-bottom:0.5rem}
+.doc-content h3{font-size:1.15rem;font-weight:600;margin:1.5rem 0 0.75rem;color:var(--ink-mid)}
+.doc-content p{font-size:0.9rem;line-height:1.8;color:var(--fg-muted);margin-bottom:1rem}
+.doc-content strong{color:var(--gold-deep);font-weight:600}
+.doc-content a{color:var(--cinnabar);text-decoration:none;transition:color 0.2s;border-bottom:1px solid transparent}
+.doc-content a:hover{color:var(--cinnabar-light);border-bottom-color:var(--cinnabar-light)}
+.doc-content ul,.doc-content ol{margin:0.5rem 0 1rem 1.5rem}
+.doc-content li{font-size:0.9rem;line-height:1.8;color:var(--fg-muted);margin-bottom:0.25rem}
+.doc-content blockquote{border-left:3px solid var(--gold);padding:0.5rem 1rem;margin:1rem 0;background:var(--gold-wash);border-radius:0 6px 6px 0;color:var(--fg-muted);font-size:0.875rem;font-style:italic}
+.doc-content code{font-family:var(--font-mono);font-size:0.82rem;background:var(--paper-dim);padding:0.15rem 0.4rem;border-radius:4px;color:var(--cinnabar)}
+.doc-content pre{background:var(--paper-bright);border:1px solid var(--gold-line);border-radius:8px;padding:1rem;overflow-x:auto;margin:1rem 0}
+.doc-content pre code{background:none;padding:0;font-size:0.8rem;color:var(--ink-mid);line-height:1.6}
+.doc-content hr{border:none;border-top:1px solid var(--gold-line);margin:2rem 0}
+.doc-content .table-wrap{overflow-x:auto;margin:1rem 0}
+.doc-content table{width:100%;border-collapse:collapse;font-size:0.85rem}
+.doc-content th{padding:0.625rem 0.875rem;text-align:left;border-bottom:2px solid var(--gold-line);color:var(--ink);font-weight:600}
+.doc-content td{padding:0.5rem 0.875rem;border-bottom:1px solid var(--gold-line);color:var(--fg-muted)}
+.doc-content .ascii-art-removed{padding:0.75rem 1rem;border:1px dashed var(--gold-line);border-radius:6px;color:var(--fg-dim);font-size:0.8rem;margin:1rem 0;text-align:center}
+
+/* 上下页导航 */
+.prev-next{display:flex;justify-content:space-between;margin-top:3rem;padding-top:1.5rem;border-top:1px solid var(--gold-line);gap:1rem}
+.prev-next a{display:flex;flex-direction:column;gap:0.25rem;padding:0.75rem 1rem;border:1px solid var(--gold-line);border-radius:8px;text-decoration:none;transition:all 0.2s;max-width:48%}
+.prev-next a:hover{border-color:var(--gold);background:var(--gold-wash)}
+.prev-next .pn-label{font-size:0.72rem;color:var(--fg-dim)}
+.prev-next .pn-title{font-size:0.85rem;color:var(--ink);font-weight:500}
+.prev-next .next-page{text-align:right;margin-left:auto}
+.prev-page .pn-title{text-align:left}
+
+/* 响应式 */
+@media(max-width:900px){
+  .doc-sidebar{display:none}
+  .doc-main{padding:1.5rem 1rem}
+  .nav-links a:not(.nav-cta){display:none}
+}
+</style>
+</head>
+<body>
+<div class="paper-texture"></div>
+<div class="paper-grain"></div>
+<nav class="nav"><div class="nav-inner">
+  <a href="/" class="nav-brand"><span class="brand-mark">剑</span><span>凌霄剑域</span><span class="brand-sub">LingXiao</span></a>
+  <div class="nav-links">
+    <a href="/docs/en/getting-started/introduction/">文档</a>
+    <a href="https://github.com/hexian2001/lingxiao" target="_blank" rel="noopener">GitHub</a>
+    <a href="/docs/en/getting-started/introduction/" class="nav-cta" style="padding:0.4rem 1rem;border-radius:8px;background:var(--gold-wash);color:var(--gold-deep);font-weight:600;font-size:0.8rem;border:1px solid var(--gold-line)">快速上手</a>
+  </div>
+</div></nav>
+<div class="doc-layout">
+  <aside class="doc-sidebar">
+<div class="sidebar-group">
+<div class="sidebar-group-label">Getting Started</div>
+<a href="/docs/en/getting-started/introduction/" class="sidebar-link">Introduction</a>
+<a href="/docs/en/getting-started/install/" class="sidebar-link">Installation</a>
+<a href="/docs/en/getting-started/connect-models/" class="sidebar-link">Connect Models</a>
+<a href="/docs/en/getting-started/first-run/" class="sidebar-link">First Run</a>
+</div>
+<div class="sidebar-group">
+<div class="sidebar-group-label">Core Features</div>
+<a href="/docs/en/core/expert-team/" class="sidebar-link">Expert Panel</a>
+<a href="/docs/en/core/task-dag/" class="sidebar-link">Task DAG</a>
+<a href="/docs/en/core/state-sync/" class="sidebar-link">State Sync</a>
+<a href="/docs/en/core/webui/" class="sidebar-link">WebUI Center</a>
+<a href="/docs/en/core/tool-kernel/" class="sidebar-link">Tool Kernel</a>
+<a href="/docs/en/core/orchestration/" class="sidebar-link active">Orchestration</a>
+<a href="/docs/en/core/mcp-skills/" class="sidebar-link">MCP Forge &amp; Skills</a>
+<a href="/docs/en/core/memory/" class="sidebar-link">Memory</a>
+<a href="/docs/en/core/eternal/" class="sidebar-link">Eternal Mode</a>
+<a href="/docs/en/core/llm-gateway/" class="sidebar-link">LLM Gateway</a>
+</div>
+<div class="sidebar-group">
+<div class="sidebar-group-label">Configuration</div>
+<a href="/docs/en/config/env-vars/" class="sidebar-link">Environment Variables</a>
+<a href="/docs/en/config/models/" class="sidebar-link">Models</a>
+<a href="/docs/en/config/permissions/" class="sidebar-link">Permissions</a>
+<a href="/docs/en/config/network/" class="sidebar-link">Network</a>
+<a href="/docs/en/config/theme/" class="sidebar-link">Theme</a>
+<a href="/docs/en/config/custom-commands/" class="sidebar-link">Custom Commands</a>
+<a href="/docs/en/config/mcp/" class="sidebar-link">MCP</a>
+<a href="/docs/en/config/agents/" class="sidebar-link">Agents</a>
+<a href="/docs/en/config/skills/" class="sidebar-link">Skills</a>
+<a href="/docs/en/config/rules/" class="sidebar-link">Rules</a>
+</div>
+<div class="sidebar-group">
+<div class="sidebar-group-label">Reference</div>
+<a href="/docs/en/reference/cli/" class="sidebar-link">CLI</a>
+<a href="/docs/en/reference/slash-commands/" class="sidebar-link">Slash Commands</a>
+<a href="/docs/en/reference/architecture/" class="sidebar-link">Architecture</a>
+<a href="/docs/en/reference/api-index/" class="sidebar-link">API Index</a>
+<a href="/docs/en/reference/faq/" class="sidebar-link">FAQ</a>
+<a href="/docs/en/reference/security/" class="sidebar-link">Security</a>
+<a href="/docs/en/reference/changelog/" class="sidebar-link">Changelog</a>
+</div>
+  </aside>
+  <main class="doc-main">
+    <div class="doc-content">
+<h1>Orchestration Verification Kernel</h1>
+<p>LingXiao doesn't just dispatch tasks — it performs structured verification on every completed task. The orchestration kernel uses speculative execution, adversarial verification, adaptive routing, and contract loops to make task results verifiable, traceable, and repairable.</p>
+<h2>Orchestration Runtime</h2>
+<p>Task lifecycle events (create/update/dispatch/complete) automatically trigger the verification pipeline, extracting PASS/FAIL/BLOCKED verdicts:</p>
+<pre><code class="lang-text">Task Complete → VerificationPipeline → Adversarial Verification → Adaptive Routing → verdict</code></pre>
+<h2>Speculative Execution</h2>
+<p>The same task can run multiple parallel implementation branches, with the best one selected by strategy:</p>
+<div class="ascii-art-removed"><em>（架构图已省略，详见 <a href="/docs/reference/architecture/">架构概览</a>）</em></div>
+<h3>Selection Strategies</h3>
+<div class="table-wrap"><table>
+<thead><tr>
+<th>Strategy</th>
+<th>Description</th>
+</tr></thead><tbody>
+<tr>
+<td><code>first_green</code></td>
+<td>First branch to pass verification wins</td>
+</tr>
+<tr>
+<td><code>fewest_changes</code></td>
+<td>Branch with minimal diff that passes wins</td>
+</tr>
+<tr>
+<td><code>fastest_tests</code></td>
+<td>Branch with fastest tests that passes wins</td>
+</tr>
+</tbody></table></div>
+<ul>
+<li>Each branch has an isolated working directory and write scope</li>
+<li><code>VerificationPipeline</code> verifies each branch independently</li>
+<li>Losing branches are cleaned up automatically</li>
+<li>Default timeout: 30 minutes</li>
+<li>Maximum 6 parallel branches</li>
+</ul>
+<h2>Adversarial Verification</h2>
+<p><code>AdversarialVerifier</code> runs command-level breaker strategies:</p>
+<pre><code class="lang-typescript">interface BreakerStrategy {
+  command: string;        // Verification command
+  expectedExitCode: number; // Expected exit code
+  failOnExitCode: number;   // Failure exit code
+}</code></pre>
+<h3>Verification Flow</h3>
+<ol>
+<li>Execute breaker command</li>
+<li>Collect stdout, stderr, execution duration, timeout status</li>
+<li>Determine verdict:</li>
+</ol>
+<ul>
+<li><strong>PASS</strong>: All strategies pass</li>
+<li><strong>FAIL</strong>: Any strategy fails</li>
+<li><strong>BLOCKED</strong>: Infrastructure issues</li>
+</ul>
+<h2>Adaptive Orchestration</h2>
+<p><code>AdaptiveHarness</code> uses difficulty signals to intelligently route tasks:</p>
+<div class="table-wrap"><table>
+<thead><tr>
+<th>Signal</th>
+<th>Description</th>
+</tr></thead><tbody>
+<tr>
+<td><code>cross_module_deps</code></td>
+<td>Cross-module dependency count</td>
+</tr>
+<tr>
+<td><code>hotspot_overlap</code></td>
+<td>Overlap with known hotspot regions</td>
+</tr>
+<tr>
+<td><code>prior_failures</code></td>
+<td>Historical failure rate</td>
+</tr>
+<tr>
+<td><code>impact_ratio</code></td>
+<td>Impact surface ratio</td>
+</tr>
+<tr>
+<td><code>has_ambiguous_path</code></td>
+<td>Whether ambiguous paths exist</td>
+</tr>
+<tr>
+<td><code>dependency_count</code></td>
+<td>Dependency count</td>
+</tr>
+</tbody></table></div>
+<h3>Execution Strategies</h3>
+<p>Based on signals, execution strategy is auto-selected:</p>
+<ul>
+<li><strong>fast_path</strong>: Small scope, low-risk tasks, single Worker fast execution</li>
+<li><strong>standard</strong>: Medium complexity, standard scheduling</li>
+<li><strong>speculative</strong>: High-difficulty tasks, multi-branch speculative execution</li>
+<li><strong>contract_first</strong>: Cross-stack tasks, define contract before implementation</li>
+</ul>
+<h2>Contract Loop</h2>
+<p>A five-phase loop ensures cross-stack implementation consistency:</p>
+<div class="ascii-art-removed"><em>（架构图已省略，详见 <a href="/docs/reference/architecture/">架构概览</a>）</em></div>
+<h3>Five Phases</h3>
+<div class="table-wrap"><table>
+<thead><tr>
+<th>Phase</th>
+<th>Description</th>
+</tr></thead><tbody>
+<tr>
+<td><code>contract</code></td>
+<td>Define interface contracts (schema, error codes, state flows)</td>
+</tr>
+<tr>
+<td><code>implement</code></td>
+<td>Implement frontend/backend code per contract</td>
+</tr>
+<tr>
+<td><code>evaluate</code></td>
+<td>Verify implementation matches contract</td>
+</tr>
+<tr>
+<td><code>repair</code></td>
+<td>Fix parts that don't match contract</td>
+</tr>
+<tr>
+<td><code>reset</code></td>
+<td>Reset and enter next round (if needed)</td>
+</tr>
+</tbody></table></div>
+<p>Contract blackboard nodes are automatically materialized to the <code>.lingxiao/contracts/</code> directory, shared by all Agents.</p>
+<h2>Bug Hunting</h2>
+<p>The Bughunt DAG scheduler runs in isolated worktrees:</p>
+<ul>
+<li><strong>DAG scheduling</strong>: Bug hunting tasks are orchestrated by dependency relationships</li>
+<li><strong>Evidence collection</strong>: Automatically collects reproduction steps, stack traces, environment info</li>
+<li><strong>Evidence extraction</strong>: Extracts key evidence from logs and output</li>
+<li><strong>Evidence packaging</strong>: Packages evidence for review</li>
+<li><strong>Discovery ledger</strong>: Records all bug findings and fix history</li>
+</ul>
+<h2>Assumption Tracking</h2>
+<p>Agents can declare verifiable assumptions, auto-reverified on code changes:</p>
+<pre><code class="lang-typescript">interface Assumption {
+  verification_type: &#x27;type_check&#x27; | &#x27;file_content&#x27; | &#x27;test_execution&#x27; | &#x27;ast_query&#x27;;
+  target: string;      // Verification target (file path, test name, etc.)
+  expected: string;    // Expected result (exact text match)
+}</code></pre>
+<h3>Verification Types</h3>
+<div class="table-wrap"><table>
+<thead><tr>
+<th>Type</th>
+<th>Description</th>
+</tr></thead><tbody>
+<tr>
+<td><code>type_check</code></td>
+<td>TypeScript type checking</td>
+</tr>
+<tr>
+<td><code>file_content</code></td>
+<td>File content matching</td>
+</tr>
+<tr>
+<td><code>test_execution</code></td>
+<td>Test execution results</td>
+</tr>
+<tr>
+<td><code>ast_query</code></td>
+<td>AST query assertions</td>
+</tr>
+</tbody></table></div>
+<p>When an assumption is falsified, the system feeds back to the Agent, requiring it to stop the current wrong direction and correct its understanding.</p>
+    </div>
+<div class="prev-next">
+<a href="/docs/en/core/tool-kernel/" class="prev-page"><span class="pn-label">← Previous</span><span class="pn-title">Tool Kernel</span></a>
+<a href="/docs/en/core/mcp-skills/" class="next-page"><span class="pn-label">Next →</span><span class="pn-title">MCP Forge &amp; Skills</span></a>
+</div>
+  </main>
+</div>
+</body>
+</html>

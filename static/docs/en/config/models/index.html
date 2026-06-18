@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Model Configuration | 凌霄剑域</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%E5%89%91%3C/text%3E%3C/svg%3E">
+<style>
+/* ===== 古籍宣纸设计令牌（与首页同步） ===== */
+:root{
+  --paper:#f4ede0;--paper-bright:#faf5ea;--paper-dim:#e8dfce;--paper-deep:#ddd2bc;
+  --ink:#2a2218;--ink-mid:#4a3f30;--ink-light:#6b5e4a;--ink-wash:#8a7d68;--ink-faint:#a89a82;
+  --gold:#a8895a;--gold-bright:#c4a468;--gold-deep:#8a6e42;
+  --gold-line:rgba(168,137,90,0.22);--gold-wash:rgba(168,137,90,0.06);
+  --cinnabar:#a04030;--cinnabar-light:#c25a48;--cinnabar-wash:rgba(160,64,48,0.06);
+  --jade:#5a8a6a;--jade-wash:rgba(90,138,106,0.06);
+  --fg:var(--ink);--fg-muted:var(--ink-light);--fg-dim:var(--ink-wash);
+  --font-sans:'Noto Sans SC','Inter',-apple-system,system-ui,sans-serif;
+  --font-serif:'Noto Serif SC','Songti SC','STSong',serif;
+  --font-mono:'JetBrains Mono','Fira Code','SF Mono',monospace;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;font-size:16px}
+body{font-family:var(--font-sans);background:var(--paper);color:var(--fg);position:relative;overflow-x:hidden;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;line-height:1.6}
+
+/* 宣纸纹理背景 */
+.paper-texture{position:fixed;inset:0;z-index:0;pointer-events:none;
+  background:radial-gradient(ellipse 1200px 800px at 50% 0%,rgba(250,245,234,0.6),transparent 70%),radial-gradient(ellipse 800px 600px at 20% 80%,rgba(168,137,90,0.03),transparent 60%),radial-gradient(ellipse 800px 600px at 80% 40%,rgba(160,64,48,0.02),transparent 60%)}
+.paper-grain{position:fixed;inset:0;z-index:0;pointer-events:none;opacity:0.4;
+  background-image:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(168,137,90,0.012) 2px,rgba(168,137,90,0.012) 3px),repeating-linear-gradient(90deg,transparent,transparent 3px,rgba(168,137,90,0.008) 3px,rgba(168,137,90,0.008) 4px)}
+
+/* 导航 */
+.nav{position:fixed;top:0;left:0;right:0;z-index:100;backdrop-filter:blur(20px) saturate(140%);-webkit-backdrop-filter:blur(20px) saturate(140%);background:rgba(244,237,224,0.85);border-bottom:1px solid var(--gold-line)}
+.nav-inner{max-width:1400px;margin:0 auto;padding:0.75rem 1.5rem;display:flex;align-items:center;justify-content:space-between}
+.nav-brand{display:flex;align-items:center;gap:0.625rem;font-weight:700;font-size:1.05rem;color:var(--ink);text-decoration:none}
+.nav-brand .brand-mark{width:32px;height:32px;border-radius:8px;background:linear-gradient(135deg,var(--gold),var(--gold-bright));display:flex;align-items:center;justify-content:center;font-family:var(--font-serif);font-size:1.1rem;color:var(--paper-bright);font-weight:900}
+.nav-brand .brand-sub{font-size:0.7rem;font-weight:500;color:var(--fg-dim);letter-spacing:0.05em}
+.nav-links{display:flex;align-items:center;gap:1.5rem}
+.nav-links a{font-size:0.875rem;color:var(--fg-muted);text-decoration:none;transition:color 0.2s}
+.nav-links a:hover{color:var(--gold-deep)}
+
+/* 文档布局 */
+.doc-layout{position:relative;z-index:1;display:flex;max-width:1400px;margin:0 auto;padding-top:64px;min-height:100vh}
+
+/* 侧栏 */
+.doc-sidebar{position:sticky;top:64px;width:260px;height:calc(100vh - 64px);overflow-y:auto;padding:1.5rem 0.75rem;border-right:1px solid var(--gold-line);flex-shrink:0}
+.sidebar-group{margin-bottom:1.5rem}
+.sidebar-group-label{font-size:0.7rem;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:var(--fg-dim);padding:0 0.875rem 0.5rem}
+.sidebar-link{display:block;padding:0.4rem 0.875rem;border-radius:6px;font-size:0.82rem;color:var(--fg-muted);text-decoration:none;transition:all 0.15s;line-height:1.5}
+.sidebar-link:hover{background:var(--gold-wash);color:var(--ink)}
+.sidebar-link.active{background:var(--gold-wash);color:var(--gold-deep);font-weight:600;border-left:2px solid var(--gold)}
+
+/* 主内容 */
+.doc-main{flex:1;padding:2rem 3rem;max-width:900px;min-width:0}
+.doc-content h1{font-family:var(--font-serif);font-size:2.2rem;font-weight:700;margin-bottom:1.5rem;color:var(--ink);letter-spacing:0.02em}
+.doc-content h2{font-family:var(--font-serif);font-size:1.5rem;font-weight:600;margin:2rem 0 1rem;color:var(--ink-mid);border-bottom:1px solid var(--gold-line);padding-bottom:0.5rem}
+.doc-content h3{font-size:1.15rem;font-weight:600;margin:1.5rem 0 0.75rem;color:var(--ink-mid)}
+.doc-content p{font-size:0.9rem;line-height:1.8;color:var(--fg-muted);margin-bottom:1rem}
+.doc-content strong{color:var(--gold-deep);font-weight:600}
+.doc-content a{color:var(--cinnabar);text-decoration:none;transition:color 0.2s;border-bottom:1px solid transparent}
+.doc-content a:hover{color:var(--cinnabar-light);border-bottom-color:var(--cinnabar-light)}
+.doc-content ul,.doc-content ol{margin:0.5rem 0 1rem 1.5rem}
+.doc-content li{font-size:0.9rem;line-height:1.8;color:var(--fg-muted);margin-bottom:0.25rem}
+.doc-content blockquote{border-left:3px solid var(--gold);padding:0.5rem 1rem;margin:1rem 0;background:var(--gold-wash);border-radius:0 6px 6px 0;color:var(--fg-muted);font-size:0.875rem;font-style:italic}
+.doc-content code{font-family:var(--font-mono);font-size:0.82rem;background:var(--paper-dim);padding:0.15rem 0.4rem;border-radius:4px;color:var(--cinnabar)}
+.doc-content pre{background:var(--paper-bright);border:1px solid var(--gold-line);border-radius:8px;padding:1rem;overflow-x:auto;margin:1rem 0}
+.doc-content pre code{background:none;padding:0;font-size:0.8rem;color:var(--ink-mid);line-height:1.6}
+.doc-content hr{border:none;border-top:1px solid var(--gold-line);margin:2rem 0}
+.doc-content .table-wrap{overflow-x:auto;margin:1rem 0}
+.doc-content table{width:100%;border-collapse:collapse;font-size:0.85rem}
+.doc-content th{padding:0.625rem 0.875rem;text-align:left;border-bottom:2px solid var(--gold-line);color:var(--ink);font-weight:600}
+.doc-content td{padding:0.5rem 0.875rem;border-bottom:1px solid var(--gold-line);color:var(--fg-muted)}
+.doc-content .ascii-art-removed{padding:0.75rem 1rem;border:1px dashed var(--gold-line);border-radius:6px;color:var(--fg-dim);font-size:0.8rem;margin:1rem 0;text-align:center}
+
+/* 上下页导航 */
+.prev-next{display:flex;justify-content:space-between;margin-top:3rem;padding-top:1.5rem;border-top:1px solid var(--gold-line);gap:1rem}
+.prev-next a{display:flex;flex-direction:column;gap:0.25rem;padding:0.75rem 1rem;border:1px solid var(--gold-line);border-radius:8px;text-decoration:none;transition:all 0.2s;max-width:48%}
+.prev-next a:hover{border-color:var(--gold);background:var(--gold-wash)}
+.prev-next .pn-label{font-size:0.72rem;color:var(--fg-dim)}
+.prev-next .pn-title{font-size:0.85rem;color:var(--ink);font-weight:500}
+.prev-next .next-page{text-align:right;margin-left:auto}
+.prev-page .pn-title{text-align:left}
+
+/* 响应式 */
+@media(max-width:900px){
+  .doc-sidebar{display:none}
+  .doc-main{padding:1.5rem 1rem}
+  .nav-links a:not(.nav-cta){display:none}
+}
+</style>
+</head>
+<body>
+<div class="paper-texture"></div>
+<div class="paper-grain"></div>
+<nav class="nav"><div class="nav-inner">
+  <a href="/" class="nav-brand"><span class="brand-mark">剑</span><span>凌霄剑域</span><span class="brand-sub">LingXiao</span></a>
+  <div class="nav-links">
+    <a href="/docs/en/getting-started/introduction/">文档</a>
+    <a href="https://github.com/hexian2001/lingxiao" target="_blank" rel="noopener">GitHub</a>
+    <a href="/docs/en/getting-started/introduction/" class="nav-cta" style="padding:0.4rem 1rem;border-radius:8px;background:var(--gold-wash);color:var(--gold-deep);font-weight:600;font-size:0.8rem;border:1px solid var(--gold-line)">快速上手</a>
+  </div>
+</div></nav>
+<div class="doc-layout">
+  <aside class="doc-sidebar">
+<div class="sidebar-group">
+<div class="sidebar-group-label">Getting Started</div>
+<a href="/docs/en/getting-started/introduction/" class="sidebar-link">Introduction</a>
+<a href="/docs/en/getting-started/install/" class="sidebar-link">Installation</a>
+<a href="/docs/en/getting-started/connect-models/" class="sidebar-link">Connect Models</a>
+<a href="/docs/en/getting-started/first-run/" class="sidebar-link">First Run</a>
+</div>
+<div class="sidebar-group">
+<div class="sidebar-group-label">Core Features</div>
+<a href="/docs/en/core/expert-team/" class="sidebar-link">Expert Panel</a>
+<a href="/docs/en/core/task-dag/" class="sidebar-link">Task DAG</a>
+<a href="/docs/en/core/state-sync/" class="sidebar-link">State Sync</a>
+<a href="/docs/en/core/webui/" class="sidebar-link">WebUI Center</a>
+<a href="/docs/en/core/tool-kernel/" class="sidebar-link">Tool Kernel</a>
+<a href="/docs/en/core/orchestration/" class="sidebar-link">Orchestration</a>
+<a href="/docs/en/core/mcp-skills/" class="sidebar-link">MCP Forge &amp; Skills</a>
+<a href="/docs/en/core/memory/" class="sidebar-link">Memory</a>
+<a href="/docs/en/core/eternal/" class="sidebar-link">Eternal Mode</a>
+<a href="/docs/en/core/llm-gateway/" class="sidebar-link">LLM Gateway</a>
+</div>
+<div class="sidebar-group">
+<div class="sidebar-group-label">Configuration</div>
+<a href="/docs/en/config/env-vars/" class="sidebar-link">Environment Variables</a>
+<a href="/docs/en/config/models/" class="sidebar-link active">Models</a>
+<a href="/docs/en/config/permissions/" class="sidebar-link">Permissions</a>
+<a href="/docs/en/config/network/" class="sidebar-link">Network</a>
+<a href="/docs/en/config/theme/" class="sidebar-link">Theme</a>
+<a href="/docs/en/config/custom-commands/" class="sidebar-link">Custom Commands</a>
+<a href="/docs/en/config/mcp/" class="sidebar-link">MCP</a>
+<a href="/docs/en/config/agents/" class="sidebar-link">Agents</a>
+<a href="/docs/en/config/skills/" class="sidebar-link">Skills</a>
+<a href="/docs/en/config/rules/" class="sidebar-link">Rules</a>
+</div>
+<div class="sidebar-group">
+<div class="sidebar-group-label">Reference</div>
+<a href="/docs/en/reference/cli/" class="sidebar-link">CLI</a>
+<a href="/docs/en/reference/slash-commands/" class="sidebar-link">Slash Commands</a>
+<a href="/docs/en/reference/architecture/" class="sidebar-link">Architecture</a>
+<a href="/docs/en/reference/api-index/" class="sidebar-link">API Index</a>
+<a href="/docs/en/reference/faq/" class="sidebar-link">FAQ</a>
+<a href="/docs/en/reference/security/" class="sidebar-link">Security</a>
+<a href="/docs/en/reference/changelog/" class="sidebar-link">Changelog</a>
+</div>
+  </aside>
+  <main class="doc-main">
+    <div class="doc-content">
+<h1>Model Configuration</h1>
+<p>LingXiao allows separate configuration of Leader and Worker LLM models, with support for multiple providers and compatibility layers.</p>
+<h2>Configuration Methods</h2>
+<h3>Environment Variables</h3>
+<pre><code class="lang-bash">export LINGXIAO_LLM_PROVIDER=openai
+export LINGXIAO_LEADER_MODEL=gpt-4o
+export LINGXIAO_AGENT_MODEL=gpt-4o-mini</code></pre>
+<h3>Config File</h3>
+<p>Edit <code>~/.lingxiao/settings.json</code>:</p>
+<pre><code class="lang-json">{
+  &quot;llm&quot;: {
+    &quot;provider&quot;: &quot;openai&quot;,
+    &quot;leader_model&quot;: &quot;gpt-4o&quot;,
+    &quot;agent_model&quot;: &quot;gpt-4o-mini&quot;,
+    &quot;enable_streaming&quot;: true
+  }
+}</code></pre>
+<h2>LLM Config Group</h2>
+<p>Key settings in the <code>llm</code> group:</p>
+<div class="table-wrap"><table>
+<thead><tr>
+<th>Setting</th>
+<th>Description</th>
+</tr></thead><tbody>
+<tr>
+<td><code>provider</code></td>
+<td>Provider selection: <code>auto</code> / <code>openai</code> / <code>anthropic</code></td>
+</tr>
+<tr>
+<td><code>leader_model</code></td>
+<td>Leader model</td>
+</tr>
+<tr>
+<td><code>agent_model</code></td>
+<td>Worker model</td>
+</tr>
+<tr>
+<td><code>wiki_model</code></td>
+<td>Wiki knowledge summary model</td>
+</tr>
+<tr>
+<td><code>model_providers</code></td>
+<td>Provider model registry</td>
+</tr>
+<tr>
+<td><code>gateway_routes</code></td>
+<td>Multi-model gateway routes</td>
+</tr>
+<tr>
+<td><code>gateway_fallback_models</code></td>
+<td>Gateway fallback models</td>
+</tr>
+<tr>
+<td><code>request_timeout_s</code></td>
+<td>Request timeout (seconds)</td>
+</tr>
+<tr>
+<td><code>connect_timeout_s</code></td>
+<td>Connect timeout (seconds)</td>
+</tr>
+<tr>
+<td><code>max_retries</code></td>
+<td>Max retry count</td>
+</tr>
+<tr>
+<td><code>backoff_base_ms</code></td>
+<td>Backoff base milliseconds</td>
+</tr>
+<tr>
+<td><code>context_max_tokens</code></td>
+<td>Context max tokens</td>
+</tr>
+<tr>
+<td><code>capped_max_tokens</code></td>
+<td>Capped max tokens</td>
+</tr>
+<tr>
+<td><code>escalated_max_tokens</code></td>
+<td>Escalated max tokens</td>
+</tr>
+<tr>
+<td><code>thinking_budget_tokens</code></td>
+<td>Thinking budget tokens</td>
+</tr>
+<tr>
+<td><code>enable_streaming</code></td>
+<td>Enable streaming output</td>
+</tr>
+<tr>
+<td><code>show_thinking_content</code></td>
+<td>Show thinking content</td>
+</tr>
+<tr>
+<td><code>enable_thinking_instruction</code></td>
+<td>Enable thinking instruction</td>
+</tr>
+<tr>
+<td><code>enable_extended_thinking</code></td>
+<td>Enable extended thinking</td>
+</tr>
+<tr>
+<td><code>reasoning_effort</code></td>
+<td>Reasoning effort</td>
+</tr>
+</tbody></table></div>
+<h2>Supported Providers</h2>
+<div class="table-wrap"><table>
+<thead><tr>
+<th>Provider</th>
+<th>provider value</th>
+<th>API format</th>
+<th>Notes</th>
+</tr></thead><tbody>
+<tr>
+<td>OpenAI</td>
+<td><code>openai</code></td>
+<td>OpenAI API</td>
+<td>Native support</td>
+</tr>
+<tr>
+<td>Anthropic</td>
+<td><code>anthropic</code></td>
+<td>Anthropic API</td>
+<td>Native support</td>
+</tr>
+<tr>
+<td>DeepSeek</td>
+<td><code>openai</code></td>
+<td>OpenAI compatible</td>
+<td>Set <code>LINGXIAO_OPENAI_BASE_URL</code></td>
+</tr>
+<tr>
+<td>Qwen</td>
+<td><code>openai</code></td>
+<td>OpenAI compatible</td>
+<td>Set <code>LINGXIAO_OPENAI_BASE_URL</code></td>
+</tr>
+<tr>
+<td>Moonshot/Kimi</td>
+<td><code>openai</code></td>
+<td>OpenAI compatible</td>
+<td>Set <code>LINGXIAO_OPENAI_BASE_URL</code></td>
+</tr>
+<tr>
+<td>Gemini</td>
+<td><code>openai</code></td>
+<td>OpenAI compat layer</td>
+<td>Via compatibility layer</td>
+</tr>
+<tr>
+<td>Groq</td>
+<td><code>openai</code></td>
+<td>OpenAI compatible</td>
+<td>Set <code>LINGXIAO_OPENAI_BASE_URL</code></td>
+</tr>
+<tr>
+<td>SiliconFlow</td>
+<td><code>openai</code></td>
+<td>OpenAI compatible</td>
+<td>Set <code>LINGXIAO_OPENAI_BASE_URL</code></td>
+</tr>
+</tbody></table></div>
+<h3>Compatible Provider Examples</h3>
+<p>DeepSeek example:</p>
+<pre><code class="lang-bash">export LINGXIAO_LLM_PROVIDER=openai
+export LINGXIAO_OPENAI_API_KEY=sk-your-deepseek-key
+export LINGXIAO_OPENAI_BASE_URL=https://api.deepseek.com/v1
+export LINGXIAO_LEADER_MODEL=deepseek-chat
+export LINGXIAO_AGENT_MODEL=deepseek-chat</code></pre>
+<p>Qwen example:</p>
+<pre><code class="lang-bash">export LINGXIAO_LLM_PROVIDER=openai
+export LINGXIAO_OPENAI_API_KEY=sk-your-qwen-key
+export LINGXIAO_OPENAI_BASE_URL=https://dashscope.aliyuncs.com/compatible-mode/v1
+export LINGXIAO_LEADER_MODEL=qwen-plus
+export LINGXIAO_AGENT_MODEL=qwen-turbo</code></pre>
+<h2>Local LLM Gateway</h2>
+<p>LingXiao includes a local LLM gateway (<code>/llm/*</code> routes) as a unified endpoint, supporting both OpenAI and Anthropic formats.</p>
+<h3>Gateway Config</h3>
+<pre><code class="lang-json">{
+  &quot;llm_gateway&quot;: {
+    &quot;enabled&quot;: true,
+    &quot;provider&quot;: &quot;openai&quot;,
+    &quot;model&quot;: &quot;gpt-4o-mini&quot;,
+    &quot;inject_env&quot;: true,
+    &quot;default_rpm&quot;: 60,
+    &quot;default_tpm&quot;: 200000,
+    &quot;default_daily_token_budget&quot;: 2000000,
+    &quot;trace_enabled&quot;: true
+  }
+}</code></pre>
+<h3>Virtual Keys</h3>
+<p>The gateway supports virtual key management:</p>
+<pre><code class="lang-json">{
+  &quot;llm_gateway&quot;: {
+    &quot;virtual_keys&quot;: [
+      {
+        &quot;id&quot;: &quot;key-001&quot;,
+        &quot;key&quot;: &quot;sk-virtual-xxx&quot;,
+        &quot;label&quot;: &quot;Dev Test&quot;,
+        &quot;enabled&quot;: true,
+        &quot;model&quot;: &quot;gpt-4o-mini&quot;,
+        &quot;rpm&quot;: 30,
+        &quot;tpm&quot;: 100000,
+        &quot;daily_token_budget&quot;: 500000
+      }
+    ]
+  }
+}</code></pre>
+<p>Gateway routes authenticate with virtual keys (<code>Authorization: Bearer <key></code> or <code>x-api-key</code>), not the server token.</p>
+<h2>Leader & Worker Model Strategy</h2>
+<ul>
+<li><strong>Leader model</strong>: Responsible for task decomposition and orchestration decisions; recommend a more capable model</li>
+<li><strong>Worker model</strong>: Responsible for task execution; can use a more cost-effective model</li>
+<li><strong>Wiki model</strong>: Used for knowledge summaries; can use a lightweight model</li>
+</ul>
+<pre><code class="lang-json">{
+  &quot;llm&quot;: {
+    &quot;leader_model&quot;: &quot;gpt-4o&quot;,
+    &quot;agent_model&quot;: &quot;gpt-4o-mini&quot;,
+    &quot;wiki_model&quot;: &quot;gpt-4o-mini&quot;
+  }
+}</code></pre>
+    </div>
+<div class="prev-next">
+<a href="/docs/en/config/env-vars/" class="prev-page"><span class="pn-label">← Previous</span><span class="pn-title">Environment Variables</span></a>
+<a href="/docs/en/config/permissions/" class="next-page"><span class="pn-label">Next →</span><span class="pn-title">Permissions</span></a>
+</div>
+  </main>
+</div>
+</body>
+</html>

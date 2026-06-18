@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Full State Synchronization | 凌霄剑域</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%E5%89%91%3C/text%3E%3C/svg%3E">
+<style>
+/* ===== 古籍宣纸设计令牌（与首页同步） ===== */
+:root{
+  --paper:#f4ede0;--paper-bright:#faf5ea;--paper-dim:#e8dfce;--paper-deep:#ddd2bc;
+  --ink:#2a2218;--ink-mid:#4a3f30;--ink-light:#6b5e4a;--ink-wash:#8a7d68;--ink-faint:#a89a82;
+  --gold:#a8895a;--gold-bright:#c4a468;--gold-deep:#8a6e42;
+  --gold-line:rgba(168,137,90,0.22);--gold-wash:rgba(168,137,90,0.06);
+  --cinnabar:#a04030;--cinnabar-light:#c25a48;--cinnabar-wash:rgba(160,64,48,0.06);
+  --jade:#5a8a6a;--jade-wash:rgba(90,138,106,0.06);
+  --fg:var(--ink);--fg-muted:var(--ink-light);--fg-dim:var(--ink-wash);
+  --font-sans:'Noto Sans SC','Inter',-apple-system,system-ui,sans-serif;
+  --font-serif:'Noto Serif SC','Songti SC','STSong',serif;
+  --font-mono:'JetBrains Mono','Fira Code','SF Mono',monospace;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;font-size:16px}
+body{font-family:var(--font-sans);background:var(--paper);color:var(--fg);position:relative;overflow-x:hidden;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;line-height:1.6}
+
+/* 宣纸纹理背景 */
+.paper-texture{position:fixed;inset:0;z-index:0;pointer-events:none;
+  background:radial-gradient(ellipse 1200px 800px at 50% 0%,rgba(250,245,234,0.6),transparent 70%),radial-gradient(ellipse 800px 600px at 20% 80%,rgba(168,137,90,0.03),transparent 60%),radial-gradient(ellipse 800px 600px at 80% 40%,rgba(160,64,48,0.02),transparent 60%)}
+.paper-grain{position:fixed;inset:0;z-index:0;pointer-events:none;opacity:0.4;
+  background-image:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(168,137,90,0.012) 2px,rgba(168,137,90,0.012) 3px),repeating-linear-gradient(90deg,transparent,transparent 3px,rgba(168,137,90,0.008) 3px,rgba(168,137,90,0.008) 4px)}
+
+/* 导航 */
+.nav{position:fixed;top:0;left:0;right:0;z-index:100;backdrop-filter:blur(20px) saturate(140%);-webkit-backdrop-filter:blur(20px) saturate(140%);background:rgba(244,237,224,0.85);border-bottom:1px solid var(--gold-line)}
+.nav-inner{max-width:1400px;margin:0 auto;padding:0.75rem 1.5rem;display:flex;align-items:center;justify-content:space-between}
+.nav-brand{display:flex;align-items:center;gap:0.625rem;font-weight:700;font-size:1.05rem;color:var(--ink);text-decoration:none}
+.nav-brand .brand-mark{width:32px;height:32px;border-radius:8px;background:linear-gradient(135deg,var(--gold),var(--gold-bright));display:flex;align-items:center;justify-content:center;font-family:var(--font-serif);font-size:1.1rem;color:var(--paper-bright);font-weight:900}
+.nav-brand .brand-sub{font-size:0.7rem;font-weight:500;color:var(--fg-dim);letter-spacing:0.05em}
+.nav-links{display:flex;align-items:center;gap:1.5rem}
+.nav-links a{font-size:0.875rem;color:var(--fg-muted);text-decoration:none;transition:color 0.2s}
+.nav-links a:hover{color:var(--gold-deep)}
+
+/* 文档布局 */
+.doc-layout{position:relative;z-index:1;display:flex;max-width:1400px;margin:0 auto;padding-top:64px;min-height:100vh}
+
+/* 侧栏 */
+.doc-sidebar{position:sticky;top:64px;width:260px;height:calc(100vh - 64px);overflow-y:auto;padding:1.5rem 0.75rem;border-right:1px solid var(--gold-line);flex-shrink:0}
+.sidebar-group{margin-bottom:1.5rem}
+.sidebar-group-label{font-size:0.7rem;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:var(--fg-dim);padding:0 0.875rem 0.5rem}
+.sidebar-link{display:block;padding:0.4rem 0.875rem;border-radius:6px;font-size:0.82rem;color:var(--fg-muted);text-decoration:none;transition:all 0.15s;line-height:1.5}
+.sidebar-link:hover{background:var(--gold-wash);color:var(--ink)}
+.sidebar-link.active{background:var(--gold-wash);color:var(--gold-deep);font-weight:600;border-left:2px solid var(--gold)}
+
+/* 主内容 */
+.doc-main{flex:1;padding:2rem 3rem;max-width:900px;min-width:0}
+.doc-content h1{font-family:var(--font-serif);font-size:2.2rem;font-weight:700;margin-bottom:1.5rem;color:var(--ink);letter-spacing:0.02em}
+.doc-content h2{font-family:var(--font-serif);font-size:1.5rem;font-weight:600;margin:2rem 0 1rem;color:var(--ink-mid);border-bottom:1px solid var(--gold-line);padding-bottom:0.5rem}
+.doc-content h3{font-size:1.15rem;font-weight:600;margin:1.5rem 0 0.75rem;color:var(--ink-mid)}
+.doc-content p{font-size:0.9rem;line-height:1.8;color:var(--fg-muted);margin-bottom:1rem}
+.doc-content strong{color:var(--gold-deep);font-weight:600}
+.doc-content a{color:var(--cinnabar);text-decoration:none;transition:color 0.2s;border-bottom:1px solid transparent}
+.doc-content a:hover{color:var(--cinnabar-light);border-bottom-color:var(--cinnabar-light)}
+.doc-content ul,.doc-content ol{margin:0.5rem 0 1rem 1.5rem}
+.doc-content li{font-size:0.9rem;line-height:1.8;color:var(--fg-muted);margin-bottom:0.25rem}
+.doc-content blockquote{border-left:3px solid var(--gold);padding:0.5rem 1rem;margin:1rem 0;background:var(--gold-wash);border-radius:0 6px 6px 0;color:var(--fg-muted);font-size:0.875rem;font-style:italic}
+.doc-content code{font-family:var(--font-mono);font-size:0.82rem;background:var(--paper-dim);padding:0.15rem 0.4rem;border-radius:4px;color:var(--cinnabar)}
+.doc-content pre{background:var(--paper-bright);border:1px solid var(--gold-line);border-radius:8px;padding:1rem;overflow-x:auto;margin:1rem 0}
+.doc-content pre code{background:none;padding:0;font-size:0.8rem;color:var(--ink-mid);line-height:1.6}
+.doc-content hr{border:none;border-top:1px solid var(--gold-line);margin:2rem 0}
+.doc-content .table-wrap{overflow-x:auto;margin:1rem 0}
+.doc-content table{width:100%;border-collapse:collapse;font-size:0.85rem}
+.doc-content th{padding:0.625rem 0.875rem;text-align:left;border-bottom:2px solid var(--gold-line);color:var(--ink);font-weight:600}
+.doc-content td{padding:0.5rem 0.875rem;border-bottom:1px solid var(--gold-line);color:var(--fg-muted)}
+.doc-content .ascii-art-removed{padding:0.75rem 1rem;border:1px dashed var(--gold-line);border-radius:6px;color:var(--fg-dim);font-size:0.8rem;margin:1rem 0;text-align:center}
+
+/* 上下页导航 */
+.prev-next{display:flex;justify-content:space-between;margin-top:3rem;padding-top:1.5rem;border-top:1px solid var(--gold-line);gap:1rem}
+.prev-next a{display:flex;flex-direction:column;gap:0.25rem;padding:0.75rem 1rem;border:1px solid var(--gold-line);border-radius:8px;text-decoration:none;transition:all 0.2s;max-width:48%}
+.prev-next a:hover{border-color:var(--gold);background:var(--gold-wash)}
+.prev-next .pn-label{font-size:0.72rem;color:var(--fg-dim)}
+.prev-next .pn-title{font-size:0.85rem;color:var(--ink);font-weight:500}
+.prev-next .next-page{text-align:right;margin-left:auto}
+.prev-page .pn-title{text-align:left}
+
+/* 响应式 */
+@media(max-width:900px){
+  .doc-sidebar{display:none}
+  .doc-main{padding:1.5rem 1rem}
+  .nav-links a:not(.nav-cta){display:none}
+}
+</style>
+</head>
+<body>
+<div class="paper-texture"></div>
+<div class="paper-grain"></div>
+<nav class="nav"><div class="nav-inner">
+  <a href="/" class="nav-brand"><span class="brand-mark">剑</span><span>凌霄剑域</span><span class="brand-sub">LingXiao</span></a>
+  <div class="nav-links">
+    <a href="/docs/en/getting-started/introduction/">文档</a>
+    <a href="https://github.com/hexian2001/lingxiao" target="_blank" rel="noopener">GitHub</a>
+    <a href="/docs/en/getting-started/introduction/" class="nav-cta" style="padding:0.4rem 1rem;border-radius:8px;background:var(--gold-wash);color:var(--gold-deep);font-weight:600;font-size:0.8rem;border:1px solid var(--gold-line)">快速上手</a>
+  </div>
+</div></nav>
+<div class="doc-layout">
+  <aside class="doc-sidebar">
+<div class="sidebar-group">
+<div class="sidebar-group-label">Getting Started</div>
+<a href="/docs/en/getting-started/introduction/" class="sidebar-link">Introduction</a>
+<a href="/docs/en/getting-started/install/" class="sidebar-link">Installation</a>
+<a href="/docs/en/getting-started/connect-models/" class="sidebar-link">Connect Models</a>
+<a href="/docs/en/getting-started/first-run/" class="sidebar-link">First Run</a>
+</div>
+<div class="sidebar-group">
+<div class="sidebar-group-label">Core Features</div>
+<a href="/docs/en/core/expert-team/" class="sidebar-link">Expert Panel</a>
+<a href="/docs/en/core/task-dag/" class="sidebar-link">Task DAG</a>
+<a href="/docs/en/core/state-sync/" class="sidebar-link active">State Sync</a>
+<a href="/docs/en/core/webui/" class="sidebar-link">WebUI Center</a>
+<a href="/docs/en/core/tool-kernel/" class="sidebar-link">Tool Kernel</a>
+<a href="/docs/en/core/orchestration/" class="sidebar-link">Orchestration</a>
+<a href="/docs/en/core/mcp-skills/" class="sidebar-link">MCP Forge &amp; Skills</a>
+<a href="/docs/en/core/memory/" class="sidebar-link">Memory</a>
+<a href="/docs/en/core/eternal/" class="sidebar-link">Eternal Mode</a>
+<a href="/docs/en/core/llm-gateway/" class="sidebar-link">LLM Gateway</a>
+</div>
+<div class="sidebar-group">
+<div class="sidebar-group-label">Configuration</div>
+<a href="/docs/en/config/env-vars/" class="sidebar-link">Environment Variables</a>
+<a href="/docs/en/config/models/" class="sidebar-link">Models</a>
+<a href="/docs/en/config/permissions/" class="sidebar-link">Permissions</a>
+<a href="/docs/en/config/network/" class="sidebar-link">Network</a>
+<a href="/docs/en/config/theme/" class="sidebar-link">Theme</a>
+<a href="/docs/en/config/custom-commands/" class="sidebar-link">Custom Commands</a>
+<a href="/docs/en/config/mcp/" class="sidebar-link">MCP</a>
+<a href="/docs/en/config/agents/" class="sidebar-link">Agents</a>
+<a href="/docs/en/config/skills/" class="sidebar-link">Skills</a>
+<a href="/docs/en/config/rules/" class="sidebar-link">Rules</a>
+</div>
+<div class="sidebar-group">
+<div class="sidebar-group-label">Reference</div>
+<a href="/docs/en/reference/cli/" class="sidebar-link">CLI</a>
+<a href="/docs/en/reference/slash-commands/" class="sidebar-link">Slash Commands</a>
+<a href="/docs/en/reference/architecture/" class="sidebar-link">Architecture</a>
+<a href="/docs/en/reference/api-index/" class="sidebar-link">API Index</a>
+<a href="/docs/en/reference/faq/" class="sidebar-link">FAQ</a>
+<a href="/docs/en/reference/security/" class="sidebar-link">Security</a>
+<a href="/docs/en/reference/changelog/" class="sidebar-link">Changelog</a>
+</div>
+  </aside>
+  <main class="doc-main">
+    <div class="doc-content">
+<h1>Full State Synchronization</h1>
+<p>LingXiao consolidates WebUI, TUI, and backend runtime into a unified state pipeline. All runtime state enters the same engineering kernel, with three-way real-time synchronization.</p>
+<h2>Sync Architecture</h2>
+<pre><code class="lang-text">SessionManager
+  -&gt; session:runtime_state
+  -&gt; SseBridge
+  -&gt; ACP session/update: session_runtime_state
+  -&gt; Web sessionStore / TUI event bridge</code></pre>
+<p><code>session:runtime_state</code> is the unified runtime snapshot, covering session status, leader busy/waiting/reviewing state, task graph, agent panel, tool call logs, message flow, and review results.</p>
+<h2>Sync Channels</h2>
+<h3>SSE Event Stream</h3>
+<p>Server-Sent Events push real-time state changes to the WebUI:</p>
+<pre><code class="lang-text">GET /api/v1/events?token=&lt;server_token&gt;
+Content-Type: text/event-stream</code></pre>
+<p>The WebUI connects via EventSource to receive push updates without polling.</p>
+<h3>ACP JSON-RPC</h3>
+<p>Agent Communication Protocol provides a bidirectional communication channel:</p>
+<pre><code class="lang-text">GET  /api/v1/acp          # SSE event stream
+POST /api/v1/acp           # JSON-RPC requests
+DELETE /api/v1/acp         # Disconnect</code></pre>
+<p>ACP connections require dual credentials: <code>acp-connection-id</code> + <code>acp-session-token</code>.</p>
+<h3>SQLite Persistence</h3>
+<p>All state is persisted to the SQLite database, including:</p>
+<ul>
+<li>Session metadata and status</li>
+<li>Task graph and execution history</li>
+<li>Messages and conversation records</li>
+<li>Agent state and logs</li>
+<li>Full tool call chain</li>
+<li>Token usage statistics</li>
+</ul>
+<h2>Sync Content</h2>
+<div class="table-wrap"><table>
+<thead><tr>
+<th>Category</th>
+<th>Sync Events</th>
+</tr></thead><tbody>
+<tr>
+<td>Task lifecycle</td>
+<td>Created, updated, dispatched, completed, failed, blocked</td>
+</tr>
+<tr>
+<td>Agent state</td>
+<td>Started, heartbeat, exited, result receipt</td>
+</tr>
+<tr>
+<td>Tool calls</td>
+<td>Parameters, permission evaluation, output, duration</td>
+</tr>
+<tr>
+<td>Code changes</td>
+<td>File diffs, Git operations</td>
+</tr>
+<tr>
+<td>Message flow</td>
+<td>Leader-Worker communication, team messages</td>
+</tr>
+<tr>
+<td>Review results</td>
+<td>Review verdict, evidence, suggestions</td>
+</tr>
+<tr>
+<td>Errors and blocks</td>
+<td>Exceptions, timeouts, dependency blocks</td>
+</tr>
+</tbody></table></div>
+<h2>Event Types</h2>
+<p>22 <code>SessionUpdateKind</code> events cover all runtime state changes:</p>
+<pre><code class="lang-typescript">enum SessionUpdateKind {
+  // Task events
+  task_created, task_updated, task_dispatched,
+  task_completed, task_failed, task_blocked,
+  // Agent events
+  agent_started, agent_heartbeat, agent_exited,
+  agent_result,
+  // Tool events
+  tool_call_started, tool_call_completed,
+  // Message events
+  message_sent, message_received,
+  // Review events
+  review_requested, review_completed,
+  // Session events
+  session_status_changed, session_error,
+  // Other
+  code_changed, git_operation, error, blocked
+}</code></pre>
+<h2>Session Recovery</h2>
+<pre><code class="lang-bash"># Resume a specific session
+lingxiao --session &lt;session_id&gt;
+
+# List all sessions
+lingxiao list</code></pre>
+<p>After a crash or interruption, the full runtime state is recovered from SQLite:</p>
+<ul>
+<li>DAG structure and task states rebuilt</li>
+<li>Agent context restored</li>
+<li>Message history and tool call logs preserved</li>
+<li>Incomplete tasks can resume</li>
+</ul>
+<h2>Authentication</h2>
+<div class="table-wrap"><table>
+<thead><tr>
+<th>Endpoint group</th>
+<th>Auth method</th>
+</tr></thead><tbody>
+<tr>
+<td><code>/health</code>, static assets</td>
+<td>Public</td>
+</tr>
+<tr>
+<td><code>/api/v1/**</code></td>
+<td>Server Token (header <code>x-lingxiao-token</code>)</td>
+</tr>
+<tr>
+<td><code>/api/v1/acp</code></td>
+<td>Server Token + ACP credentials</td>
+</tr>
+<tr>
+<td><code>/llm/**</code></td>
+<td>LLM Gateway virtual key</td>
+</tr>
+</tbody></table></div>
+<p>In hardened mode, Server Token only accepts header form; query parameter passing is disabled.</p>
+    </div>
+<div class="prev-next">
+<a href="/docs/en/core/task-dag/" class="prev-page"><span class="pn-label">← Previous</span><span class="pn-title">Task DAG</span></a>
+<a href="/docs/en/core/webui/" class="next-page"><span class="pn-label">Next →</span><span class="pn-title">WebUI Center</span></a>
+</div>
+  </main>
+</div>
+</body>
+</html>

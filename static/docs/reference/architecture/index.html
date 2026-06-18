@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>架构概览 | 凌霄剑域</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%E5%89%91%3C/text%3E%3C/svg%3E">
+<style>
+/* ===== 古籍宣纸设计令牌（与首页同步） ===== */
+:root{
+  --paper:#f4ede0;--paper-bright:#faf5ea;--paper-dim:#e8dfce;--paper-deep:#ddd2bc;
+  --ink:#2a2218;--ink-mid:#4a3f30;--ink-light:#6b5e4a;--ink-wash:#8a7d68;--ink-faint:#a89a82;
+  --gold:#a8895a;--gold-bright:#c4a468;--gold-deep:#8a6e42;
+  --gold-line:rgba(168,137,90,0.22);--gold-wash:rgba(168,137,90,0.06);
+  --cinnabar:#a04030;--cinnabar-light:#c25a48;--cinnabar-wash:rgba(160,64,48,0.06);
+  --jade:#5a8a6a;--jade-wash:rgba(90,138,106,0.06);
+  --fg:var(--ink);--fg-muted:var(--ink-light);--fg-dim:var(--ink-wash);
+  --font-sans:'Noto Sans SC','Inter',-apple-system,system-ui,sans-serif;
+  --font-serif:'Noto Serif SC','Songti SC','STSong',serif;
+  --font-mono:'JetBrains Mono','Fira Code','SF Mono',monospace;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;font-size:16px}
+body{font-family:var(--font-sans);background:var(--paper);color:var(--fg);position:relative;overflow-x:hidden;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;line-height:1.6}
+
+/* 宣纸纹理背景 */
+.paper-texture{position:fixed;inset:0;z-index:0;pointer-events:none;
+  background:radial-gradient(ellipse 1200px 800px at 50% 0%,rgba(250,245,234,0.6),transparent 70%),radial-gradient(ellipse 800px 600px at 20% 80%,rgba(168,137,90,0.03),transparent 60%),radial-gradient(ellipse 800px 600px at 80% 40%,rgba(160,64,48,0.02),transparent 60%)}
+.paper-grain{position:fixed;inset:0;z-index:0;pointer-events:none;opacity:0.4;
+  background-image:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(168,137,90,0.012) 2px,rgba(168,137,90,0.012) 3px),repeating-linear-gradient(90deg,transparent,transparent 3px,rgba(168,137,90,0.008) 3px,rgba(168,137,90,0.008) 4px)}
+
+/* 导航 */
+.nav{position:fixed;top:0;left:0;right:0;z-index:100;backdrop-filter:blur(20px) saturate(140%);-webkit-backdrop-filter:blur(20px) saturate(140%);background:rgba(244,237,224,0.85);border-bottom:1px solid var(--gold-line)}
+.nav-inner{max-width:1400px;margin:0 auto;padding:0.75rem 1.5rem;display:flex;align-items:center;justify-content:space-between}
+.nav-brand{display:flex;align-items:center;gap:0.625rem;font-weight:700;font-size:1.05rem;color:var(--ink);text-decoration:none}
+.nav-brand .brand-mark{width:32px;height:32px;border-radius:8px;background:linear-gradient(135deg,var(--gold),var(--gold-bright));display:flex;align-items:center;justify-content:center;font-family:var(--font-serif);font-size:1.1rem;color:var(--paper-bright);font-weight:900}
+.nav-brand .brand-sub{font-size:0.7rem;font-weight:500;color:var(--fg-dim);letter-spacing:0.05em}
+.nav-links{display:flex;align-items:center;gap:1.5rem}
+.nav-links a{font-size:0.875rem;color:var(--fg-muted);text-decoration:none;transition:color 0.2s}
+.nav-links a:hover{color:var(--gold-deep)}
+
+/* 文档布局 */
+.doc-layout{position:relative;z-index:1;display:flex;max-width:1400px;margin:0 auto;padding-top:64px;min-height:100vh}
+
+/* 侧栏 */
+.doc-sidebar{position:sticky;top:64px;width:260px;height:calc(100vh - 64px);overflow-y:auto;padding:1.5rem 0.75rem;border-right:1px solid var(--gold-line);flex-shrink:0}
+.sidebar-group{margin-bottom:1.5rem}
+.sidebar-group-label{font-size:0.7rem;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:var(--fg-dim);padding:0 0.875rem 0.5rem}
+.sidebar-link{display:block;padding:0.4rem 0.875rem;border-radius:6px;font-size:0.82rem;color:var(--fg-muted);text-decoration:none;transition:all 0.15s;line-height:1.5}
+.sidebar-link:hover{background:var(--gold-wash);color:var(--ink)}
+.sidebar-link.active{background:var(--gold-wash);color:var(--gold-deep);font-weight:600;border-left:2px solid var(--gold)}
+
+/* 主内容 */
+.doc-main{flex:1;padding:2rem 3rem;max-width:900px;min-width:0}
+.doc-content h1{font-family:var(--font-serif);font-size:2.2rem;font-weight:700;margin-bottom:1.5rem;color:var(--ink);letter-spacing:0.02em}
+.doc-content h2{font-family:var(--font-serif);font-size:1.5rem;font-weight:600;margin:2rem 0 1rem;color:var(--ink-mid);border-bottom:1px solid var(--gold-line);padding-bottom:0.5rem}
+.doc-content h3{font-size:1.15rem;font-weight:600;margin:1.5rem 0 0.75rem;color:var(--ink-mid)}
+.doc-content p{font-size:0.9rem;line-height:1.8;color:var(--fg-muted);margin-bottom:1rem}
+.doc-content strong{color:var(--gold-deep);font-weight:600}
+.doc-content a{color:var(--cinnabar);text-decoration:none;transition:color 0.2s;border-bottom:1px solid transparent}
+.doc-content a:hover{color:var(--cinnabar-light);border-bottom-color:var(--cinnabar-light)}
+.doc-content ul,.doc-content ol{margin:0.5rem 0 1rem 1.5rem}
+.doc-content li{font-size:0.9rem;line-height:1.8;color:var(--fg-muted);margin-bottom:0.25rem}
+.doc-content blockquote{border-left:3px solid var(--gold);padding:0.5rem 1rem;margin:1rem 0;background:var(--gold-wash);border-radius:0 6px 6px 0;color:var(--fg-muted);font-size:0.875rem;font-style:italic}
+.doc-content code{font-family:var(--font-mono);font-size:0.82rem;background:var(--paper-dim);padding:0.15rem 0.4rem;border-radius:4px;color:var(--cinnabar)}
+.doc-content pre{background:var(--paper-bright);border:1px solid var(--gold-line);border-radius:8px;padding:1rem;overflow-x:auto;margin:1rem 0}
+.doc-content pre code{background:none;padding:0;font-size:0.8rem;color:var(--ink-mid);line-height:1.6}
+.doc-content hr{border:none;border-top:1px solid var(--gold-line);margin:2rem 0}
+.doc-content .table-wrap{overflow-x:auto;margin:1rem 0}
+.doc-content table{width:100%;border-collapse:collapse;font-size:0.85rem}
+.doc-content th{padding:0.625rem 0.875rem;text-align:left;border-bottom:2px solid var(--gold-line);color:var(--ink);font-weight:600}
+.doc-content td{padding:0.5rem 0.875rem;border-bottom:1px solid var(--gold-line);color:var(--fg-muted)}
+.doc-content .ascii-art-removed{padding:0.75rem 1rem;border:1px dashed var(--gold-line);border-radius:6px;color:var(--fg-dim);font-size:0.8rem;margin:1rem 0;text-align:center}
+
+/* 上下页导航 */
+.prev-next{display:flex;justify-content:space-between;margin-top:3rem;padding-top:1.5rem;border-top:1px solid var(--gold-line);gap:1rem}
+.prev-next a{display:flex;flex-direction:column;gap:0.25rem;padding:0.75rem 1rem;border:1px solid var(--gold-line);border-radius:8px;text-decoration:none;transition:all 0.2s;max-width:48%}
+.prev-next a:hover{border-color:var(--gold);background:var(--gold-wash)}
+.prev-next .pn-label{font-size:0.72rem;color:var(--fg-dim)}
+.prev-next .pn-title{font-size:0.85rem;color:var(--ink);font-weight:500}
+.prev-next .next-page{text-align:right;margin-left:auto}
+.prev-page .pn-title{text-align:left}
+
+/* 响应式 */
+@media(max-width:900px){
+  .doc-sidebar{display:none}
+  .doc-main{padding:1.5rem 1rem}
+  .nav-links a:not(.nav-cta){display:none}
+}
+</style>
+</head>
+<body>
+<div class="paper-texture"></div>
+<div class="paper-grain"></div>
+<nav class="nav"><div class="nav-inner">
+  <a href="/" class="nav-brand"><span class="brand-mark">剑</span><span>凌霄剑域</span><span class="brand-sub">LingXiao</span></a>
+  <div class="nav-links">
+    <a href="/docs/getting-started/introduction/">文档</a>
+    <a href="https://github.com/hexian2001/lingxiao" target="_blank" rel="noopener">GitHub</a>
+    <a href="/docs/getting-started/introduction/" class="nav-cta" style="padding:0.4rem 1rem;border-radius:8px;background:var(--gold-wash);color:var(--gold-deep);font-weight:600;font-size:0.8rem;border:1px solid var(--gold-line)">快速上手</a>
+  </div>
+</div></nav>
+<div class="doc-layout">
+  <aside class="doc-sidebar">
+<div class="sidebar-group">
+<div class="sidebar-group-label">入门</div>
+<a href="/docs/getting-started/introduction/" class="sidebar-link">简介</a>
+<a href="/docs/getting-started/install/" class="sidebar-link">安装与启动</a>
+<a href="/docs/getting-started/connect-models/" class="sidebar-link">连接模型</a>
+<a href="/docs/getting-started/first-run/" class="sidebar-link">第一次运行</a>
+</div>
+<div class="sidebar-group">
+<div class="sidebar-group-label">核心功能</div>
+<a href="/docs/core/expert-team/" class="sidebar-link">专家团系统</a>
+<a href="/docs/core/task-dag/" class="sidebar-link">任务DAG编排</a>
+<a href="/docs/core/state-sync/" class="sidebar-link">全状态同步</a>
+<a href="/docs/core/webui/" class="sidebar-link">WebUI指挥中心</a>
+<a href="/docs/core/tool-kernel/" class="sidebar-link">工具内核</a>
+<a href="/docs/core/orchestration/" class="sidebar-link">编排验收</a>
+<a href="/docs/core/mcp-skills/" class="sidebar-link">MCP Forge与Skills</a>
+<a href="/docs/core/memory/" class="sidebar-link">持久记忆</a>
+<a href="/docs/core/eternal/" class="sidebar-link">Eternal自治模式</a>
+<a href="/docs/core/llm-gateway/" class="sidebar-link">LLM Gateway</a>
+</div>
+<div class="sidebar-group">
+<div class="sidebar-group-label">配置与自定义</div>
+<a href="/docs/config/env-vars/" class="sidebar-link">环境变量</a>
+<a href="/docs/config/models/" class="sidebar-link">模型配置</a>
+<a href="/docs/config/permissions/" class="sidebar-link">权限系统</a>
+<a href="/docs/config/network/" class="sidebar-link">网络配置</a>
+<a href="/docs/config/theme/" class="sidebar-link">主题</a>
+<a href="/docs/config/custom-commands/" class="sidebar-link">自定义命令</a>
+<a href="/docs/config/mcp/" class="sidebar-link">MCP</a>
+<a href="/docs/config/agents/" class="sidebar-link">Agents</a>
+<a href="/docs/config/skills/" class="sidebar-link">Skills 系统</a>
+<a href="/docs/config/rules/" class="sidebar-link">规则</a>
+</div>
+<div class="sidebar-group">
+<div class="sidebar-group-label">参考</div>
+<a href="/docs/reference/cli/" class="sidebar-link">CLI命令</a>
+<a href="/docs/reference/slash-commands/" class="sidebar-link">Slash命令</a>
+<a href="/docs/reference/architecture/" class="sidebar-link active">架构概览</a>
+<a href="/docs/reference/api-index/" class="sidebar-link">API契约索引</a>
+<a href="/docs/reference/faq/" class="sidebar-link">FAQ</a>
+<a href="/docs/reference/security/" class="sidebar-link">安全须知</a>
+<a href="/docs/reference/changelog/" class="sidebar-link">更新日志</a>
+</div>
+  </aside>
+  <main class="doc-main">
+    <div class="doc-content">
+<h1>架构概览</h1>
+<p>凌霄是一个基于 Node.js 24、TypeScript、React、Fastify、SQLite 的 AI 工程编排运行时。后端源码根目录为 <code>src/</code>，WebUI 源码根目录为 <code>web/src</code>。</p>
+<h2>运行时拓扑</h2>
+<pre><code class="lang-text">flowchart LR
+  User[&quot;用户&quot;]
+  CLI[&quot;CLI/TUI&lt;br/&gt;src/cli.ts&quot;]
+  Web[&quot;React Web UI&lt;br/&gt;web/src&quot;]
+  Server[&quot;Fastify Web Server&lt;br/&gt;src/server.ts&quot;]
+  ACP[&quot;ACP JSON-RPC + SSE&lt;br/&gt;AcpRoutes + AcpHandler&quot;]
+  Sessions[&quot;SessionManager + SessionRuntime&lt;br/&gt;src/runtime&quot;]
+  Leader[&quot;LeaderAgent&lt;br/&gt;src/agents&quot;]
+  DAG[&quot;TaskBoard / Orchestration DAG&lt;br/&gt;OrchestrationRuntime&quot;]
+  Workers[&quot;Worker Expert Agents&lt;br/&gt;AgentPool&quot;]
+  Tools[&quot;ToolRegistry&lt;br/&gt;src/tools&quot;]
+  DB[&quot;SQLite&lt;br/&gt;DatabaseManager&quot;]
+  RuntimeState[&quot;session:runtime_state&lt;br/&gt;统一快照&quot;]
+  Browser[&quot;BrowserRuntime&quot;]
+  Terminal[&quot;Terminal WS/PTY&quot;]
+  Memory[&quot;Memory System&lt;br/&gt;FTS5 + AutoDream&quot;]
+  Skills[&quot;Skills Catalog&lt;br/&gt;Phase Loader&quot;]
+  McpForge[&quot;MCP Forge&lt;br/&gt;Server Generation&quot;]
+  Eternal[&quot;Eternal Loop&lt;br/&gt;Autonomous Mode&quot;]
+  Gateway[&quot;Local LLM Gateway&lt;br/&gt;OpenAI/Anthropic Proxy&quot;]
+
+  User --&gt; CLI
+  User --&gt; Web
+  CLI --&gt; Sessions
+  Web --&gt; Server
+  Server --&gt; ACP
+  Server --&gt; DB
+  Server --&gt; Gateway
+  ACP --&gt; Sessions
+  Sessions --&gt; Leader
+  Sessions --&gt; RuntimeState
+  Sessions --&gt; Eternal
+  RuntimeState --&gt; ACP
+  Leader --&gt; DAG
+  Leader --&gt; Workers
+  Leader --&gt; Memory
+  Workers --&gt; Skills
+  DAG --&gt; DB
+  Leader --&gt; Tools
+  Workers --&gt; Tools
+  Sessions --&gt; DB
+  Tools --&gt; DB
+  Tools --&gt; McpForge
+  Server --&gt; Browser
+  Server --&gt; Terminal</code></pre>
+<h2>核心进程</h2>
+<h3>CLI/TUI</h3>
+<p>主入口：<code>src/cli.ts</code>。</p>
+<p>CLI 可以运行交互式会话，也可以创建带有相同 <code>DatabaseManager</code> 和 <code>SessionManager</code> 依赖的 Web 服务器。启动时打印带 token 的 URL，并将端口写入 <code>~/.lingxiao/port</code>。</p>
+<p>启动时还初始化：</p>
+<ul>
+<li>记忆维护管道（<code>runDueMemoryMaintenance</code>）</li>
+<li>内置技能同步到全局技能目录</li>
+</ul>
+<h3>Web Server</h3>
+<p>主入口：<code>src/server.ts</code>。</p>
+<p>职责：</p>
+<ul>
+<li>创建 Fastify 服务器，注册 <code>@fastify/websocket</code></li>
+<li>创建共享运行时服务：<code>DatabaseManager</code>、<code>SessionManager</code>、<code>EventEmitter</code>、<code>ConnectionManager</code>、<code>SseBridge</code>、<code>AcpHandler</code>、浏览器运行时、文件/wiki/git API</li>
+<li>注册 MCP Forge 路由和 MCP Share 路由</li>
+<li>当 <code>llm_gateway.enabled</code> 为 true 时注册本地 LLM Gateway 路由</li>
+<li>向 HTML 注入 <code>window.__LINGXIAO_TOKEN__</code></li>
+<li>从 <code>dist/web</code> 或开发回退路径提供 Web 资源</li>
+</ul>
+<h3>Web UI</h3>
+<p>主入口：<code>web/src</code>。</p>
+<p>UI 是状态驱动的，使用 Zustand stores：</p>
+<ul>
+<li>REST 端点用于列出会话、设置、文件、Git、插件、任务、工作流、统计、wiki、MCP Forge/Share、设计市场等</li>
+<li>ACP JSON-RPC 用于会话操作</li>
+<li>SSE 通过 ACP 连接用于实时状态推送</li>
+</ul>
+<h2>核心组件</h2>
+<div class="table-wrap"><table>
+<thead><tr>
+<th>组件</th>
+<th>职责</th>
+</tr></thead><tbody>
+<tr>
+<td>SessionManager</td>
+<td>会话生命周期管理：创建、恢复、消息分发</td>
+</tr>
+<tr>
+<td>SessionRuntime</td>
+<td>运行时上下文：Leader 句柄、Agent 池、工具注册表</td>
+</tr>
+<tr>
+<td>LeaderAgent</td>
+<td>总指挥：拆解任务、建 DAG、调度 Worker、验收结果</td>
+</tr>
+<tr>
+<td>TaskBoard / DAG</td>
+<td>任务图管理：依赖关系、并行调度、阻塞/解除</td>
+</tr>
+<tr>
+<td>AgentPool</td>
+<td>Worker 进程池：spawn、回收、心跳监控</td>
+</tr>
+<tr>
+<td>ToolRegistry</td>
+<td>工具注册和调用：100+ 内置工具 + MCP 工具</td>
+</tr>
+<tr>
+<td>SQLite DB</td>
+<td>持久化存储：会话、消息、任务、Agent 状态、记忆</td>
+</tr>
+<tr>
+<td>RuntimeState</td>
+<td>统一快照：<code>session:runtime_state</code> 三端同步源</td>
+</tr>
+<tr>
+<td>Memory System</td>
+<td>持久记忆：FTS5 全文搜索 + BM25 评分 + AutoDream</td>
+</tr>
+<tr>
+<td>Skills Catalog</td>
+<td>技能目录：Phase Loader 按需注入 Agent 上下文</td>
+</tr>
+<tr>
+<td>MCP Forge</td>
+<td>MCP 服务器生成引擎：从描述生成 stdio/http MCP server</td>
+</tr>
+<tr>
+<td>Eternal Loop</td>
+<td>自治模式：IDLE → CHECK → PATROL → THINK → WAIT 循环</td>
+</tr>
+<tr>
+<td>Local LLM Gateway</td>
+<td>本地 LLM 网关：OpenAI/Anthropic 双格式代理</td>
+</tr>
+</tbody></table></div>
+<h2>控制流</h2>
+<h3>交互模式</h3>
+<ol>
+<li>用户通过 TUI/WebUI 发送目标</li>
+<li><code>SessionManager</code> 创建会话，启动 <code>SessionRuntime</code></li>
+<li><code>LeaderAgent</code> 接收目标，拆解为 DAG 任务图</li>
+<li><code>OrchestrationRuntime</code> 管理任务生命周期：分配 Worker、监控执行、提取验收结论</li>
+<li>Worker 通过 <code>ToolRegistry</code> 调用工具执行任务</li>
+<li>结果和状态写入 SQLite，通过 <code>RuntimeState</code> 推送到三端</li>
+</ol>
+<h3>Eternal 自治模式</h3>
+<ol>
+<li><code>EternalLoop</code> 按 30 秒基础间隔（可配置）循环</li>
+<li>CHECK 阶段检查目标状态和待办任务</li>
+<li>SKIP/PATROL：无任务时跳过或巡逻检查</li>
+<li>THINK：有任务时驱动 Leader 执行</li>
+<li>WAIT：等待执行完成后回到 IDLE</li>
+<li>指数退避：连续无操作时间隔翻倍，最大 960 秒</li>
+<li>预算熔断：连续 8 次失败自动暂停</li>
+</ol>
+<h2>数据流</h2>
+<h3>消息流</h3>
+<pre><code>用户输入 → SessionManager.sendUserInput → LeaderAgent.processGoal
+  → TaskBoard.createTask (DAG) → AgentPool.spawnWorker
+  → Worker.execute → ToolRegistry.invoke → 结果写入 DB
+  → RuntimeState.update → SSE/ACP 推送到三端</code></pre>
+<h3>状态同步</h3>
+<p>凌霄通过 <code>session:runtime_state</code> 实现三端（TUI/WebUI/CLI）实时状态同步：</p>
+<ul>
+<li><strong>SSE</strong>：Server-Sent Events，单向推送会话状态变更</li>
+<li><strong>ACP JSON-RPC</strong>：双向往返，WebUI 通过 ACP 连接发送命令和接收结果</li>
+<li><strong>WebSocket</strong>：终端 PTY 和浏览器实时交互</li>
+</ul>
+<h2>编排与验收</h2>
+<h3>编排运行时</h3>
+<p><code>OrchestrationRuntime</code> 订阅任务生命周期事件，提供：</p>
+<ul>
+<li><strong>验收结论提取</strong>：从任务结果、Worker 报告和评估载荷中解析 <code>PASS</code>/<code>FAIL</code>/<code>BLOCKED</code>/<code>UNKNOWN</code></li>
+<li><strong>默认最小评估策略</strong>：无显式 <code>evaluationPolicy</code> 的任务自动获得 <code>required_evidence</code> + <code>max_repair: 1</code></li>
+<li><strong>后续任务创建</strong>：<code>FAIL</code>/<code>BLOCKED</code> 且修复预算剩余时，创建修复任务并阻塞依赖链</li>
+</ul>
+<h3>投机执行</h3>
+<p>Leader 可以在任务完成前预判结果并提前启动下游任务（speculative execution），失败时回滚投机分支。</p>
+<h2>失败边界</h2>
+<div class="table-wrap"><table>
+<thead><tr>
+<th>组件</th>
+<th>失败行为</th>
+<th>恢复策略</th>
+</tr></thead><tbody>
+<tr>
+<td>Worker 进程崩溃</td>
+<td>AgentPool 检测心跳超时</td>
+<td>标记任务失败，OrchestrationRuntime 创建修复任务</td>
+</tr>
+<tr>
+<td>Leader 异常</td>
+<td>SessionRuntime 捕获</td>
+<td>恢复已持久化的 DAG 状态</td>
+</tr>
+<tr>
+<td>Web Server 端口占用</td>
+<td>自动寻找可用端口</td>
+<td>写入 <code>~/.lingxiao/port</code></td>
+</tr>
+<tr>
+<td>数据库锁</td>
+<td>SQLite WAL 模式 + 重试</td>
+<td>事务级重试</td>
+</tr>
+<tr>
+<td>Eternal 预算耗尽</td>
+<td>连续 8 次失败</td>
+<td>自动暂停，等待用户介入</td>
+</tr>
+<tr>
+<td>LLM 调用失败</td>
+<td>重试 + 熔断器</td>
+<td>指数退避重试，熔断后降级</td>
+</tr>
+</tbody></table></div>
+<h2>模块清单</h2>
+<div class="table-wrap"><table>
+<thead><tr>
+<th>模块</th>
+<th>关键文件</th>
+<th>职责</th>
+</tr></thead><tbody>
+<tr>
+<td>CLI/TUI</td>
+<td><code>src/cli.ts</code>, <code>src/tui/*</code></td>
+<td>命令入口、Ink 终端 UI</td>
+</tr>
+<tr>
+<td>Web Server</td>
+<td><code>src/server.ts</code>, <code>src/web-server/*Routes.ts</code></td>
+<td>Fastify HTTP/SSE/WS 路由</td>
+</tr>
+<tr>
+<td>Session Runtime</td>
+<td><code>src/runtime/*</code>, <code>src/core/SessionManager.ts</code></td>
+<td>会话生命周期、状态管理</td>
+</tr>
+<tr>
+<td>Agent 系统</td>
+<td><code>src/agents/*</code></td>
+<td>Leader/Worker、角色能力、编排</td>
+</tr>
+<tr>
+<td>工具内核</td>
+<td><code>src/tools/*</code></td>
+<td>ToolRegistry、100+ 内置工具</td>
+</tr>
+<tr>
+<td>LLM 层</td>
+<td><code>src/llm/*</code></td>
+<td>Provider 客户端、流式解析、重试/熔断</td>
+</tr>
+<tr>
+<td>数据库</td>
+<td><code>src/core/Database.ts</code></td>
+<td>SQLite、WAL、FTS5</td>
+</tr>
+<tr>
+<td>记忆系统</td>
+<td><code>src/core/Memory*.ts</code></td>
+<td>持久记忆、AutoDream</td>
+</tr>
+<tr>
+<td>MCP</td>
+<td><code>src/core/McpForge*.ts</code></td>
+<td>服务器生成、工具发现</td>
+</tr>
+<tr>
+<td>技能</td>
+<td><code>src/core/Skill*.ts</code></td>
+<td>Phase Loader、技能注入</td>
+</tr>
+<tr>
+<td>编排</td>
+<td><code>src/agents/OrchestrationRuntime.ts</code></td>
+<td>DAG 管理、验收、投机执行</td>
+</tr>
+<tr>
+<td>Eternal</td>
+<td><code>src/core/Eternal*.ts</code></td>
+<td>自治循环、监督、遥测</td>
+</tr>
+<tr>
+<td>LLM Gateway</td>
+<td><code>src/core/LocalLlmGateway*.ts</code></td>
+<td>OpenAI/Anthropic 代理</td>
+</tr>
+<tr>
+<td>上下文</td>
+<td><code>src/core/ContextManifest.ts</code></td>
+<td>上下文组装、记忆索引注入</td>
+</tr>
+<tr>
+<td>Office</td>
+<td><code>src/tools/implementations/office/*</code></td>
+<td>HTML 优先文档生成</td>
+</tr>
+<tr>
+<td>权限</td>
+<td><code>src/core/PermissionSystem.ts</code></td>
+<td>工具权限、分层控制</td>
+</tr>
+</tbody></table></div>
+    </div>
+<div class="prev-next">
+<a href="/docs/reference/slash-commands/" class="prev-page"><span class="pn-label">← 上一页</span><span class="pn-title">Slash命令</span></a>
+<a href="/docs/reference/api-index/" class="next-page"><span class="pn-label">下一页 →</span><span class="pn-title">API契约索引</span></a>
+</div>
+  </main>
+</div>
+</body>
+</html>

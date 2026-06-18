@@ -126,9 +126,10 @@ export default defineConfig({
       title: '凌霄剑域',
       defaultLocale: 'zh',
       locales: {
-        zh: { label: '简体中文', lang: 'zh-CN', sidebar: zhSidebar() },
-        en: { label: 'English', lang: 'en', sidebar: enSidebar() },
+        zh: { label: '简体中文', lang: 'zh-CN' },
+        en: { label: 'English', lang: 'en' },
       },
+      sidebar: zhSidebar(),
       social: [
         { icon: 'github', label: 'GitHub', href: 'https://github.com/hexian2001/lingxiao' },
       ],

@@ -1,0 +1,707 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>凌霄剑域 · LingXiao — AI 工程指挥系统</title>
+<meta name="description" content="给 AI 一个工程内核，而不只是一个对话框。专家团协同、任务 DAG 编排、全状态同步——让复杂工程可调度、可审查、可恢复。">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%E5%89%91%3C/text%3E%3C/svg%3E">
+<style>
+/* ===== 古籍宣纸设计令牌 ===== */
+/* 核心理念：宣纸为底，浓墨为体，暗金为饰，朱砂为印，留白为境 */
+:root{
+  /* 宣纸色 —— 微黄暖白，有纤维温润感 */
+  --paper:#f4ede0;          /* 宣纸本色 */
+  --paper-bright:#faf5ea;   /* 宣纸亮部 */
+  --paper-dim:#e8dfce;      /* 宣纸暗部 */
+  --paper-deep:#ddd2bc;     /* 宣纸深部 */
+  /* 墨色 —— 浓淡干湿，温暖偏褐 */
+  --ink:#2a2218;            /* 浓墨：近乎焦墨，温暖深褐 */
+  --ink-mid:#4a3f30;        /* 中墨 */
+  --ink-light:#6b5e4a;      /* 淡墨 */
+  --ink-wash:#8a7d68;       /* 清墨 */
+  --ink-faint:#a89a82;      /* 飞白 */
+  /* 金 —— 旧金暗铜，沉而不亮 */
+  --gold:#a8895a;           /* 暗金 */
+  --gold-bright:#c4a468;    /* 金粉 */
+  --gold-deep:#8a6e42;      /* 沉金 */
+  --gold-line:rgba(168,137,90,0.22);
+  --gold-wash:rgba(168,137,90,0.06);
+  /* 朱砂 —— 印泥红，沉稳不艳 */
+  --cinnabar:#a04030;       /* 朱砂 */
+  --cinnabar-light:#c25a48; /* 朱膘 */
+  --cinnabar-wash:rgba(160,64,48,0.06);
+  /* 翠 —— 石绿，矿物色 */
+  --jade:#5a8a6a;
+  --jade-wash:rgba(90,138,106,0.06);
+  /* 文字 */
+  --fg:var(--ink);           /* 浓墨文字 */
+  --fg-muted:var(--ink-light); /* 淡墨文字 */
+  --fg-dim:var(--ink-wash);   /* 清墨文字 */
+  /* 字体 */
+  --font-sans:'Noto Sans SC','Inter',-apple-system,system-ui,sans-serif;
+  --font-serif:'Noto Serif SC','Songti SC','STSong',serif;
+  --font-mono:'JetBrains Mono','Fira Code','SF Mono',monospace;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;font-size:16px}
+body{
+  font-family:var(--font-sans);
+  background:var(--paper);
+  color:var(--fg);
+  position:relative;
+  overflow-x:hidden;
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
+  line-height:1.6;
+}
+a{color:inherit;text-decoration:none}
+img{max-width:100%;display:block}
+
+/* ===== 宣纸纹理背景层 ===== */
+.paper-texture{
+  position:fixed;inset:0;z-index:0;pointer-events:none;
+  background:
+    radial-gradient(ellipse 1200px 800px at 50% 0%,rgba(250,245,234,0.6),transparent 70%),
+    radial-gradient(ellipse 800px 600px at 20% 80%,rgba(168,137,90,0.03),transparent 60%),
+    radial-gradient(ellipse 800px 600px at 80% 40%,rgba(160,64,48,0.02),transparent 60%);
+}
+/* 宣纸纤维感微纹理 */
+.paper-grain{
+  position:fixed;inset:0;z-index:0;pointer-events:none;
+  opacity:0.4;
+  background-image:
+    repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(168,137,90,0.012) 2px,rgba(168,137,90,0.012) 3px),
+    repeating-linear-gradient(90deg,transparent,transparent 3px,rgba(168,137,90,0.008) 3px,rgba(168,137,90,0.008) 4px);
+}
+
+/* ===== 导航 ===== */
+.nav{
+  position:fixed;top:0;left:0;right:0;z-index:100;
+  background:rgba(244,237,224,0.82);
+  backdrop-filter:blur(14px);
+  -webkit-backdrop-filter:blur(14px);
+  border-bottom:1px solid var(--gold-line);
+}
+.nav-inner{
+  max-width:1200px;margin:0 auto;padding:0 2rem;height:60px;
+  display:flex;align-items:center;justify-content:space-between;
+}
+.nav-brand{display:flex;align-items:center;gap:0.625rem;font-weight:600;font-size:1rem;color:var(--ink)}
+.nav-brand .brand-mark{
+  width:30px;height:30px;border-radius:4px;
+  background:var(--cinnabar);border:1px solid var(--gold-deep);
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--font-serif);font-size:1rem;color:var(--paper-bright);font-weight:700;
+  box-shadow:0 1px 3px rgba(160,64,48,0.2);
+}
+.nav-brand .brand-sub{font-size:0.7rem;font-weight:400;color:var(--ink-wash);letter-spacing:0.06em}
+.nav-links{display:flex;align-items:center;gap:2rem}
+.nav-links a{font-size:0.85rem;color:var(--ink-light);transition:color 0.2s}
+.nav-links a:hover{color:var(--ink)}
+.nav-cta{
+  padding:0.4rem 1.1rem;border-radius:4px;
+  background:var(--gold-wash);color:var(--gold-deep)!important;
+  font-weight:500;font-size:0.82rem;border:1px solid var(--gold-line);
+  transition:all 0.2s;
+}
+.nav-cta:hover{background:rgba(168,137,90,0.12);color:var(--ink)!important}
+
+/* ===== 通用 ===== */
+.container{max-width:1200px;margin:0 auto;padding:0 2rem;position:relative;z-index:1}
+.section{padding:6rem 0;position:relative;z-index:1}
+.section-label{
+  font-size:0.75rem;font-weight:600;letter-spacing:0.15em;text-transform:uppercase;
+  color:var(--gold-deep);margin-bottom:0.75rem;
+}
+.section-title{
+  font-family:var(--font-serif);font-size:2.2rem;font-weight:700;
+  color:var(--ink);margin-bottom:0.75rem;letter-spacing:-0.01em;
+}
+.section-desc{font-size:1rem;color:var(--fg-muted);max-width:600px;line-height:1.7}
+
+/* ===== Hero ===== */
+.hero{
+  min-height:100vh;display:flex;align-items:center;justify-content:center;
+  position:relative;z-index:1;padding:8rem 2rem 4rem;
+}
+.hero-content{max-width:860px;text-align:center;margin:0 auto}
+.hero-eyebrow{
+  display:inline-flex;align-items:center;gap:0.5rem;
+  padding:0.35rem 0.9rem;border-radius:100px;
+  background:var(--cinnabar-wash);border:1px solid rgba(160,64,48,0.15);
+  font-size:0.75rem;color:var(--cinnabar);font-weight:500;
+  margin-bottom:1.75rem;
+}
+.hero-eyebrow .dot{width:6px;height:6px;border-radius:50%;background:var(--cinnabar);animation:pulse 2s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:0.4}50%{opacity:0.8}}
+
+.hero-title{
+  font-family:var(--font-serif);
+  font-size:clamp(2.8rem,7vw,5rem);
+  font-weight:900;letter-spacing:-0.02em;line-height:1.1;
+  color:var(--ink);margin-bottom:0.5rem;
+}
+.hero-title .accent{
+  color:var(--cinnabar);
+}
+.hero-subtitle{
+  font-family:var(--font-serif);
+  font-size:clamp(1.1rem,2.5vw,1.4rem);
+  color:var(--ink-light);font-weight:400;letter-spacing:0.02em;
+  margin-bottom:1.5rem;
+}
+.hero-tagline{
+  font-size:1.05rem;color:var(--ink-mid);line-height:1.8;max-width:580px;margin:0 auto 2.5rem;
+}
+.hero-tagline strong{color:var(--ink);font-weight:600}
+
+/* 朱砂印章装饰 */
+.hero-seal{
+  width:56px;height:56px;border-radius:6px;
+  background:var(--cinnabar);
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--font-serif);font-size:1.5rem;font-weight:900;
+  color:var(--paper-bright);
+  box-shadow:0 2px 8px rgba(160,64,48,0.25);
+  border:2px solid rgba(160,64,48,0.3);
+  margin:0 auto 2rem;
+}
+
+.hero-cta{display:flex;gap:1rem;justify-content:center;flex-wrap:wrap}
+.btn{
+  display:inline-flex;align-items:center;gap:0.5rem;
+  padding:0.7rem 1.6rem;border-radius:4px;font-size:0.9rem;font-weight:500;
+  transition:all 0.2s;cursor:pointer;border:none;
+}
+.btn-primary{
+  background:var(--ink);color:var(--paper-bright);
+}
+.btn-primary:hover{background:var(--ink-mid);transform:translateY(-1px)}
+.btn-ghost{
+  background:transparent;color:var(--ink);
+  border:1px solid var(--gold-line);
+}
+.btn-ghost:hover{border-color:var(--gold);color:var(--gold-deep)}
+
+/* ===== 特性卡片 ===== */
+.features-grid{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:1.25rem;margin-top:3rem;
+}
+.feature-card{
+  padding:2rem 1.75rem;border-radius:4px;
+  background:var(--paper-bright);border:1px solid var(--gold-line);
+  transition:all 0.3s;position:relative;overflow:hidden;
+  box-shadow:0 1px 3px rgba(42,34,24,0.04);
+}
+.feature-card:hover{
+  border-color:var(--gold);
+  transform:translateY(-2px);
+  box-shadow:0 6px 20px rgba(42,34,24,0.08);
+}
+.feature-card::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:2px;
+  background:linear-gradient(90deg,transparent,var(--gold),transparent);
+  opacity:0;transition:opacity 0.3s;
+}
+.feature-card:hover::before{opacity:1}
+.feature-icon{
+  width:40px;height:40px;border-radius:4px;
+  background:var(--gold-wash);border:1px solid var(--gold-line);
+  display:flex;align-items:center;justify-content:center;
+  color:var(--gold-deep);margin-bottom:1.25rem;
+}
+.feature-title{font-size:1.05rem;font-weight:600;color:var(--ink);margin-bottom:0.5rem}
+.feature-desc{font-size:0.875rem;color:var(--fg-muted);line-height:1.65}
+
+/* ===== 产品展示 ===== */
+.showcase{padding:6rem 0;position:relative;z-index:1}
+.showcase-img-wrap{
+  position:relative;overflow:hidden;
+  background:var(--paper-dim);
+}
+.showcase-img-wrap img{
+  width:100%;height:100%;object-fit:cover;object-position:top;
+  transition:transform 0.5s ease;
+  filter:saturate(0.88) contrast(0.96);
+}
+.showcase-hero{
+  margin-top:2.5rem;border-radius:6px;overflow:hidden;
+  background:var(--paper-bright);
+  border:1px solid var(--gold-line);
+  box-shadow:0 8px 40px rgba(42,34,24,0.08),0 0 0 1px rgba(168,137,90,0.04);
+  transition:border-color 0.3s,box-shadow 0.3s;
+}
+.showcase-hero:hover{
+  border-color:var(--gold);
+  box-shadow:0 12px 50px rgba(42,34,24,0.12),0 0 0 1px rgba(168,137,90,0.08);
+}
+.showcase-hero:hover .showcase-img-wrap img{transform:scale(1.02)}
+.showcase-overlay{
+  position:absolute;inset:0;
+  background:linear-gradient(to bottom,transparent 55%,rgba(42,34,24,0.85));
+  display:flex;align-items:flex-end;padding:1.5rem 2rem;
+  pointer-events:none;
+}
+.showcase-label{
+  font-size:0.9rem;font-weight:600;color:var(--paper-bright);
+}
+.showcase-label .sub{font-size:0.75rem;font-weight:400;color:rgba(244,237,224,0.7);display:block;margin-top:0.2rem}
+
+/* ===== 架构 ===== */
+.arch-stack{
+  margin-top:3rem;position:relative;
+  display:flex;flex-direction:column;gap:0;
+}
+/* 连接线 */
+.arch-connector{
+  width:2px;height:28px;margin:0 auto;
+  background:linear-gradient(to bottom,var(--gold-line),rgba(168,137,90,0.06));
+  position:relative;
+}
+.arch-connector::after{
+  content:'';position:absolute;bottom:-2px;left:50%;transform:translateX(-50%);
+  width:6px;height:6px;border-radius:50%;
+  background:var(--gold);opacity:0.4;
+}
+.arch-layer{
+  display:grid;grid-template-columns:64px 1fr;gap:1.5rem;align-items:center;
+  padding:1.5rem 2rem;border-radius:6px;
+  border:1px solid var(--gold-line);
+  background:var(--paper-bright);
+  transition:all 0.3s;position:relative;overflow:hidden;
+  box-shadow:0 1px 3px rgba(42,34,24,0.03);
+}
+.arch-layer::before{
+  content:'';position:absolute;left:0;top:0;bottom:0;width:3px;
+  background:linear-gradient(to bottom,transparent,var(--gold),transparent);
+  opacity:0;transition:opacity 0.3s;
+}
+.arch-layer:hover{
+  border-color:var(--gold);
+  box-shadow:0 4px 16px rgba(42,34,24,0.06);
+}
+.arch-layer:hover::before{opacity:0.6}
+.arch-layer-num{
+  width:48px;height:48px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--font-serif);font-size:1.3rem;font-weight:700;
+  color:var(--cinnabar);
+  border:1px solid rgba(160,64,48,0.2);
+  background:var(--cinnabar-wash);
+  flex-shrink:0;
+}
+.arch-layer-body{display:flex;flex-direction:column;gap:0.25rem}
+.arch-layer-head{
+  display:flex;align-items:baseline;gap:0.75rem;
+}
+.arch-layer-name{font-size:1rem;font-weight:600;color:var(--ink)}
+.arch-layer-tag{
+  font-size:0.65rem;letter-spacing:0.1em;text-transform:uppercase;
+  color:var(--gold-deep);opacity:0.7;font-weight:500;
+}
+.arch-layer-desc{font-size:0.8rem;color:var(--fg-muted);line-height:1.6}
+.arch-layer-tech{
+  display:flex;gap:0.5rem;flex-wrap:wrap;margin-top:0.4rem;
+}
+.arch-tech-pill{
+  font-size:0.65rem;padding:0.15rem 0.5rem;border-radius:3px;
+  background:var(--gold-wash);color:var(--ink-light);
+  border:1px solid var(--gold-line);
+}
+
+/* ===== 对比 ===== */
+.compare{
+  margin-top:3.5rem;display:grid;grid-template-columns:1fr auto 1fr;gap:0;
+  border-radius:6px;overflow:hidden;
+  border:1px solid var(--gold-line);
+  background:var(--paper-bright);
+  box-shadow:0 2px 12px rgba(42,34,24,0.04);
+}
+/* 左列：专业 Coding 工具 */
+.compare-trad{
+  padding:2rem 1.75rem;border-right:none;
+}
+.compare-trad-head{
+  font-size:0.75rem;letter-spacing:0.15em;text-transform:uppercase;
+  color:var(--ink-wash);margin-bottom:1.5rem;font-weight:600;
+  display:flex;align-items:center;gap:0.5rem;
+}
+.compare-trad-head::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,rgba(138,125,104,0.3),transparent)}
+/* 中间 VS 分隔 */
+.compare-vs{
+  display:flex;align-items:center;justify-content:center;
+  width:48px;position:relative;
+  background:linear-gradient(180deg,transparent,var(--gold-wash),transparent);
+}
+.compare-vs::before{
+  content:'';position:absolute;top:0;bottom:0;left:50%;width:1px;
+  background:linear-gradient(180deg,transparent,var(--gold-line),transparent);
+}
+.compare-vs span{
+  font-family:var(--font-serif);font-size:0.7rem;letter-spacing:0.1em;
+  color:var(--gold-deep);writing-mode:vertical-rl;text-orientation:mixed;
+  opacity:0.7;
+}
+/* 右列：凌霄 */
+.compare-lx{
+  padding:2rem 1.75rem;
+  background:linear-gradient(135deg,var(--cinnabar-wash),transparent 60%);
+}
+.compare-lx-head{
+  font-size:0.75rem;letter-spacing:0.15em;text-transform:uppercase;
+  color:var(--cinnabar);margin-bottom:1.5rem;font-weight:600;
+  display:flex;align-items:center;gap:0.5rem;
+}
+.compare-lx-head::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,rgba(160,64,48,0.25),transparent)}
+/* 对比行 */
+.compare-item{margin-bottom:1.1rem}
+.compare-item:last-child{margin-bottom:0}
+.compare-item-label{
+  font-size:0.7rem;color:var(--ink-wash);letter-spacing:0.05em;
+  margin-bottom:0.25rem;text-transform:uppercase;font-weight:500;
+}
+.compare-item-trad{
+  font-size:0.85rem;color:var(--ink-wash);
+  text-decoration:line-through;text-decoration-color:rgba(160,64,48,0.3);
+  text-decoration-thickness:1px;
+  opacity:0.7;
+}
+.compare-item-lx{
+  font-size:0.85rem;color:var(--ink);font-weight:500;
+  display:flex;align-items:center;gap:0.4rem;
+}
+.compare-item-lx::before{
+  content:'';width:4px;height:4px;border-radius:50%;
+  background:var(--cinnabar);flex-shrink:0;
+  box-shadow:0 0 6px rgba(160,64,48,0.3);
+}
+.compare-item-lx .accent{color:var(--cinnabar-light)}
+
+/* ===== Footer ===== */
+.footer{
+  padding:3rem 0 2rem;border-top:1px solid var(--gold-line);
+  position:relative;z-index:1;
+  background:var(--paper-dim);
+}
+.footer-inner{
+  max-width:1200px;margin:0 auto;padding:0 2rem;
+  display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem;
+}
+.footer-brand{display:flex;align-items:center;gap:0.5rem;font-size:0.85rem;color:var(--ink-light)}
+.footer-links{display:flex;gap:1.5rem}
+.footer-links a{font-size:0.8rem;color:var(--ink-light);transition:color 0.2s}
+.footer-links a:hover{color:var(--ink)}
+.footer-copy{font-size:0.75rem;color:var(--ink-wash);width:100%;text-align:center;margin-top:1rem;padding-top:1rem;border-top:1px solid var(--gold-line)}
+
+/* ===== 响应式 ===== */
+@media(max-width:900px){
+  .features-grid{grid-template-columns:repeat(2,1fr)}
+  .arch-layer{grid-template-columns:1fr;gap:0.75rem;text-align:left}
+  .arch-layer-num{width:40px;height:40px;font-size:1.1rem}
+  .compare{grid-template-columns:1fr;gap:0}
+  .compare-vs{width:100%;height:40px}
+  .compare-vs span{writing-mode:horizontal-tb}
+  .compare-vs::before{width:100%;height:1px;background:linear-gradient(90deg,transparent,var(--gold-line),transparent)}
+  .compare-trad{border-right:none;border-bottom:none}
+  .compare-item-trad{font-size:0.8rem}
+  .compare-item-lx{font-size:0.8rem}
+}
+@media(max-width:600px){
+  .features-grid{grid-template-columns:1fr}
+  .arch-layer{padding:1.25rem 1rem}
+  .nav-links a:not(.nav-cta){display:none}
+  .section{padding:4rem 0}
+  .hero{padding:6rem 1.5rem 3rem}
+  .container{padding:0 1.5rem}
+}
+
+/* ===== 滚动动画 ===== */
+.fade-up{opacity:0;transform:translateY(24px);transition:opacity 0.6s ease,transform 0.6s ease}
+.fade-up.visible{opacity:1;transform:translateY(0)}
+</style>
+</head>
+<body>
+
+<!-- ===== 宣纸纹理背景层 ===== -->
+<div class="paper-texture"></div>
+<div class="paper-grain"></div>
+
+<!-- ===== 导航 ===== -->
+<nav class="nav">
+  <div class="nav-inner">
+    <a href="/" class="nav-brand">
+      <span class="brand-mark">剑</span>
+      <span>凌霄剑域</span>
+      <span class="brand-sub">LingXiao</span>
+    </a>
+    <div class="nav-links">
+      <a href="#features">特性</a>
+      <a href="#showcase">产品展示</a>
+      <a href="#architecture">架构</a>
+      <a href="/docs/getting-started/introduction/">文档</a>
+      <a href="https://github.com/hexian2001/lingxiao" target="_blank" rel="noopener">GitHub</a>
+      <a href="/docs/getting-started/introduction/" class="nav-cta">快速上手</a>
+    </div>
+  </div>
+</nav>
+
+<!-- ===== Hero ===== -->
+<section class="hero">
+  <div class="hero-content">
+    <div class="hero-seal">剑</div>
+    <div class="hero-eyebrow"><span class="dot"></span> v0.3.9 · 开源 AGPL-3.0</div>
+    <h1 class="hero-title">凌霄<span class="accent">剑域</span></h1>
+    <p class="hero-subtitle">LingXiao — AI 工程指挥系统</p>
+    <p class="hero-tagline">
+      给 AI 一个<strong>工程内核</strong>，而不只是一个对话框。<br>
+      专家团协同、任务 DAG 编排、全状态同步——<br>
+      让复杂工程<strong>可调度、可审查、可恢复</strong>。
+    </p>
+    <div class="hero-cta">
+      <a href="/docs/getting-started/introduction/" class="btn btn-primary">
+        快速上手
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+      </a>
+      <a href="https://github.com/hexian2001/lingxiao" target="_blank" rel="noopener" class="btn btn-ghost">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+        GitHub
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ===== 核心特性 ===== -->
+<section class="section" id="features">
+  <div class="container">
+    <div class="section-label fade-up">核心特性</div>
+    <h2 class="section-title fade-up">不只是一个对话框</h2>
+    <p class="section-desc fade-up">凌霄把"和模型聊天"升级成"指挥一个可观测、可恢复、可审查的 AI 专家团队"。你给目标，Leader 负责判断、拆解、规划、建 DAG、组专家团、派发任务。</p>
+    <div class="features-grid">
+      <div class="feature-card fade-up">
+        <div class="feature-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="3"/><path d="M6 21v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2"/><circle cx="5" cy="11" r="2"/><circle cx="19" cy="11" r="2"/></svg></div>
+        <h3 class="feature-title">专家团协同</h3>
+        <p class="feature-desc">Leader + Architect + Frontend + Backend + QA + Verify 多角色并行。每个 Worker 上下文隔离，按角色和技能精准分派，P2P 消息总线协调跨栈契约。</p>
+      </div>
+      <div class="feature-card fade-up">
+        <div class="feature-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="6" r="2"/><circle cx="18" cy="6" r="2"/><circle cx="12" cy="18" r="2"/><path d="M6 8v3a3 3 0 0 0 3 3h6a3 3 0 0 0 3-3V8"/><path d="M12 14v2"/></svg></div>
+        <h3 class="feature-title">任务 DAG 编排</h3>
+        <p class="feature-desc">任务以有向无环图组织，依赖关系显式声明。blocked_by 自动阻塞，write_scope 正交校验并行安全，全状态可追溯。</p>
+      </div>
+      <div class="feature-card fade-up">
+        <div class="feature-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16"/><path d="M16 16h5v5"/></svg></div>
+        <h3 class="feature-title">全状态同步</h3>
+        <p class="feature-desc">WebUI / TUI 双端实时同步完整运行态。任务板、Agent 状态、工作笔记、黑板契约——所有中间过程可观测、可审查。</p>
+      </div>
+      <div class="feature-card fade-up">
+        <div class="feature-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg></div>
+        <h3 class="feature-title">真实工具内核</h3>
+        <p class="feature-desc">不是模拟调用。文件读写、Shell 执行、Git 操作、HTTP 请求、浏览器自动化——Worker 拿到的是真实工具权限和沙箱隔离。</p>
+      </div>
+      <div class="feature-card fade-up">
+        <div class="feature-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="13" y2="17"/></svg></div>
+        <h3 class="feature-title">契约驱动</h3>
+        <p class="feature-desc">跨栈接口用 graph_contract 固化。前后端 Worker 消费同一份契约，偏差自动检测，验收基于证据矩阵而非自述完成。</p>
+      </div>
+      <div class="feature-card fade-up">
+        <div class="feature-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18.178 8c5.096 0 5.096 8 0 8-5.095 0-7.133-8-12.739-8-4.585 0-4.585 8 0 8 5.606 0 7.644-8 12.74-8z"/></svg></div>
+        <h3 class="feature-title">Eternal 自治</h3>
+        <p class="feature-desc">授权后 Leader 自主决策、自主修复、自主推进。ask_user 反注入对话上下文，不阻塞执行流。会话可恢复，工程不丢失。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== 产品展示 ===== -->
+<section class="section showcase" id="showcase">
+  <div class="container">
+    <div class="section-label fade-up">产品展示</div>
+    <h2 class="section-title fade-up">看见工程的全貌</h2>
+    <p class="section-desc fade-up">从任务编排到 Agent 协同，从黑板契约到插件市场——凌霄的每个界面都是工程可观测性的窗口。</p>
+
+    <!-- 大图：Chat 对话界面 -->
+    <div class="showcase-hero fade-up">
+      <div class="showcase-img-wrap" style="aspect-ratio:1440/900">
+        <img src="/screenshots/chat-fresh.png" alt="凌霄剑域对话指挥界面" loading="lazy">
+      </div>
+      <div class="showcase-overlay">
+        <div class="showcase-label">对话指挥<span class="sub">Leader 接收目标 · 拆解任务 · 派发专家团 · 实时状态同步</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== 架构 ===== -->
+<section class="section" id="architecture">
+  <div class="container">
+    <div class="section-label fade-up">系统架构</div>
+    <h2 class="section-title fade-up">工程内核四层</h2>
+    <p class="section-desc fade-up">从指挥层到执行层，每一层都有明确的职责边界和可观测接口。</p>
+    <div class="arch-stack">
+      <div class="arch-layer fade-up">
+        <div class="arch-layer-num">壹</div>
+        <div class="arch-layer-body">
+          <div class="arch-layer-head">
+            <span class="arch-layer-name">指挥层</span>
+            <span class="arch-layer-tag">Command</span>
+          </div>
+          <div class="arch-layer-desc">Leader 判断复杂度、拆解目标、建 DAG、组专家团、验收交付</div>
+          <div class="arch-layer-tech">
+            <span class="arch-tech-pill">复杂度判断</span>
+            <span class="arch-tech-pill">目标拆解</span>
+            <span class="arch-tech-pill">专家团组建</span>
+            <span class="arch-tech-pill">验收交付</span>
+          </div>
+        </div>
+      </div>
+      <div class="arch-connector"></div>
+      <div class="arch-layer fade-up">
+        <div class="arch-layer-num">贰</div>
+        <div class="arch-layer-body">
+          <div class="arch-layer-head">
+            <span class="arch-layer-name">编排层</span>
+            <span class="arch-layer-tag">Orchestration</span>
+          </div>
+          <div class="arch-layer-desc">任务图状态机、依赖阻塞、write_scope 正交、契约 gate</div>
+          <div class="arch-layer-tech">
+            <span class="arch-tech-pill">DAG 状态机</span>
+            <span class="arch-tech-pill">blocked_by</span>
+            <span class="arch-tech-pill">write_scope 正交</span>
+            <span class="arch-tech-pill">契约 gate</span>
+          </div>
+        </div>
+      </div>
+      <div class="arch-connector"></div>
+      <div class="arch-layer fade-up">
+        <div class="arch-layer-num">叁</div>
+        <div class="arch-layer-body">
+          <div class="arch-layer-head">
+            <span class="arch-layer-name">执行层</span>
+            <span class="arch-layer-tag">Execution</span>
+          </div>
+          <div class="arch-layer-desc">Worker 专家上下文隔离、真实工具调用、沙箱权限分级</div>
+          <div class="arch-layer-tech">
+            <span class="arch-tech-pill">上下文隔离</span>
+            <span class="arch-tech-pill">真实工具</span>
+            <span class="arch-tech-pill">沙箱权限</span>
+            <span class="arch-tech-pill">P2P 消息</span>
+          </div>
+        </div>
+      </div>
+      <div class="arch-connector"></div>
+      <div class="arch-layer fade-up">
+        <div class="arch-layer-num">肆</div>
+        <div class="arch-layer-body">
+          <div class="arch-layer-head">
+            <span class="arch-layer-name">同步层</span>
+            <span class="arch-layer-tag">Sync</span>
+          </div>
+          <div class="arch-layer-desc">WebUI/TUI 双端实时同步、黑板契约、工作笔记、记忆系统</div>
+          <div class="arch-layer-tech">
+            <span class="arch-tech-pill">WebUI/TUI</span>
+            <span class="arch-tech-pill">黑板契约</span>
+            <span class="arch-tech-pill">工作笔记</span>
+            <span class="arch-tech-pill">记忆持久化</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 对比表 -->
+    <div class="compare fade-up">
+      <!-- 左列：传统 AI -->
+      <div class="compare-trad">
+        <div class="compare-trad-head">专业 Coding 工具</div>
+        <div class="compare-item">
+          <div class="compare-item-label">多 Agent 协同</div>
+          <div class="compare-item-trad">单 Agent / 插件式</div>
+        </div>
+        <div class="compare-item">
+          <div class="compare-item-label">任务编排</div>
+          <div class="compare-item-trad">线性会话 / 手动操作</div>
+        </div>
+        <div class="compare-item">
+          <div class="compare-item-label">工具调用</div>
+          <div class="compare-item-trad">受限 / 需手动确认</div>
+        </div>
+        <div class="compare-item">
+          <div class="compare-item-label">状态恢复</div>
+          <div class="compare-item-trad">会话丢失 / 窗口有限</div>
+        </div>
+        <div class="compare-item">
+          <div class="compare-item-label">验收标准</div>
+          <div class="compare-item-trad">自述完成 / 人工检查</div>
+        </div>
+        <div class="compare-item">
+          <div class="compare-item-label">可观测性</div>
+          <div class="compare-item-trad">终端日志 / 黑盒</div>
+        </div>
+      </div>
+      <!-- 中间 VS 分隔 -->
+      <div class="compare-vs"><span>对·比</span></div>
+      <!-- 右列：凌霄 -->
+      <div class="compare-lx">
+        <div class="compare-lx-head">凌霄剑域</div>
+        <div class="compare-item">
+          <div class="compare-item-label">多 Agent 协同</div>
+          <div class="compare-item-lx">专家团并行 + <span class="accent">P2P 消息总线</span></div>
+        </div>
+        <div class="compare-item">
+          <div class="compare-item-label">任务编排</div>
+          <div class="compare-item-lx"><span class="accent">DAG</span> 依赖图 + 状态机</div>
+        </div>
+        <div class="compare-item">
+          <div class="compare-item-label">工具调用</div>
+          <div class="compare-item-lx">真实工具 + <span class="accent">沙箱隔离</span></div>
+        </div>
+        <div class="compare-item">
+          <div class="compare-item-label">状态恢复</div>
+          <div class="compare-item-lx">会话可恢复 + <span class="accent">记忆持久化</span></div>
+        </div>
+        <div class="compare-item">
+          <div class="compare-item-label">验收标准</div>
+          <div class="compare-item-lx"><span class="accent">证据矩阵</span> + 契约校验</div>
+        </div>
+        <div class="compare-item">
+          <div class="compare-item-label">可观测性</div>
+          <div class="compare-item-lx"><span class="accent">全状态同步</span> + 工作笔记</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== Footer ===== -->
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <span class="nav-brand" style="font-size:0.9rem">
+        <span class="brand-mark" style="width:24px;height:24px;font-size:0.8rem">剑</span>
+        凌霄剑域 LingXiao
+      </span>
+    </div>
+    <div class="footer-links">
+      <a href="/docs/getting-started/introduction/">文档</a>
+      <a href="https://github.com/hexian2001/lingxiao" target="_blank" rel="noopener">GitHub</a>
+      <a href="/docs/getting-started/introduction/">快速上手</a>
+    </div>
+    <div class="footer-copy">凌霄剑域 v0.3.9 · AGPL-3.0 · 给 AI 一个工程内核</div>
+  </div>
+</footer>
+
+<script>
+// 滚动渐入
+const observer=new IntersectionObserver((entries)=>{
+  entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible')});
+},{threshold:0.1,rootMargin:'0px 0px -50px 0px'});
+document.querySelectorAll('.fade-up').forEach(el=>observer.observe(el));
+
+// 错开动画延迟
+document.querySelectorAll('.fade-up').forEach((el,i)=>{
+  const siblings=el.parentElement.querySelectorAll('.fade-up');
+  const idx=Array.from(siblings).indexOf(el);
+  el.style.transitionDelay=(idx*0.08)+'s';
+});
+</script>
+</body>
+</html>

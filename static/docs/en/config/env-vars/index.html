@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Environment Variables | 凌霄剑域</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%E5%89%91%3C/text%3E%3C/svg%3E">
+<style>
+/* ===== 古籍宣纸设计令牌（与首页同步） ===== */
+:root{
+  --paper:#f4ede0;--paper-bright:#faf5ea;--paper-dim:#e8dfce;--paper-deep:#ddd2bc;
+  --ink:#2a2218;--ink-mid:#4a3f30;--ink-light:#6b5e4a;--ink-wash:#8a7d68;--ink-faint:#a89a82;
+  --gold:#a8895a;--gold-bright:#c4a468;--gold-deep:#8a6e42;
+  --gold-line:rgba(168,137,90,0.22);--gold-wash:rgba(168,137,90,0.06);
+  --cinnabar:#a04030;--cinnabar-light:#c25a48;--cinnabar-wash:rgba(160,64,48,0.06);
+  --jade:#5a8a6a;--jade-wash:rgba(90,138,106,0.06);
+  --fg:var(--ink);--fg-muted:var(--ink-light);--fg-dim:var(--ink-wash);
+  --font-sans:'Noto Sans SC','Inter',-apple-system,system-ui,sans-serif;
+  --font-serif:'Noto Serif SC','Songti SC','STSong',serif;
+  --font-mono:'JetBrains Mono','Fira Code','SF Mono',monospace;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;font-size:16px}
+body{font-family:var(--font-sans);background:var(--paper);color:var(--fg);position:relative;overflow-x:hidden;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;line-height:1.6}
+
+/* 宣纸纹理背景 */
+.paper-texture{position:fixed;inset:0;z-index:0;pointer-events:none;
+  background:radial-gradient(ellipse 1200px 800px at 50% 0%,rgba(250,245,234,0.6),transparent 70%),radial-gradient(ellipse 800px 600px at 20% 80%,rgba(168,137,90,0.03),transparent 60%),radial-gradient(ellipse 800px 600px at 80% 40%,rgba(160,64,48,0.02),transparent 60%)}
+.paper-grain{position:fixed;inset:0;z-index:0;pointer-events:none;opacity:0.4;
+  background-image:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(168,137,90,0.012) 2px,rgba(168,137,90,0.012) 3px),repeating-linear-gradient(90deg,transparent,transparent 3px,rgba(168,137,90,0.008) 3px,rgba(168,137,90,0.008) 4px)}
+
+/* 导航 */
+.nav{position:fixed;top:0;left:0;right:0;z-index:100;backdrop-filter:blur(20px) saturate(140%);-webkit-backdrop-filter:blur(20px) saturate(140%);background:rgba(244,237,224,0.85);border-bottom:1px solid var(--gold-line)}
+.nav-inner{max-width:1400px;margin:0 auto;padding:0.75rem 1.5rem;display:flex;align-items:center;justify-content:space-between}
+.nav-brand{display:flex;align-items:center;gap:0.625rem;font-weight:700;font-size:1.05rem;color:var(--ink);text-decoration:none}
+.nav-brand .brand-mark{width:32px;height:32px;border-radius:8px;background:linear-gradient(135deg,var(--gold),var(--gold-bright));display:flex;align-items:center;justify-content:center;font-family:var(--font-serif);font-size:1.1rem;color:var(--paper-bright);font-weight:900}
+.nav-brand .brand-sub{font-size:0.7rem;font-weight:500;color:var(--fg-dim);letter-spacing:0.05em}
+.nav-links{display:flex;align-items:center;gap:1.5rem}
+.nav-links a{font-size:0.875rem;color:var(--fg-muted);text-decoration:none;transition:color 0.2s}
+.nav-links a:hover{color:var(--gold-deep)}
+
+/* 文档布局 */
+.doc-layout{position:relative;z-index:1;display:flex;max-width:1400px;margin:0 auto;padding-top:64px;min-height:100vh}
+
+/* 侧栏 */
+.doc-sidebar{position:sticky;top:64px;width:260px;height:calc(100vh - 64px);overflow-y:auto;padding:1.5rem 0.75rem;border-right:1px solid var(--gold-line);flex-shrink:0}
+.sidebar-group{margin-bottom:1.5rem}
+.sidebar-group-label{font-size:0.7rem;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:var(--fg-dim);padding:0 0.875rem 0.5rem}
+.sidebar-link{display:block;padding:0.4rem 0.875rem;border-radius:6px;font-size:0.82rem;color:var(--fg-muted);text-decoration:none;transition:all 0.15s;line-height:1.5}
+.sidebar-link:hover{background:var(--gold-wash);color:var(--ink)}
+.sidebar-link.active{background:var(--gold-wash);color:var(--gold-deep);font-weight:600;border-left:2px solid var(--gold)}
+
+/* 主内容 */
+.doc-main{flex:1;padding:2rem 3rem;max-width:900px;min-width:0}
+.doc-content h1{font-family:var(--font-serif);font-size:2.2rem;font-weight:700;margin-bottom:1.5rem;color:var(--ink);letter-spacing:0.02em}
+.doc-content h2{font-family:var(--font-serif);font-size:1.5rem;font-weight:600;margin:2rem 0 1rem;color:var(--ink-mid);border-bottom:1px solid var(--gold-line);padding-bottom:0.5rem}
+.doc-content h3{font-size:1.15rem;font-weight:600;margin:1.5rem 0 0.75rem;color:var(--ink-mid)}
+.doc-content p{font-size:0.9rem;line-height:1.8;color:var(--fg-muted);margin-bottom:1rem}
+.doc-content strong{color:var(--gold-deep);font-weight:600}
+.doc-content a{color:var(--cinnabar);text-decoration:none;transition:color 0.2s;border-bottom:1px solid transparent}
+.doc-content a:hover{color:var(--cinnabar-light);border-bottom-color:var(--cinnabar-light)}
+.doc-content ul,.doc-content ol{margin:0.5rem 0 1rem 1.5rem}
+.doc-content li{font-size:0.9rem;line-height:1.8;color:var(--fg-muted);margin-bottom:0.25rem}
+.doc-content blockquote{border-left:3px solid var(--gold);padding:0.5rem 1rem;margin:1rem 0;background:var(--gold-wash);border-radius:0 6px 6px 0;color:var(--fg-muted);font-size:0.875rem;font-style:italic}
+.doc-content code{font-family:var(--font-mono);font-size:0.82rem;background:var(--paper-dim);padding:0.15rem 0.4rem;border-radius:4px;color:var(--cinnabar)}
+.doc-content pre{background:var(--paper-bright);border:1px solid var(--gold-line);border-radius:8px;padding:1rem;overflow-x:auto;margin:1rem 0}
+.doc-content pre code{background:none;padding:0;font-size:0.8rem;color:var(--ink-mid);line-height:1.6}
+.doc-content hr{border:none;border-top:1px solid var(--gold-line);margin:2rem 0}
+.doc-content .table-wrap{overflow-x:auto;margin:1rem 0}
+.doc-content table{width:100%;border-collapse:collapse;font-size:0.85rem}
+.doc-content th{padding:0.625rem 0.875rem;text-align:left;border-bottom:2px solid var(--gold-line);color:var(--ink);font-weight:600}
+.doc-content td{padding:0.5rem 0.875rem;border-bottom:1px solid var(--gold-line);color:var(--fg-muted)}
+.doc-content .ascii-art-removed{padding:0.75rem 1rem;border:1px dashed var(--gold-line);border-radius:6px;color:var(--fg-dim);font-size:0.8rem;margin:1rem 0;text-align:center}
+
+/* 上下页导航 */
+.prev-next{display:flex;justify-content:space-between;margin-top:3rem;padding-top:1.5rem;border-top:1px solid var(--gold-line);gap:1rem}
+.prev-next a{display:flex;flex-direction:column;gap:0.25rem;padding:0.75rem 1rem;border:1px solid var(--gold-line);border-radius:8px;text-decoration:none;transition:all 0.2s;max-width:48%}
+.prev-next a:hover{border-color:var(--gold);background:var(--gold-wash)}
+.prev-next .pn-label{font-size:0.72rem;color:var(--fg-dim)}
+.prev-next .pn-title{font-size:0.85rem;color:var(--ink);font-weight:500}
+.prev-next .next-page{text-align:right;margin-left:auto}
+.prev-page .pn-title{text-align:left}
+
+/* 响应式 */
+@media(max-width:900px){
+  .doc-sidebar{display:none}
+  .doc-main{padding:1.5rem 1rem}
+  .nav-links a:not(.nav-cta){display:none}
+}
+</style>
+</head>
+<body>
+<div class="paper-texture"></div>
+<div class="paper-grain"></div>
+<nav class="nav"><div class="nav-inner">
+  <a href="/" class="nav-brand"><span class="brand-mark">剑</span><span>凌霄剑域</span><span class="brand-sub">LingXiao</span></a>
+  <div class="nav-links">
+    <a href="/docs/en/getting-started/introduction/">文档</a>
+    <a href="https://github.com/hexian2001/lingxiao" target="_blank" rel="noopener">GitHub</a>
+    <a href="/docs/en/getting-started/introduction/" class="nav-cta" style="padding:0.4rem 1rem;border-radius:8px;background:var(--gold-wash);color:var(--gold-deep);font-weight:600;font-size:0.8rem;border:1px solid var(--gold-line)">快速上手</a>
+  </div>
+</div></nav>
+<div class="doc-layout">
+  <aside class="doc-sidebar">
+<div class="sidebar-group">
+<div class="sidebar-group-label">Getting Started</div>
+<a href="/docs/en/getting-started/introduction/" class="sidebar-link">Introduction</a>
+<a href="/docs/en/getting-started/install/" class="sidebar-link">Installation</a>
+<a href="/docs/en/getting-started/connect-models/" class="sidebar-link">Connect Models</a>
+<a href="/docs/en/getting-started/first-run/" class="sidebar-link">First Run</a>
+</div>
+<div class="sidebar-group">
+<div class="sidebar-group-label">Core Features</div>
+<a href="/docs/en/core/expert-team/" class="sidebar-link">Expert Panel</a>
+<a href="/docs/en/core/task-dag/" class="sidebar-link">Task DAG</a>
+<a href="/docs/en/core/state-sync/" class="sidebar-link">State Sync</a>
+<a href="/docs/en/core/webui/" class="sidebar-link">WebUI Center</a>
+<a href="/docs/en/core/tool-kernel/" class="sidebar-link">Tool Kernel</a>
+<a href="/docs/en/core/orchestration/" class="sidebar-link">Orchestration</a>
+<a href="/docs/en/core/mcp-skills/" class="sidebar-link">MCP Forge &amp; Skills</a>
+<a href="/docs/en/core/memory/" class="sidebar-link">Memory</a>
+<a href="/docs/en/core/eternal/" class="sidebar-link">Eternal Mode</a>
+<a href="/docs/en/core/llm-gateway/" class="sidebar-link">LLM Gateway</a>
+</div>
+<div class="sidebar-group">
+<div class="sidebar-group-label">Configuration</div>
+<a href="/docs/en/config/env-vars/" class="sidebar-link active">Environment Variables</a>
+<a href="/docs/en/config/models/" class="sidebar-link">Models</a>
+<a href="/docs/en/config/permissions/" class="sidebar-link">Permissions</a>
+<a href="/docs/en/config/network/" class="sidebar-link">Network</a>
+<a href="/docs/en/config/theme/" class="sidebar-link">Theme</a>
+<a href="/docs/en/config/custom-commands/" class="sidebar-link">Custom Commands</a>
+<a href="/docs/en/config/mcp/" class="sidebar-link">MCP</a>
+<a href="/docs/en/config/agents/" class="sidebar-link">Agents</a>
+<a href="/docs/en/config/skills/" class="sidebar-link">Skills</a>
+<a href="/docs/en/config/rules/" class="sidebar-link">Rules</a>
+</div>
+<div class="sidebar-group">
+<div class="sidebar-group-label">Reference</div>
+<a href="/docs/en/reference/cli/" class="sidebar-link">CLI</a>
+<a href="/docs/en/reference/slash-commands/" class="sidebar-link">Slash Commands</a>
+<a href="/docs/en/reference/architecture/" class="sidebar-link">Architecture</a>
+<a href="/docs/en/reference/api-index/" class="sidebar-link">API Index</a>
+<a href="/docs/en/reference/faq/" class="sidebar-link">FAQ</a>
+<a href="/docs/en/reference/security/" class="sidebar-link">Security</a>
+<a href="/docs/en/reference/changelog/" class="sidebar-link">Changelog</a>
+</div>
+  </aside>
+  <main class="doc-main">
+    <div class="doc-content">
+<h1>Environment Variables</h1>
+<p>LingXiao is configured via <code>LINGXIAO_</code> prefixed environment variables, or in <code>~/.lingxiao/settings.json</code>. Environment variables take precedence over config files.</p>
+<p>Configuration is defined in <code>src/config.ts</code> with defaults in <code>src/config/defaults.ts</code>. The current schema version is <code>ConfigSchema v3</code>, parsed with Zod.</p>
+<h2>Complete Environment Variable Table</h2>
+<h3>LLM & Models</h3>
+<div class="table-wrap"><table>
+<thead><tr>
+<th>Variable</th>
+<th>Config Path</th>
+<th>Type</th>
+<th>Description</th>
+</tr></thead><tbody>
+<tr>
+<td><code>LINGXIAO_LLM_PROVIDER</code></td>
+<td><code>llm.provider</code></td>
+<td>string</td>
+<td><code>auto</code> / <code>openai</code> / <code>anthropic</code></td>
+</tr>
+<tr>
+<td><code>LINGXIAO_LEADER_MODEL</code></td>
+<td><code>llm.leader_model</code></td>
+<td>string</td>
+<td>Leader model</td>
+</tr>
+<tr>
+<td><code>LINGXIAO_AGENT_MODEL</code></td>
+<td><code>llm.agent_model</code></td>
+<td>string</td>
+<td>Worker model</td>
+</tr>
+<tr>
+<td><code>LINGXIAO_WIKI_MODEL</code></td>
+<td><code>llm.wiki_model</code></td>
+<td>string</td>
+<td>Wiki knowledge summary model</td>
+</tr>
+<tr>
+<td><code>LINGXIAO_ENABLE_STREAMING</code></td>
+<td><code>llm.enable_streaming</code></td>
+<td>boolean</td>
+<td>Enable streaming output</td>
+</tr>
+</tbody></table></div>
+<h3>API Keys & Endpoints</h3>
+<div class="table-wrap"><table>
+<thead><tr>
+<th>Variable</th>
+<th>Description</th>
+</tr></thead><tbody>
+<tr>
+<td><code>LINGXIAO_OPENAI_API_KEY</code></td>
+<td>OpenAI or compatible API key</td>
+</tr>
+<tr>
+<td><code>LINGXIAO_OPENAI_BASE_URL</code></td>
+<td>OpenAI compatible endpoint URL</td>
+</tr>
+<tr>
+<td><code>LINGXIAO_ANTHROPIC_API_KEY</code></td>
+<td>Anthropic API key</td>
+</tr>
+<tr>
+<td><code>LINGXIAO_ANTHROPIC_BASE_URL</code></td>
+<td>Anthropic endpoint URL</td>
+</tr>
+</tbody></table></div>
+<h3>Agent & Orchestration</h3>
+<div class="table-wrap"><table>
+<thead><tr>
+<th>Variable</th>
+<th>Config Path</th>
+<th>Type</th>
+<th>Description</th>
+</tr></thead><tbody>
+<tr>
+<td><code>LINGXIAO_MAX_CONCURRENT_AGENTS</code></td>
+<td><code>agents.max_concurrent</code></td>
+<td>number</td>
+<td>Max concurrent workers</td>
+</tr>
+<tr>
+<td><code>LINGXIAO_AGENT_MAX_ITERATIONS</code></td>
+<td><code>agents.max_iterations</code></td>
+<td>number</td>
+<td>Worker max iterations</td>
+</tr>
+<tr>
+<td><code>LINGXIAO_AGENT_MAX_RUNTIME_MINUTES</code></td>
+<td><code>agents.max_runtime_minutes</code></td>
+<td>number</td>
+<td>Worker max runtime (minutes)</td>
+</tr>
+<tr>
+<td><code>LINGXIAO_WORKER_COMPLETION_JUDGE</code></td>
+<td><code>agents.worker_completion_judge_enabled</code></td>
+<td>boolean</td>
+<td>Worker completion judge</td>
+</tr>
+<tr>
+<td><code>LINGXIAO_EXTERNAL_AGENTS_ENABLED</code></td>
+<td><code>agents.external_agents_enabled</code></td>
+<td>boolean</td>
+<td>External agent support</td>
+</tr>
+<tr>
+<td><code>LINGXIAO_REMOTE_WORKERS_ENABLED</code></td>
+<td><code>scaling.remoteWorkers.enabled</code></td>
+<td>boolean</td>
+<td>Remote worker support</td>
+</tr>
+</tbody></table></div>
+<h3>Verification & Quality Gates</h3>
+<div class="table-wrap"><table>
+<thead><tr>
+<th>Variable</th>
+<th>Config Path</th>
+<th>Type</th>
+<th>Description</th>
+</tr></thead><tbody>
+<tr>
+<td><code>LINGXIAO_VERIFICATION_COMPLETION_GATE</code></td>
+<td><code>verification.completion_gate_enabled</code></td>
+<td>boolean</td>
+<td>Completion gate</td>
+</tr>
+<tr>
+<td><code>LINGXIAO_VERIFICATION_TYPECHECK</code></td>
+<td><code>verification.typecheck</code></td>
+<td>boolean</td>
+<td>Type checking</td>
+</tr>
+<tr>
+<td><code>LINGXIAO_VERIFICATION_BUILD</code></td>
+<td><code>verification.build</code></td>
+<td>boolean</td>
+<td>Build check</td>
+</tr>
+<tr>
+<td><code>LINGXIAO_VERIFICATION_AFFECTED_TESTS</code></td>
+<td><code>verification.affected_tests</code></td>
+<td>boolean</td>
+<td>Affected tests</td>
+</tr>
+<tr>
+<td><code>LINGXIAO_VERIFICATION_FULL_TESTS</code></td>
+<td><code>verification.full_tests</code></td>
+<td>boolean</td>
+<td>Full test suite</td>
+</tr>
+</tbody></table></div>
+<h3>Leader Runtime</h3>
+<div class="table-wrap"><table>
+<thead><tr>
+<th>Variable</th>
+<th>Config Path</th>
+<th>Type</th>
+<th>Description</th>
+</tr></thead><tbody>
+<tr>
+<td><code>LINGXIAO_LEADER_MAX_TOOL_ROUNDS</code></td>
+<td><code>leader.max_tool_rounds</code></td>
+<td>number</td>
+<td>Leader max tool rounds</td>
+</tr>
+<tr>
+<td><code>LINGXIAO_LEADER_MAX_RUNTIME_MINUTES</code></td>
+<td><code>leader.max_runtime_minutes</code></td>
+<td>number</td>
+<td>Leader max runtime</td>
+</tr>
+<tr>
+<td><code>LINGXIAO_LEADER_PROBE_SILENCE_SECONDS</code></td>
+<td><code>leader.probe_silence_seconds</code></td>
+<td>number</td>
+<td>Probe silence interval</td>
+</tr>
+<tr>
+<td><code>LINGXIAO_LEADER_PROBE_MAX_INTERVAL_SECONDS</code></td>
+<td><code>leader.probe_max_interval_seconds</code></td>
+<td>number</td>
+<td>Probe max interval</td>
+</tr>
+<tr>
+<td><code>LINGXIAO_LEADER_PROBE_BACKOFF_MULTIPLIER</code></td>
+<td><code>leader.probe_backoff_multiplier</code></td>
+<td>number</td>
+<td>Probe backoff multiplier</td>
+</tr>
+<tr>
+<td><code>LINGXIAO_LEADER_IDLE_WARNING_SECONDS</code></td>
+<td><code>leader.idle_warning_seconds</code></td>
+<td>number</td>
+<td>Idle warning threshold</td>
+</tr>
+</tbody></table></div>
+<h3>Web Service & Network</h3>
+<div class="table-wrap"><table>
+<thead><tr>
+<th>Variable</th>
+<th>Config Path</th>
+<th>Type</th>
+<th>Description</th>
+</tr></thead><tbody>
+<tr>
+<td><code>LINGXIAO_WEB_HOST</code></td>
+<td><code>server.host</code></td>
+<td>string</td>
+<td>Web service host, default <code>127.0.0.1</code></td>
+</tr>
+<tr>
+<td><code>LINGXIAO_WEB_PORT</code></td>
+<td><code>server.port</code></td>
+<td>number</td>
+<td>Web service port, auto-assigned</td>
+</tr>
+<tr>
+<td><code>LINGXIAO_WEB_PROXY_TARGET</code></td>
+<td>-</td>
+<td>string</td>
+<td>Vite dev proxy target</td>
+</tr>
+<tr>
+<td><code>LINGXIAO_PROXY_URL</code></td>
+<td><code>network.proxy.url</code></td>
+<td>string</td>
+<td>Proxy URL</td>
+</tr>
+<tr>
+<td><code>LINGXIAO_PROXY_LLM</code></td>
+<td><code>network.proxy.llm_enabled</code></td>
+<td>boolean</td>
+<td>Route LLM requests through proxy</td>
+</tr>
+<tr>
+<td><code>LINGXIAO_PROXY_TOOLS</code></td>
+<td><code>network.proxy.tools_enabled</code></td>
+<td>boolean</td>
+<td>Route tool requests through proxy</td>
+</tr>
+<tr>
+<td><code>LINGXIAO_USER_AGENT</code></td>
+<td><code>network.user_agent</code></td>
+<td>string</td>
+<td>Custom User-Agent</td>
+</tr>
+</tbody></table></div>
+<h3>Paths & Directories</h3>
+<div class="table-wrap"><table>
+<thead><tr>
+<th>Variable</th>
+<th>Config Path</th>
+<th>Type</th>
+<th>Description</th>
+</tr></thead><tbody>
+<tr>
+<td><code>LINGXIAO_DB_PATH</code></td>
+<td><code>paths.db_path</code></td>
+<td>string</td>
+<td>Database path</td>
+</tr>
+<tr>
+<td><code>LINGXIAO_CHROME_PATH</code></td>
+<td><code>paths.chrome_path</code></td>
+<td>string</td>
+<td>Chrome executable path</td>
+</tr>
+<tr>
+<td><code>CHROME_PATH</code></td>
+<td><code>paths.chrome_path</code></td>
+<td>string</td>
+<td>Same as above (alias)</td>
+</tr>
+<tr>
+<td><code>CHROME_BIN</code></td>
+<td><code>paths.chrome_path</code></td>
+<td>string</td>
+<td>Same as above (alias)</td>
+</tr>
+<tr>
+<td><code>LINGXIAO_BUNDLED_SKILLS_DIR</code></td>
+<td><code>paths.bundled_skills_dir</code></td>
+<td>string</td>
+<td>Bundled skills directory</td>
+</tr>
+<tr>
+<td><code>LINGXIAO_GLOBAL_SKILLS_DIR</code></td>
+<td><code>paths.global_skills_dir</code></td>
+<td>string</td>
+<td>Global skills directory</td>
+</tr>
+</tbody></table></div>
+<h3>Security & Permissions</h3>
+<div class="table-wrap"><table>
+<thead><tr>
+<th>Variable</th>
+<th>Config Path</th>
+<th>Type</th>
+<th>Description</th>
+</tr></thead><tbody>
+<tr>
+<td><code>LINGXIAO_IDENTITY_JUDGE_LLM</code></td>
+<td><code>security.identity_judge_llm_enabled</code></td>
+<td>boolean</td>
+<td>LLM identity judge</td>
+</tr>
+<tr>
+<td><code>LINGXIAO_HARDENED_MODE</code></td>
+<td><code>security.hardened_mode</code></td>
+<td>boolean</td>
+<td>Hardened mode (one-way lock)</td>
+</tr>
+</tbody></table></div>
+<p>:::caution[Hardened Mode One-Way Lock]</p>
+<p><code>LINGXIAO_HARDENED_MODE</code> is a one-way lock: setting it to a truthy value forces hardened mode on, and the Settings route rejects attempts to turn it off.</p>
+<p>:::</p>
+<h3>Other</h3>
+<div class="table-wrap"><table>
+<thead><tr>
+<th>Variable</th>
+<th>Config Path</th>
+<th>Type</th>
+<th>Description</th>
+</tr></thead><tbody>
+<tr>
+<td><code>LINGXIAO_WORKER_SPAWN_TIMEOUT_MS</code></td>
+<td><code>timeouts.worker_spawn_ms</code></td>
+<td>number</td>
+<td>Worker spawn timeout</td>
+</tr>
+<tr>
+<td><code>LINGXIAO_LANGUAGE</code></td>
+<td><code>ui.language</code></td>
+<td>string</td>
+<td>UI language <code>zh</code> / <code>en</code></td>
+</tr>
+<tr>
+<td><code>LINGXIAO_BLACKBOARD</code></td>
+<td><code>blackboard.enabled</code></td>
+<td>boolean</td>
+<td>Blackboard system toggle</td>
+</tr>
+</tbody></table></div>
+<h2>Config File</h2>
+<p>In addition to environment variables, config can be written to <code>~/.lingxiao/settings.json</code>:</p>
+<pre><code class="lang-json">{
+  &quot;llm&quot;: {
+    &quot;provider&quot;: &quot;openai&quot;,
+    &quot;leader_model&quot;: &quot;gpt-4o&quot;,
+    &quot;agent_model&quot;: &quot;gpt-4o-mini&quot;
+  },
+  &quot;agents&quot;: {
+    &quot;max_concurrent&quot;: 5,
+    &quot;max_iterations&quot;: 50
+  },
+  &quot;security&quot;: {
+    &quot;permission_mode&quot;: &quot;dev&quot;
+  }
+}</code></pre>
+<h2>Config Groups</h2>
+<p>LingXiao has 31 major config groups:</p>
+<div class="table-wrap"><table>
+<thead><tr>
+<th>Group</th>
+<th>Description</th>
+</tr></thead><tbody>
+<tr>
+<td><code>llm</code></td>
+<td>LLM provider, models, timeouts, retries</td>
+</tr>
+<tr>
+<td><code>llm_gateway</code></td>
+<td>Local LLM gateway config</td>
+</tr>
+<tr>
+<td><code>agents</code></td>
+<td>Worker capacity & runtime</td>
+</tr>
+<tr>
+<td><code>verification</code></td>
+<td>Completion gate & verification</td>
+</tr>
+<tr>
+<td><code>leader</code></td>
+<td>Leader runtime control</td>
+</tr>
+<tr>
+<td><code>health</code></td>
+<td>Health checks</td>
+</tr>
+<tr>
+<td><code>context</code></td>
+<td>Context management</td>
+</tr>
+<tr>
+<td><code>truncation</code></td>
+<td>Context truncation policy</td>
+</tr>
+<tr>
+<td><code>timeouts</code></td>
+<td>Timeout settings</td>
+</tr>
+<tr>
+<td><code>web_api</code></td>
+<td>Web API config</td>
+</tr>
+<tr>
+<td><code>paths</code></td>
+<td>File paths</td>
+</tr>
+<tr>
+<td><code>skills</code></td>
+<td>Skills system</td>
+</tr>
+<tr>
+<td><code>plugins</code></td>
+<td>Plugin management</td>
+</tr>
+<tr>
+<td><code>marketplaces</code></td>
+<td>Marketplace config</td>
+</tr>
+<tr>
+<td><code>mcp</code></td>
+<td>MCP servers</td>
+</tr>
+<tr>
+<td><code>tools</code></td>
+<td>Tool registration</td>
+</tr>
+<tr>
+<td><code>roles</code></td>
+<td>Role definitions</td>
+</tr>
+<tr>
+<td><code>server</code></td>
+<td>Web service</td>
+</tr>
+<tr>
+<td><code>network</code></td>
+<td>Network & proxy</td>
+</tr>
+<tr>
+<td><code>browser</code></td>
+<td>Browser automation</td>
+</tr>
+<tr>
+<td><code>security</code></td>
+<td>Security & permissions</td>
+</tr>
+<tr>
+<td><code>memory</code></td>
+<td>Memory system</td>
+</tr>
+<tr>
+<td><code>checkpoint</code></td>
+<td>File checkpoints</td>
+</tr>
+<tr>
+<td><code>ui</code></td>
+<td>UI config</td>
+</tr>
+<tr>
+<td><code>message_bus</code></td>
+<td>Message bus</td>
+</tr>
+<tr>
+<td><code>observability</code></td>
+<td>Observability</td>
+</tr>
+<tr>
+<td><code>taskPriority</code></td>
+<td>Task priority</td>
+</tr>
+<tr>
+<td><code>scaling</code></td>
+<td>Scaling</td>
+</tr>
+<tr>
+<td><code>git</code></td>
+<td>Git integration</td>
+</tr>
+<tr>
+<td><code>blackboard</code></td>
+<td>Blackboard system</td>
+</tr>
+<tr>
+<td><code>advanced</code></td>
+<td>Advanced options</td>
+</tr>
+<tr>
+<td><code>credentials</code></td>
+<td>Credentials management</td>
+</tr>
+</tbody></table></div>
+<h2>Config Rules</h2>
+<ol>
+<li>New config values must be added to both Zod schema and defaults</li>
+<li>User-adjustable values exposed through settings routes only if safe</li>
+<li>Environment variable overrides must be listed in this document</li>
+<li>Sensitive information (e.g., Git tokens) must not be returned raw by <code>/api/v1/settings</code></li>
+<li>Values affecting server bootstrap may require process restart</li>
+</ol>
+    </div>
+<div class="prev-next">
+<a href="/docs/en/core/llm-gateway/" class="prev-page"><span class="pn-label">← Previous</span><span class="pn-title">LLM Gateway</span></a>
+<a href="/docs/en/config/models/" class="next-page"><span class="pn-label">Next →</span><span class="pn-title">Models</span></a>
+</div>
+  </main>
+</div>
+</body>
+</html>

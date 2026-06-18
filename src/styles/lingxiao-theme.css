@@ -1,98 +1,105 @@
-/* === 凌霄剑域 · 水墨剑意主题 === */
+/* === 凌霄剑域 · 古籍宣纸主题 === */
+/* 核心理念：宣纸为底，浓墨为体，暗金为饰，朱砂为印，留白为境 */
 
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+SC:wght@400;500;700&family=Noto+Serif+SC:wght@600;700;900&family=JetBrains+Mono:wght@400;500;600&display=swap');
 
 /* === 设计令牌 === */
 :root {
-  /* 品牌色 — 水墨剑意 */
-  --lx-ink: #0a0c10;
-  --lx-ink-deep: #06080c;
-  --lx-paper: #f7f4ed;
-  --lx-jade: #3d8b7a;
-  --lx-jade-light: #5ba897;
-  --lx-gold: #b89968;
-  --lx-gold-light: #d4b87e;
+  /* 宣纸色 —— 微黄暖白 */
+  --lx-paper: #f4ede0;
+  --lx-paper-bright: #faf5ea;
+  --lx-paper-dim: #e8dfce;
+  --lx-paper-deep: #ddd2bc;
 
-  /* 亮色模式（Starlight 默认 root） */
+  /* 墨色 —— 浓淡干湿，温暖偏褐 */
+  --lx-ink: #2a2218;
+  --lx-ink-mid: #4a3f30;
+  --lx-ink-light: #6b5e4a;
+  --lx-ink-wash: #8a7d68;
+  --lx-ink-faint: #a89a82;
+
+  /* 金 —— 旧金暗铜 */
+  --lx-gold: #a8895a;
+  --lx-gold-bright: #c4a468;
+  --lx-gold-deep: #8a6e42;
+  --lx-gold-line: rgba(168, 137, 90, 0.22);
+  --lx-gold-wash: rgba(168, 137, 90, 0.06);
+
+  /* 朱砂 —— 印泥红 */
+  --lx-cinnabar: #a04030;
+  --lx-cinnabar-light: #c25a48;
+  --lx-cinnabar-wash: rgba(160, 64, 48, 0.06);
+
+  /* 翠 —— 石绿 */
+  --lx-jade: #5a8a6a;
+  --lx-jade-wash: rgba(90, 138, 106, 0.06);
+
+  /* 亮色模式（默认） */
   --lx-bg: var(--lx-paper);
-  --lx-bg-alt: #ede9de;
-  --lx-fg: #1a1a1a;
-  --lx-fg-muted: #5a5a5a;
-  --lx-accent: #2d7a6a;
-  --lx-accent-hover: #1e6555;
-  --lx-gold-decor: #9a7e4e;
-  --lx-border: #d8d3c6;
-  --lx-border-strong: #c4bfb0;
-  --lx-card-bg: #ffffff;
-  --lx-card-bg-hover: #faf8f3;
-  --lx-code-bg: #1a1e26;
-  --lx-code-fg: #e8e6e1;
-  --lx-shadow: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
-  --lx-shadow-hover: 0 8px 24px rgba(0,0,0,0.08), 0 2px 8px rgba(0,0,0,0.04);
-  --lx-shadow-hero: 0 20px 60px rgba(0,0,0,0.06);
+  --lx-bg-alt: var(--lx-paper-dim);
+  --lx-fg: var(--lx-ink);
+  --lx-fg-muted: var(--lx-ink-light);
+  --lx-accent: var(--lx-cinnabar);
+  --lx-accent-hover: #8a3020;
+  --lx-accent-low: rgba(160, 64, 48, 0.08);
+  --lx-gold-decor: var(--lx-gold-deep);
+  --lx-border: rgba(168, 137, 90, 0.18);
+  --lx-border-strong: rgba(168, 137, 90, 0.30);
+  --lx-card-bg: var(--lx-paper-bright);
+  --lx-card-bg-hover: #f7f0e3;
+  --lx-code-bg: #3a3025;
+  --lx-code-fg: #f0e8d8;
+  --lx-shadow: 0 1px 3px rgba(42, 34, 24, 0.06), 0 1px 2px rgba(42, 34, 24, 0.04);
+  --lx-shadow-hover: 0 8px 24px rgba(42, 34, 24, 0.10), 0 2px 8px rgba(42, 34, 24, 0.06);
+  --lx-shadow-hero: 0 20px 60px rgba(42, 34, 24, 0.08);
 
-  /* Starlight 覆写 — 亮色 */
-  --sl-color-white: #1a1a1a;
-  --sl-color-gray-1: #2a2a2a;
-  --sl-color-gray-2: #4a4a4a;
-  --sl-color-gray-3: #6a6a6a;
-  --sl-color-gray-4: #9a9a9a;
-  --sl-color-gray-5: #c4bfb0;
-  --sl-color-gray-6: #ede9de;
-  --sl-color-gray-7: #f7f4ed;
-  --sl-color-black: #ffffff;
-  --sl-color-bg: #f7f4ed;
-  --sl-color-bg-nav: #ede9de;
-  --sl-color-bg-sidebar: #faf8f3;
-  --sl-color-bg-inline-code: #ede9de;
-  --sl-color-accent: #2d7a6a;
-  --sl-color-accent-low: rgba(45, 122, 106, 0.12);
-  --sl-color-accent-high: #1e6555;
-  --sl-color-text: #1a1a1a;
-  --sl-color-heading: #1a1a1a;
-
-  --sl-font-system: 'Inter', 'Noto Sans SC', system-ui, -apple-system, sans-serif;
+  /* 字体 */
+  --sl-font-system: 'Noto Sans SC', 'Inter', system-ui, -apple-system, sans-serif;
   --sl-font-mono: 'JetBrains Mono', 'Fira Code', monospace;
-  --lx-font-serif: 'Noto Serif SC', 'Songti SC', serif;
+  --lx-font-serif: 'Noto Serif SC', 'Songti SC', 'STSong', serif;
 }
 
-/* === 暗色模式 === */
+/* === 暗色模式（温暖墨夜，非冷蓝） === */
 :root[data-theme='dark'] {
-  --lx-bg: var(--lx-ink);
-  --lx-bg-alt: #12151b;
-  --lx-fg: #e8e6e1;
-  --lx-fg-muted: #9a9a95;
-  --lx-accent: var(--lx-jade-light);
-  --lx-accent-hover: #7bc4b3;
-  --lx-gold-decor: var(--lx-gold-light);
-  --lx-border: #252830;
-  --lx-border-strong: #353840;
-  --lx-card-bg: #12151b;
-  --lx-card-bg-hover: #1a1e26;
-  --lx-code-bg: #06080c;
-  --lx-code-fg: #e8e6e1;
-  --lx-shadow: 0 1px 3px rgba(0,0,0,0.3), 0 1px 2px rgba(0,0,0,0.2);
-  --lx-shadow-hover: 0 8px 24px rgba(0,0,0,0.4), 0 2px 8px rgba(0,0,0,0.2);
-  --lx-shadow-hero: 0 20px 60px rgba(0,0,0,0.3);
+  --lx-bg: #1e1812;
+  --lx-bg-alt: #28201a;
+  --lx-fg: #e8dfce;
+  --lx-fg-muted: #b0a48e;
+  --lx-accent: var(--lx-cinnabar-light);
+  --lx-accent-hover: #d06a58;
+  --lx-accent-low: rgba(194, 90, 72, 0.10);
+  --lx-gold-decor: var(--lx-gold-bright);
+  --lx-border: rgba(168, 137, 90, 0.18);
+  --lx-border-strong: rgba(168, 137, 90, 0.30);
+  --lx-card-bg: #28201a;
+  --lx-card-bg-hover: #322820;
+  --lx-code-bg: #0e0a06;
+  --lx-code-fg: #e8dfce;
+  --lx-shadow: 0 1px 3px rgba(0, 0, 0, 0.3), 0 1px 2px rgba(0, 0, 0, 0.2);
+  --lx-shadow-hover: 0 8px 24px rgba(0, 0, 0, 0.4), 0 2px 8px rgba(0, 0, 0, 0.2);
+  --lx-shadow-hero: 0 20px 60px rgba(0, 0, 0, 0.3);
+}
 
-  --sl-color-white: #e8e6e1;
-  --sl-color-gray-1: #d8d3c6;
-  --sl-color-gray-2: #a8a8a0;
-  --sl-color-gray-3: #787878;
-  --sl-color-gray-4: #4a4a4a;
-  --sl-color-gray-5: #353840;
-  --sl-color-gray-6: #252830;
-  --sl-color-gray-7: #12151b;
-  --sl-color-black: #06080c;
-  --sl-color-bg: #0a0c10;
-  --sl-color-bg-nav: #12151b;
-  --sl-color-bg-sidebar: #0e1015;
-  --sl-color-bg-inline-code: #12151b;
-  --sl-color-accent: #5ba897;
-  --sl-color-accent-low: rgba(91, 168, 151, 0.1);
-  --sl-color-accent-high: #7bc4b3;
-  --sl-color-text: #e8e6e1;
-  --sl-color-heading: #e8e6e1;
+/* === 亮色模式 Starlight 变量覆写 === */
+:root[data-theme='light'] {
+  --sl-color-white: #2a2218;
+  --sl-color-black: #faf5ea;
+  --sl-color-gray-1: #4a3f30;
+  --sl-color-gray-2: #6b5e4a;
+  --sl-color-gray-3: #8a7d68;
+  --sl-color-gray-4: #a89a82;
+  --sl-color-gray-5: #ddd2bc;
+  --sl-color-gray-6: #e8dfce;
+  --sl-color-gray-7: #f4ede0;
+  --sl-color-bg: #f4ede0;
+  --sl-color-bg-nav: #e8dfce;
+  --sl-color-bg-sidebar: #faf5ea;
+  --sl-color-bg-inline-code: #e8dfce;
+  --sl-color-accent: #a04030;
+  --sl-color-accent-low: rgba(160, 64, 48, 0.08);
+  --sl-color-accent-high: #8a3020;
+  --sl-color-text: #2a2218;
+  --sl-color-heading: #2a2218;
 }
 
 /* === 全局排版 === */
@@ -100,6 +107,8 @@ body {
   font-family: var(--sl-font-system);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  background-color: var(--sl-color-bg);
+  color: var(--sl-color-text);
 }
 
 h1, h2, h3 {
@@ -147,7 +156,7 @@ a:hover {
   height: 88px;
   margin: 0 auto 2rem;
   display: block;
-  filter: drop-shadow(0 4px 12px rgba(0,0,0,0.15));
+  filter: drop-shadow(0 4px 12px rgba(42, 34, 24, 0.12));
 }
 
 .lx-hero-badge {
@@ -241,14 +250,14 @@ a:hover {
 }
 
 .lx-btn-primary {
-  background: var(--lx-accent);
-  color: #fff;
-  border-color: var(--lx-accent);
+  background: var(--lx-ink);
+  color: var(--lx-paper-bright);
+  border-color: var(--lx-ink);
 }
 .lx-btn-primary:hover {
-  background: var(--lx-accent-hover);
-  border-color: var(--lx-accent-hover);
-  color: #fff;
+  background: var(--lx-ink-mid);
+  border-color: var(--lx-ink-mid);
+  color: var(--lx-paper-bright);
   transform: translateY(-1px);
   box-shadow: var(--lx-shadow-hover);
 }
@@ -333,8 +342,8 @@ a:hover {
   align-items: center;
   justify-content: center;
   margin-bottom: 1.125rem;
-  background: var(--lx-accent-low);
-  color: var(--lx-accent);
+  background: var(--lx-gold-wash);
+  color: var(--lx-gold-decor);
 }
 
 .lx-feature-card .lx-icon svg {
@@ -429,20 +438,104 @@ a:hover {
   padding: 3rem 1.5rem 5rem;
 }
 
-.lx-arch-diagram {
-  background: var(--lx-card-bg);
-  border: 1px solid var(--lx-border);
-  border-radius: 14px;
-  padding: 2rem;
-  overflow-x: auto;
+.lx-arch-flow {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0;
 }
 
-.lx-arch-diagram pre {
-  font-family: var(--sl-font-mono);
-  font-size: 0.825rem;
-  line-height: 1.7;
+.lx-arch-layer {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.lx-arch-layer-label {
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--lx-fg-muted);
+  padding: 0.25rem 0.75rem;
+  border-radius: 4px;
+  background: var(--lx-bg-alt);
+}
+
+.lx-arch-nodes {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.75rem;
+}
+
+.lx-arch-node {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.625rem 1.125rem;
+  border-radius: 10px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  border: 1px solid var(--lx-border);
+  background: var(--lx-card-bg);
   color: var(--lx-fg);
-  margin: 0;
+  transition: border-color 0.2s, box-shadow 0.2s, transform 0.2s;
+}
+
+.lx-arch-node svg {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+  opacity: 0.8;
+}
+
+.lx-arch-node:hover {
+  border-color: var(--lx-accent);
+  box-shadow: 0 2px 12px rgba(42, 34, 24, 0.08);
+  transform: translateY(-2px);
+}
+
+.lx-arch-node-entry { border-color: var(--lx-border-strong); }
+.lx-arch-node-entry svg { color: var(--lx-gold-decor); }
+
+.lx-arch-node-core { border-color: var(--lx-jade); }
+.lx-arch-node-core svg { color: var(--lx-jade); }
+
+.lx-arch-node-leader {
+  border-color: var(--lx-gold);
+  background: linear-gradient(135deg, var(--lx-card-bg), rgba(168, 137, 90, 0.06));
+  font-weight: 600;
+}
+.lx-arch-node-leader svg { color: var(--lx-gold); }
+
+.lx-arch-node-exec { border-color: var(--lx-border-strong); }
+.lx-arch-node-exec svg { color: var(--lx-accent); }
+
+.lx-arch-node-worker {
+  font-size: 0.78rem;
+  padding: 0.5rem 0.875rem;
+  border-style: dashed;
+  border-color: var(--lx-border);
+  color: var(--lx-fg-muted);
+}
+
+.lx-arch-node-storage { border-color: var(--lx-border); }
+.lx-arch-node-storage svg { color: var(--lx-fg-muted); }
+
+.lx-arch-arrow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.25rem 0;
+}
+
+.lx-arch-arrow svg {
+  width: 20px;
+  height: 20px;
+  color: var(--lx-border-strong);
 }
 
 /* === 对比表 === */

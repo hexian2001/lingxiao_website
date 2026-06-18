@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Agents | 凌霄剑域</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%E5%89%91%3C/text%3E%3C/svg%3E">
+<style>
+/* ===== 古籍宣纸设计令牌（与首页同步） ===== */
+:root{
+  --paper:#f4ede0;--paper-bright:#faf5ea;--paper-dim:#e8dfce;--paper-deep:#ddd2bc;
+  --ink:#2a2218;--ink-mid:#4a3f30;--ink-light:#6b5e4a;--ink-wash:#8a7d68;--ink-faint:#a89a82;
+  --gold:#a8895a;--gold-bright:#c4a468;--gold-deep:#8a6e42;
+  --gold-line:rgba(168,137,90,0.22);--gold-wash:rgba(168,137,90,0.06);
+  --cinnabar:#a04030;--cinnabar-light:#c25a48;--cinnabar-wash:rgba(160,64,48,0.06);
+  --jade:#5a8a6a;--jade-wash:rgba(90,138,106,0.06);
+  --fg:var(--ink);--fg-muted:var(--ink-light);--fg-dim:var(--ink-wash);
+  --font-sans:'Noto Sans SC','Inter',-apple-system,system-ui,sans-serif;
+  --font-serif:'Noto Serif SC','Songti SC','STSong',serif;
+  --font-mono:'JetBrains Mono','Fira Code','SF Mono',monospace;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;font-size:16px}
+body{font-family:var(--font-sans);background:var(--paper);color:var(--fg);position:relative;overflow-x:hidden;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;line-height:1.6}
+
+/* 宣纸纹理背景 */
+.paper-texture{position:fixed;inset:0;z-index:0;pointer-events:none;
+  background:radial-gradient(ellipse 1200px 800px at 50% 0%,rgba(250,245,234,0.6),transparent 70%),radial-gradient(ellipse 800px 600px at 20% 80%,rgba(168,137,90,0.03),transparent 60%),radial-gradient(ellipse 800px 600px at 80% 40%,rgba(160,64,48,0.02),transparent 60%)}
+.paper-grain{position:fixed;inset:0;z-index:0;pointer-events:none;opacity:0.4;
+  background-image:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(168,137,90,0.012) 2px,rgba(168,137,90,0.012) 3px),repeating-linear-gradient(90deg,transparent,transparent 3px,rgba(168,137,90,0.008) 3px,rgba(168,137,90,0.008) 4px)}
+
+/* 导航 */
+.nav{position:fixed;top:0;left:0;right:0;z-index:100;backdrop-filter:blur(20px) saturate(140%);-webkit-backdrop-filter:blur(20px) saturate(140%);background:rgba(244,237,224,0.85);border-bottom:1px solid var(--gold-line)}
+.nav-inner{max-width:1400px;margin:0 auto;padding:0.75rem 1.5rem;display:flex;align-items:center;justify-content:space-between}
+.nav-brand{display:flex;align-items:center;gap:0.625rem;font-weight:700;font-size:1.05rem;color:var(--ink);text-decoration:none}
+.nav-brand .brand-mark{width:32px;height:32px;border-radius:8px;background:linear-gradient(135deg,var(--gold),var(--gold-bright));display:flex;align-items:center;justify-content:center;font-family:var(--font-serif);font-size:1.1rem;color:var(--paper-bright);font-weight:900}
+.nav-brand .brand-sub{font-size:0.7rem;font-weight:500;color:var(--fg-dim);letter-spacing:0.05em}
+.nav-links{display:flex;align-items:center;gap:1.5rem}
+.nav-links a{font-size:0.875rem;color:var(--fg-muted);text-decoration:none;transition:color 0.2s}
+.nav-links a:hover{color:var(--gold-deep)}
+
+/* 文档布局 */
+.doc-layout{position:relative;z-index:1;display:flex;max-width:1400px;margin:0 auto;padding-top:64px;min-height:100vh}
+
+/* 侧栏 */
+.doc-sidebar{position:sticky;top:64px;width:260px;height:calc(100vh - 64px);overflow-y:auto;padding:1.5rem 0.75rem;border-right:1px solid var(--gold-line);flex-shrink:0}
+.sidebar-group{margin-bottom:1.5rem}
+.sidebar-group-label{font-size:0.7rem;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:var(--fg-dim);padding:0 0.875rem 0.5rem}
+.sidebar-link{display:block;padding:0.4rem 0.875rem;border-radius:6px;font-size:0.82rem;color:var(--fg-muted);text-decoration:none;transition:all 0.15s;line-height:1.5}
+.sidebar-link:hover{background:var(--gold-wash);color:var(--ink)}
+.sidebar-link.active{background:var(--gold-wash);color:var(--gold-deep);font-weight:600;border-left:2px solid var(--gold)}
+
+/* 主内容 */
+.doc-main{flex:1;padding:2rem 3rem;max-width:900px;min-width:0}
+.doc-content h1{font-family:var(--font-serif);font-size:2.2rem;font-weight:700;margin-bottom:1.5rem;color:var(--ink);letter-spacing:0.02em}
+.doc-content h2{font-family:var(--font-serif);font-size:1.5rem;font-weight:600;margin:2rem 0 1rem;color:var(--ink-mid);border-bottom:1px solid var(--gold-line);padding-bottom:0.5rem}
+.doc-content h3{font-size:1.15rem;font-weight:600;margin:1.5rem 0 0.75rem;color:var(--ink-mid)}
+.doc-content p{font-size:0.9rem;line-height:1.8;color:var(--fg-muted);margin-bottom:1rem}
+.doc-content strong{color:var(--gold-deep);font-weight:600}
+.doc-content a{color:var(--cinnabar);text-decoration:none;transition:color 0.2s;border-bottom:1px solid transparent}
+.doc-content a:hover{color:var(--cinnabar-light);border-bottom-color:var(--cinnabar-light)}
+.doc-content ul,.doc-content ol{margin:0.5rem 0 1rem 1.5rem}
+.doc-content li{font-size:0.9rem;line-height:1.8;color:var(--fg-muted);margin-bottom:0.25rem}
+.doc-content blockquote{border-left:3px solid var(--gold);padding:0.5rem 1rem;margin:1rem 0;background:var(--gold-wash);border-radius:0 6px 6px 0;color:var(--fg-muted);font-size:0.875rem;font-style:italic}
+.doc-content code{font-family:var(--font-mono);font-size:0.82rem;background:var(--paper-dim);padding:0.15rem 0.4rem;border-radius:4px;color:var(--cinnabar)}
+.doc-content pre{background:var(--paper-bright);border:1px solid var(--gold-line);border-radius:8px;padding:1rem;overflow-x:auto;margin:1rem 0}
+.doc-content pre code{background:none;padding:0;font-size:0.8rem;color:var(--ink-mid);line-height:1.6}
+.doc-content hr{border:none;border-top:1px solid var(--gold-line);margin:2rem 0}
+.doc-content .table-wrap{overflow-x:auto;margin:1rem 0}
+.doc-content table{width:100%;border-collapse:collapse;font-size:0.85rem}
+.doc-content th{padding:0.625rem 0.875rem;text-align:left;border-bottom:2px solid var(--gold-line);color:var(--ink);font-weight:600}
+.doc-content td{padding:0.5rem 0.875rem;border-bottom:1px solid var(--gold-line);color:var(--fg-muted)}
+.doc-content .ascii-art-removed{padding:0.75rem 1rem;border:1px dashed var(--gold-line);border-radius:6px;color:var(--fg-dim);font-size:0.8rem;margin:1rem 0;text-align:center}
+
+/* 上下页导航 */
+.prev-next{display:flex;justify-content:space-between;margin-top:3rem;padding-top:1.5rem;border-top:1px solid var(--gold-line);gap:1rem}
+.prev-next a{display:flex;flex-direction:column;gap:0.25rem;padding:0.75rem 1rem;border:1px solid var(--gold-line);border-radius:8px;text-decoration:none;transition:all 0.2s;max-width:48%}
+.prev-next a:hover{border-color:var(--gold);background:var(--gold-wash)}
+.prev-next .pn-label{font-size:0.72rem;color:var(--fg-dim)}
+.prev-next .pn-title{font-size:0.85rem;color:var(--ink);font-weight:500}
+.prev-next .next-page{text-align:right;margin-left:auto}
+.prev-page .pn-title{text-align:left}
+
+/* 响应式 */
+@media(max-width:900px){
+  .doc-sidebar{display:none}
+  .doc-main{padding:1.5rem 1rem}
+  .nav-links a:not(.nav-cta){display:none}
+}
+</style>
+</head>
+<body>
+<div class="paper-texture"></div>
+<div class="paper-grain"></div>
+<nav class="nav"><div class="nav-inner">
+  <a href="/" class="nav-brand"><span class="brand-mark">剑</span><span>凌霄剑域</span><span class="brand-sub">LingXiao</span></a>
+  <div class="nav-links">
+    <a href="/docs/en/getting-started/introduction/">文档</a>
+    <a href="https://github.com/hexian2001/lingxiao" target="_blank" rel="noopener">GitHub</a>
+    <a href="/docs/en/getting-started/introduction/" class="nav-cta" style="padding:0.4rem 1rem;border-radius:8px;background:var(--gold-wash);color:var(--gold-deep);font-weight:600;font-size:0.8rem;border:1px solid var(--gold-line)">快速上手</a>
+  </div>
+</div></nav>
+<div class="doc-layout">
+  <aside class="doc-sidebar">
+<div class="sidebar-group">
+<div class="sidebar-group-label">Getting Started</div>
+<a href="/docs/en/getting-started/introduction/" class="sidebar-link">Introduction</a>
+<a href="/docs/en/getting-started/install/" class="sidebar-link">Installation</a>
+<a href="/docs/en/getting-started/connect-models/" class="sidebar-link">Connect Models</a>
+<a href="/docs/en/getting-started/first-run/" class="sidebar-link">First Run</a>
+</div>
+<div class="sidebar-group">
+<div class="sidebar-group-label">Core Features</div>
+<a href="/docs/en/core/expert-team/" class="sidebar-link">Expert Panel</a>
+<a href="/docs/en/core/task-dag/" class="sidebar-link">Task DAG</a>
+<a href="/docs/en/core/state-sync/" class="sidebar-link">State Sync</a>
+<a href="/docs/en/core/webui/" class="sidebar-link">WebUI Center</a>
+<a href="/docs/en/core/tool-kernel/" class="sidebar-link">Tool Kernel</a>
+<a href="/docs/en/core/orchestration/" class="sidebar-link">Orchestration</a>
+<a href="/docs/en/core/mcp-skills/" class="sidebar-link">MCP Forge &amp; Skills</a>
+<a href="/docs/en/core/memory/" class="sidebar-link">Memory</a>
+<a href="/docs/en/core/eternal/" class="sidebar-link">Eternal Mode</a>
+<a href="/docs/en/core/llm-gateway/" class="sidebar-link">LLM Gateway</a>
+</div>
+<div class="sidebar-group">
+<div class="sidebar-group-label">Configuration</div>
+<a href="/docs/en/config/env-vars/" class="sidebar-link">Environment Variables</a>
+<a href="/docs/en/config/models/" class="sidebar-link">Models</a>
+<a href="/docs/en/config/permissions/" class="sidebar-link">Permissions</a>
+<a href="/docs/en/config/network/" class="sidebar-link">Network</a>
+<a href="/docs/en/config/theme/" class="sidebar-link">Theme</a>
+<a href="/docs/en/config/custom-commands/" class="sidebar-link">Custom Commands</a>
+<a href="/docs/en/config/mcp/" class="sidebar-link">MCP</a>
+<a href="/docs/en/config/agents/" class="sidebar-link active">Agents</a>
+<a href="/docs/en/config/skills/" class="sidebar-link">Skills</a>
+<a href="/docs/en/config/rules/" class="sidebar-link">Rules</a>
+</div>
+<div class="sidebar-group">
+<div class="sidebar-group-label">Reference</div>
+<a href="/docs/en/reference/cli/" class="sidebar-link">CLI</a>
+<a href="/docs/en/reference/slash-commands/" class="sidebar-link">Slash Commands</a>
+<a href="/docs/en/reference/architecture/" class="sidebar-link">Architecture</a>
+<a href="/docs/en/reference/api-index/" class="sidebar-link">API Index</a>
+<a href="/docs/en/reference/faq/" class="sidebar-link">FAQ</a>
+<a href="/docs/en/reference/security/" class="sidebar-link">Security</a>
+<a href="/docs/en/reference/changelog/" class="sidebar-link">Changelog</a>
+</div>
+  </aside>
+  <main class="doc-main">
+    <div class="doc-content">
+<h1>Agents</h1>
+<p>LingXiao's Agent system is based on the Leader-Worker architecture, where roles (Role) define Agent capabilities, tools, and knowledge.</p>
+<h2>Role System</h2>
+<h3>Leader</h3>
+<p>The Leader is responsible for:</p>
+<ul>
+<li>Interpreting user goals</li>
+<li>Maintaining the plan/task DAG</li>
+<li>Creating and dispatching tasks</li>
+<li>Supervising worker execution</li>
+<li>Resolving plan review and user questions</li>
+<li>Coordinating tool usage and permissions</li>
+<li>Reacting to health/idle/stall signals</li>
+</ul>
+<h3>Worker</h3>
+<p>Workers execute assigned tasks. Each worker has:</p>
+<ul>
+<li><code>agent_id</code>: unique identifier</li>
+<li><code>agent_name</code>: name</li>
+<li>Role/system prompt</li>
+<li>Task ID</li>
+<li>Status</li>
+<li>Iteration count</li>
+<li>Conversation history</li>
+</ul>
+<p>Workers run through the AgentPool/runtime path. Task execution is worker-owned.</p>
+<h2>Preset Roles</h2>
+<p>LingXiao includes 13 preset roles:</p>
+<div class="table-wrap"><table>
+<thead><tr>
+<th>Role</th>
+<th>Description</th>
+</tr></thead><tbody>
+<tr>
+<td>architect</td>
+<td>Architect, responsible for task decomposition and design</td>
+</tr>
+<tr>
+<td>backend</td>
+<td>Backend developer</td>
+</tr>
+<tr>
+<td>frontend</td>
+<td>Frontend developer</td>
+</tr>
+<tr>
+<td>fullstack</td>
+<td>Full-stack developer</td>
+</tr>
+<tr>
+<td>explore</td>
+<td>Exploration researcher</td>
+</tr>
+<tr>
+<td>verify</td>
+<td>Verification engineer</td>
+</tr>
+<tr>
+<td>doc</td>
+<td>Documentation engineer</td>
+</tr>
+<tr>
+<td>test</td>
+<td>Test engineer</td>
+</tr>
+<tr>
+<td>devops</td>
+<td>DevOps engineer</td>
+</tr>
+<tr>
+<td>data</td>
+<td>Data engineer</td>
+</tr>
+<tr>
+<td>security</td>
+<td>Security engineer</td>
+</tr>
+<tr>
+<td>ui-design</td>
+<td>UI designer</td>
+</tr>
+<tr>
+<td>refactor</td>
+<td>Refactoring engineer</td>
+</tr>
+</tbody></table></div>
+<h2>Role Definition</h2>
+<p>Roles are defined via <code>RoleCapabilityModel</code>, containing key fields:</p>
+<div class="table-wrap"><table>
+<thead><tr>
+<th>Field</th>
+<th>Description</th>
+</tr></thead><tbody>
+<tr>
+<td><code>name</code></td>
+<td>Role name</td>
+</tr>
+<tr>
+<td><code>description</code></td>
+<td>Role description</td>
+</tr>
+<tr>
+<td><code>systemPrompt</code></td>
+<td>System prompt</td>
+</tr>
+<tr>
+<td><code>allowedTools</code></td>
+<td>List of allowed tools</td>
+</tr>
+<tr>
+<td><code>requestedTools</code></td>
+<td>List of requested tools</td>
+</tr>
+<tr>
+<td><code>skillNames</code></td>
+<td>Bound skill names</td>
+</tr>
+<tr>
+<td><code>suggestedModel</code></td>
+<td>Suggested model</td>
+</tr>
+</tbody></table></div>
+<h3>Adding Roles</h3>
+<p>Roles come from three sources:</p>
+<ol>
+<li><strong>Built-in roles</strong>: defined in <code>src/agents/leader/builtinRoles.ts</code></li>
+<li><strong>Dynamic roles</strong>: created via <code>define_agent_role</code> at runtime</li>
+<li><strong>Web config</strong>: overridden via Web roles routes</li>
+</ol>
+<p>Steps to add a role:</p>
+<ol>
+<li>Define responsibilities</li>
+<li>Define system prompt</li>
+<li>Define allowed/requested tools</li>
+<li>Optionally define skills</li>
+<li>Optionally define suggested model</li>
+</ol>
+<h2>Custom Agents</h2>
+<h3>Via Config File</h3>
+<p>Define custom roles in <code>~/.lingxiao/settings.json</code> or project-level config:</p>
+<pre><code class="lang-json">{
+  &quot;roles&quot;: {
+    &quot;custom-role&quot;: {
+      &quot;description&quot;: &quot;Custom role&quot;,
+      &quot;systemPrompt&quot;: &quot;You are an engineer focused on performance optimization&quot;,
+      &quot;allowedTools&quot;: [&quot;file_read&quot;, &quot;code_search&quot;, &quot;shell&quot;],
+      &quot;skillNames&quot;: [&quot;performance-optimization&quot;]
+    }
+  }
+}</code></pre>
+<h3>Via Leader Tool</h3>
+<p>The Leader can dynamically create roles at runtime via <code>define_agent_role</code>:</p>
+<pre><code class="lang-json">{
+  &quot;name&quot;: &quot;performance-engineer&quot;,
+  &quot;description&quot;: &quot;Performance Engineer&quot;,
+  &quot;systemPrompt&quot;: &quot;Focused on code performance analysis and optimization&quot;,
+  &quot;allowedTools&quot;: [&quot;file_read&quot;, &quot;code_search&quot;, &quot;shell&quot;, &quot;python_exec&quot;]
+}</code></pre>
+<h2>Tool Permissions</h2>
+<p>The role's <code>allowedTools</code> and <code>requestedTools</code> control tool access:</p>
+<ul>
+<li><code>allowedTools</code>: tools the role is explicitly permitted to use</li>
+<li><code>requestedTools</code>: tools the role requests but requires Leader approval</li>
+</ul>
+<p>Tool permissions are also governed by the permission system (<code>security.permission_mode</code>).</p>
+<h2>Task DAG</h2>
+<p>Tasks are stored in the <code>tasks</code> table and managed through <code>TaskBoard</code>:</p>
+<div class="table-wrap"><table>
+<thead><tr>
+<th>Field</th>
+<th>Description</th>
+</tr></thead><tbody>
+<tr>
+<td><code>id</code></td>
+<td>Task ID (e.g., <code>T-1</code>)</td>
+</tr>
+<tr>
+<td><code>session_id</code></td>
+<td>Session ID</td>
+</tr>
+<tr>
+<td><code>subject</code></td>
+<td>Task subject</td>
+</tr>
+<tr>
+<td><code>description</code></td>
+<td>Task description</td>
+</tr>
+<tr>
+<td><code>status</code></td>
+<td>Task status</td>
+</tr>
+<tr>
+<td><code>blocked_by</code></td>
+<td>Dependencies</td>
+</tr>
+<tr>
+<td><code>assigned_agent</code></td>
+<td>Assigned agent</td>
+</tr>
+</tbody></table></div>
+<h3>Task State Transitions</h3>
+<pre><code>pending → ready → dispatched → in_progress → completed
+                                    ↓
+                               failed / cancelled</code></pre>
+<h2>Worker Runtime</h2>
+<p>Worker execution is surfaced through the team runtime:</p>
+<ul>
+<li>Workers are registered through roles and task bindings</li>
+<li>Each task is dispatched to one worker owner at a time</li>
+<li>Worker state, logs, conversations, and completion reports flow through normal agent channels</li>
+<li>Supervision and intervention use Leader orchestration tools</li>
+</ul>
+    </div>
+<div class="prev-next">
+<a href="/docs/en/config/mcp/" class="prev-page"><span class="pn-label">← Previous</span><span class="pn-title">MCP</span></a>
+<a href="/docs/en/config/skills/" class="next-page"><span class="pn-label">Next →</span><span class="pn-title">Skills</span></a>
+</div>
+  </main>
+</div>
+</body>
+</html>

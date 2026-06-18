@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>环境变量 | 凌霄剑域</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%E5%89%91%3C/text%3E%3C/svg%3E">
+<style>
+/* ===== 古籍宣纸设计令牌（与首页同步） ===== */
+:root{
+  --paper:#f4ede0;--paper-bright:#faf5ea;--paper-dim:#e8dfce;--paper-deep:#ddd2bc;
+  --ink:#2a2218;--ink-mid:#4a3f30;--ink-light:#6b5e4a;--ink-wash:#8a7d68;--ink-faint:#a89a82;
+  --gold:#a8895a;--gold-bright:#c4a468;--gold-deep:#8a6e42;
+  --gold-line:rgba(168,137,90,0.22);--gold-wash:rgba(168,137,90,0.06);
+  --cinnabar:#a04030;--cinnabar-light:#c25a48;--cinnabar-wash:rgba(160,64,48,0.06);
+  --jade:#5a8a6a;--jade-wash:rgba(90,138,106,0.06);
+  --fg:var(--ink);--fg-muted:var(--ink-light);--fg-dim:var(--ink-wash);
+  --font-sans:'Noto Sans SC','Inter',-apple-system,system-ui,sans-serif;
+  --font-serif:'Noto Serif SC','Songti SC','STSong',serif;
+  --font-mono:'JetBrains Mono','Fira Code','SF Mono',monospace;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;font-size:16px}
+body{font-family:var(--font-sans);background:var(--paper);color:var(--fg);position:relative;overflow-x:hidden;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;line-height:1.6}
+
+/* 宣纸纹理背景 */
+.paper-texture{position:fixed;inset:0;z-index:0;pointer-events:none;
+  background:radial-gradient(ellipse 1200px 800px at 50% 0%,rgba(250,245,234,0.6),transparent 70%),radial-gradient(ellipse 800px 600px at 20% 80%,rgba(168,137,90,0.03),transparent 60%),radial-gradient(ellipse 800px 600px at 80% 40%,rgba(160,64,48,0.02),transparent 60%)}
+.paper-grain{position:fixed;inset:0;z-index:0;pointer-events:none;opacity:0.4;
+  background-image:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(168,137,90,0.012) 2px,rgba(168,137,90,0.012) 3px),repeating-linear-gradient(90deg,transparent,transparent 3px,rgba(168,137,90,0.008) 3px,rgba(168,137,90,0.008) 4px)}
+
+/* 导航 */
+.nav{position:fixed;top:0;left:0;right:0;z-index:100;backdrop-filter:blur(20px) saturate(140%);-webkit-backdrop-filter:blur(20px) saturate(140%);background:rgba(244,237,224,0.85);border-bottom:1px solid var(--gold-line)}
+.nav-inner{max-width:1400px;margin:0 auto;padding:0.75rem 1.5rem;display:flex;align-items:center;justify-content:space-between}
+.nav-brand{display:flex;align-items:center;gap:0.625rem;font-weight:700;font-size:1.05rem;color:var(--ink);text-decoration:none}
+.nav-brand .brand-mark{width:32px;height:32px;border-radius:8px;background:linear-gradient(135deg,var(--gold),var(--gold-bright));display:flex;align-items:center;justify-content:center;font-family:var(--font-serif);font-size:1.1rem;color:var(--paper-bright);font-weight:900}
+.nav-brand .brand-sub{font-size:0.7rem;font-weight:500;color:var(--fg-dim);letter-spacing:0.05em}
+.nav-links{display:flex;align-items:center;gap:1.5rem}
+.nav-links a{font-size:0.875rem;color:var(--fg-muted);text-decoration:none;transition:color 0.2s}
+.nav-links a:hover{color:var(--gold-deep)}
+
+/* 文档布局 */
+.doc-layout{position:relative;z-index:1;display:flex;max-width:1400px;margin:0 auto;padding-top:64px;min-height:100vh}
+
+/* 侧栏 */
+.doc-sidebar{position:sticky;top:64px;width:260px;height:calc(100vh - 64px);overflow-y:auto;padding:1.5rem 0.75rem;border-right:1px solid var(--gold-line);flex-shrink:0}
+.sidebar-group{margin-bottom:1.5rem}
+.sidebar-group-label{font-size:0.7rem;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:var(--fg-dim);padding:0 0.875rem 0.5rem}
+.sidebar-link{display:block;padding:0.4rem 0.875rem;border-radius:6px;font-size:0.82rem;color:var(--fg-muted);text-decoration:none;transition:all 0.15s;line-height:1.5}
+.sidebar-link:hover{background:var(--gold-wash);color:var(--ink)}
+.sidebar-link.active{background:var(--gold-wash);color:var(--gold-deep);font-weight:600;border-left:2px solid var(--gold)}
+
+/* 主内容 */
+.doc-main{flex:1;padding:2rem 3rem;max-width:900px;min-width:0}
+.doc-content h1{font-family:var(--font-serif);font-size:2.2rem;font-weight:700;margin-bottom:1.5rem;color:var(--ink);letter-spacing:0.02em}
+.doc-content h2{font-family:var(--font-serif);font-size:1.5rem;font-weight:600;margin:2rem 0 1rem;color:var(--ink-mid);border-bottom:1px solid var(--gold-line);padding-bottom:0.5rem}
+.doc-content h3{font-size:1.15rem;font-weight:600;margin:1.5rem 0 0.75rem;color:var(--ink-mid)}
+.doc-content p{font-size:0.9rem;line-height:1.8;color:var(--fg-muted);margin-bottom:1rem}
+.doc-content strong{color:var(--gold-deep);font-weight:600}
+.doc-content a{color:var(--cinnabar);text-decoration:none;transition:color 0.2s;border-bottom:1px solid transparent}
+.doc-content a:hover{color:var(--cinnabar-light);border-bottom-color:var(--cinnabar-light)}
+.doc-content ul,.doc-content ol{margin:0.5rem 0 1rem 1.5rem}
+.doc-content li{font-size:0.9rem;line-height:1.8;color:var(--fg-muted);margin-bottom:0.25rem}
+.doc-content blockquote{border-left:3px solid var(--gold);padding:0.5rem 1rem;margin:1rem 0;background:var(--gold-wash);border-radius:0 6px 6px 0;color:var(--fg-muted);font-size:0.875rem;font-style:italic}
+.doc-content code{font-family:var(--font-mono);font-size:0.82rem;background:var(--paper-dim);padding:0.15rem 0.4rem;border-radius:4px;color:var(--cinnabar)}
+.doc-content pre{background:var(--paper-bright);border:1px solid var(--gold-line);border-radius:8px;padding:1rem;overflow-x:auto;margin:1rem 0}
+.doc-content pre code{background:none;padding:0;font-size:0.8rem;color:var(--ink-mid);line-height:1.6}
+.doc-content hr{border:none;border-top:1px solid var(--gold-line);margin:2rem 0}
+.doc-content .table-wrap{overflow-x:auto;margin:1rem 0}
+.doc-content table{width:100%;border-collapse:collapse;font-size:0.85rem}
+.doc-content th{padding:0.625rem 0.875rem;text-align:left;border-bottom:2px solid var(--gold-line);color:var(--ink);font-weight:600}
+.doc-content td{padding:0.5rem 0.875rem;border-bottom:1px solid var(--gold-line);color:var(--fg-muted)}
+.doc-content .ascii-art-removed{padding:0.75rem 1rem;border:1px dashed var(--gold-line);border-radius:6px;color:var(--fg-dim);font-size:0.8rem;margin:1rem 0;text-align:center}
+
+/* 上下页导航 */
+.prev-next{display:flex;justify-content:space-between;margin-top:3rem;padding-top:1.5rem;border-top:1px solid var(--gold-line);gap:1rem}
+.prev-next a{display:flex;flex-direction:column;gap:0.25rem;padding:0.75rem 1rem;border:1px solid var(--gold-line);border-radius:8px;text-decoration:none;transition:all 0.2s;max-width:48%}
+.prev-next a:hover{border-color:var(--gold);background:var(--gold-wash)}
+.prev-next .pn-label{font-size:0.72rem;color:var(--fg-dim)}
+.prev-next .pn-title{font-size:0.85rem;color:var(--ink);font-weight:500}
+.prev-next .next-page{text-align:right;margin-left:auto}
+.prev-page .pn-title{text-align:left}
+
+/* 响应式 */
+@media(max-width:900px){
+  .doc-sidebar{display:none}
+  .doc-main{padding:1.5rem 1rem}
+  .nav-links a:not(.nav-cta){display:none}
+}
+</style>
+</head>
+<body>
+<div class="paper-texture"></div>
+<div class="paper-grain"></div>
+<nav class="nav"><div class="nav-inner">
+  <a href="/" class="nav-brand"><span class="brand-mark">剑</span><span>凌霄剑域</span><span class="brand-sub">LingXiao</span></a>
+  <div class="nav-links">
+    <a href="/docs/getting-started/introduction/">文档</a>
+    <a href="https://github.com/hexian2001/lingxiao" target="_blank" rel="noopener">GitHub</a>
+    <a href="/docs/getting-started/introduction/" class="nav-cta" style="padding:0.4rem 1rem;border-radius:8px;background:var(--gold-wash);color:var(--gold-deep);font-weight:600;font-size:0.8rem;border:1px solid var(--gold-line)">快速上手</a>
+  </div>
+</div></nav>
+<div class="doc-layout">
+  <aside class="doc-sidebar">
+<div class="sidebar-group">
+<div class="sidebar-group-label">入门</div>
+<a href="/docs/getting-started/introduction/" class="sidebar-link">简介</a>
+<a href="/docs/getting-started/install/" class="sidebar-link">安装与启动</a>
+<a href="/docs/getting-started/connect-models/" class="sidebar-link">连接模型</a>
+<a href="/docs/getting-started/first-run/" class="sidebar-link">第一次运行</a>
+</div>
+<div class="sidebar-group">
+<div class="sidebar-group-label">核心功能</div>
+<a href="/docs/core/expert-team/" class="sidebar-link">专家团系统</a>
+<a href="/docs/core/task-dag/" class="sidebar-link">任务DAG编排</a>
+<a href="/docs/core/state-sync/" class="sidebar-link">全状态同步</a>
+<a href="/docs/core/webui/" class="sidebar-link">WebUI指挥中心</a>
+<a href="/docs/core/tool-kernel/" class="sidebar-link">工具内核</a>
+<a href="/docs/core/orchestration/" class="sidebar-link">编排验收</a>
+<a href="/docs/core/mcp-skills/" class="sidebar-link">MCP Forge与Skills</a>
+<a href="/docs/core/memory/" class="sidebar-link">持久记忆</a>
+<a href="/docs/core/eternal/" class="sidebar-link">Eternal自治模式</a>
+<a href="/docs/core/llm-gateway/" class="sidebar-link">LLM Gateway</a>
+</div>
+<div class="sidebar-group">
+<div class="sidebar-group-label">配置与自定义</div>
+<a href="/docs/config/env-vars/" class="sidebar-link active">环境变量</a>
+<a href="/docs/config/models/" class="sidebar-link">模型配置</a>
+<a href="/docs/config/permissions/" class="sidebar-link">权限系统</a>
+<a href="/docs/config/network/" class="sidebar-link">网络配置</a>
+<a href="/docs/config/theme/" class="sidebar-link">主题</a>
+<a href="/docs/config/custom-commands/" class="sidebar-link">自定义命令</a>
+<a href="/docs/config/mcp/" class="sidebar-link">MCP</a>
+<a href="/docs/config/agents/" class="sidebar-link">Agents</a>
+<a href="/docs/config/skills/" class="sidebar-link">Skills 系统</a>
+<a href="/docs/config/rules/" class="sidebar-link">规则</a>
+</div>
+<div class="sidebar-group">
+<div class="sidebar-group-label">参考</div>
+<a href="/docs/reference/cli/" class="sidebar-link">CLI命令</a>
+<a href="/docs/reference/slash-commands/" class="sidebar-link">Slash命令</a>
+<a href="/docs/reference/architecture/" class="sidebar-link">架构概览</a>
+<a href="/docs/reference/api-index/" class="sidebar-link">API契约索引</a>
+<a href="/docs/reference/faq/" class="sidebar-link">FAQ</a>
+<a href="/docs/reference/security/" class="sidebar-link">安全须知</a>
+<a href="/docs/reference/changelog/" class="sidebar-link">更新日志</a>
+</div>
+  </aside>
+  <main class="doc-main">
+    <div class="doc-content">
+<h1>环境变量</h1>
+<p>凌霄通过 <code>LINGXIAO_</code> 前缀环境变量进行配置，也可在 <code>~/.lingxiao/settings.json</code> 中设置。环境变量优先级高于配置文件。</p>
+<p>配置由 <code>src/config.ts</code> 定义，默认值在 <code>src/config/defaults.ts</code> 中。当前 schema 版本为 <code>ConfigSchema v3</code>，使用 Zod 解析校验。</p>
+<h2>完整环境变量表</h2>
+<h3>LLM 与模型</h3>
+<div class="table-wrap"><table>
+<thead><tr>
+<th>变量</th>
+<th>配置路径</th>
+<th>类型</th>
+<th>说明</th>
+</tr></thead><tbody>
+<tr>
+<td><code>LINGXIAO_LLM_PROVIDER</code></td>
+<td><code>llm.provider</code></td>
+<td>string</td>
+<td><code>auto</code> / <code>openai</code> / <code>anthropic</code></td>
+</tr>
+<tr>
+<td><code>LINGXIAO_LEADER_MODEL</code></td>
+<td><code>llm.leader_model</code></td>
+<td>string</td>
+<td>Leader 使用的模型</td>
+</tr>
+<tr>
+<td><code>LINGXIAO_AGENT_MODEL</code></td>
+<td><code>llm.agent_model</code></td>
+<td>string</td>
+<td>Worker 使用的模型</td>
+</tr>
+<tr>
+<td><code>LINGXIAO_WIKI_MODEL</code></td>
+<td><code>llm.wiki_model</code></td>
+<td>string</td>
+<td>Wiki 知识摘要模型</td>
+</tr>
+<tr>
+<td><code>LINGXIAO_ENABLE_STREAMING</code></td>
+<td><code>llm.enable_streaming</code></td>
+<td>boolean</td>
+<td>启用流式输出</td>
+</tr>
+</tbody></table></div>
+<h3>API Key 与接口地址</h3>
+<div class="table-wrap"><table>
+<thead><tr>
+<th>变量</th>
+<th>说明</th>
+</tr></thead><tbody>
+<tr>
+<td><code>LINGXIAO_OPENAI_API_KEY</code></td>
+<td>OpenAI 或兼容接口 API Key</td>
+</tr>
+<tr>
+<td><code>LINGXIAO_OPENAI_BASE_URL</code></td>
+<td>OpenAI 兼容接口地址</td>
+</tr>
+<tr>
+<td><code>LINGXIAO_ANTHROPIC_API_KEY</code></td>
+<td>Anthropic API Key</td>
+</tr>
+<tr>
+<td><code>LINGXIAO_ANTHROPIC_BASE_URL</code></td>
+<td>Anthropic 接口地址</td>
+</tr>
+</tbody></table></div>
+<h3>Agent 与编排</h3>
+<div class="table-wrap"><table>
+<thead><tr>
+<th>变量</th>
+<th>配置路径</th>
+<th>类型</th>
+<th>说明</th>
+</tr></thead><tbody>
+<tr>
+<td><code>LINGXIAO_MAX_CONCURRENT_AGENTS</code></td>
+<td><code>agents.max_concurrent</code></td>
+<td>number</td>
+<td>最大并发 Worker 数</td>
+</tr>
+<tr>
+<td><code>LINGXIAO_AGENT_MAX_ITERATIONS</code></td>
+<td><code>agents.max_iterations</code></td>
+<td>number</td>
+<td>Worker 最大迭代轮次</td>
+</tr>
+<tr>
+<td><code>LINGXIAO_AGENT_MAX_RUNTIME_MINUTES</code></td>
+<td><code>agents.max_runtime_minutes</code></td>
+<td>number</td>
+<td>Worker 最大运行时间（分钟）</td>
+</tr>
+<tr>
+<td><code>LINGXIAO_WORKER_COMPLETION_JUDGE</code></td>
+<td><code>agents.worker_completion_judge_enabled</code></td>
+<td>boolean</td>
+<td>Worker 完成判定</td>
+</tr>
+<tr>
+<td><code>LINGXIAO_EXTERNAL_AGENTS_ENABLED</code></td>
+<td><code>agents.external_agents_enabled</code></td>
+<td>boolean</td>
+<td>外部 Agent 支持</td>
+</tr>
+<tr>
+<td><code>LINGXIAO_REMOTE_WORKERS_ENABLED</code></td>
+<td><code>scaling.remoteWorkers.enabled</code></td>
+<td>boolean</td>
+<td>远程 Worker 支持</td>
+</tr>
+</tbody></table></div>
+<h3>验证与质量门</h3>
+<div class="table-wrap"><table>
+<thead><tr>
+<th>变量</th>
+<th>配置路径</th>
+<th>类型</th>
+<th>说明</th>
+</tr></thead><tbody>
+<tr>
+<td><code>LINGXIAO_VERIFICATION_COMPLETION_GATE</code></td>
+<td><code>verification.completion_gate_enabled</code></td>
+<td>boolean</td>
+<td>完成门控</td>
+</tr>
+<tr>
+<td><code>LINGXIAO_VERIFICATION_TYPECHECK</code></td>
+<td><code>verification.typecheck</code></td>
+<td>boolean</td>
+<td>类型检查</td>
+</tr>
+<tr>
+<td><code>LINGXIAO_VERIFICATION_BUILD</code></td>
+<td><code>verification.build</code></td>
+<td>boolean</td>
+<td>构建检查</td>
+</tr>
+<tr>
+<td><code>LINGXIAO_VERIFICATION_AFFECTED_TESTS</code></td>
+<td><code>verification.affected_tests</code></td>
+<td>boolean</td>
+<td>受影响测试</td>
+</tr>
+<tr>
+<td><code>LINGXIAO_VERIFICATION_FULL_TESTS</code></td>
+<td><code>verification.full_tests</code></td>
+<td>boolean</td>
+<td>全量测试</td>
+</tr>
+</tbody></table></div>
+<h3>Leader 运行时</h3>
+<div class="table-wrap"><table>
+<thead><tr>
+<th>变量</th>
+<th>配置路径</th>
+<th>类型</th>
+<th>说明</th>
+</tr></thead><tbody>
+<tr>
+<td><code>LINGXIAO_LEADER_MAX_TOOL_ROUNDS</code></td>
+<td><code>leader.max_tool_rounds</code></td>
+<td>number</td>
+<td>Leader 最大工具轮次</td>
+</tr>
+<tr>
+<td><code>LINGXIAO_LEADER_MAX_RUNTIME_MINUTES</code></td>
+<td><code>leader.max_runtime_minutes</code></td>
+<td>number</td>
+<td>Leader 最大运行时间</td>
+</tr>
+<tr>
+<td><code>LINGXIAO_LEADER_PROBE_SILENCE_SECONDS</code></td>
+<td><code>leader.probe_silence_seconds</code></td>
+<td>number</td>
+<td>探测静默间隔</td>
+</tr>
+<tr>
+<td><code>LINGXIAO_LEADER_PROBE_MAX_INTERVAL_SECONDS</code></td>
+<td><code>leader.probe_max_interval_seconds</code></td>
+<td>number</td>
+<td>探测最大间隔</td>
+</tr>
+<tr>
+<td><code>LINGXIAO_LEADER_PROBE_BACKOFF_MULTIPLIER</code></td>
+<td><code>leader.probe_backoff_multiplier</code></td>
+<td>number</td>
+<td>探测退避倍数</td>
+</tr>
+<tr>
+<td><code>LINGXIAO_LEADER_IDLE_WARNING_SECONDS</code></td>
+<td><code>leader.idle_warning_seconds</code></td>
+<td>number</td>
+<td>空闲告警阈值</td>
+</tr>
+</tbody></table></div>
+<h3>Web 服务与网络</h3>
+<div class="table-wrap"><table>
+<thead><tr>
+<th>变量</th>
+<th>配置路径</th>
+<th>类型</th>
+<th>说明</th>
+</tr></thead><tbody>
+<tr>
+<td><code>LINGXIAO_WEB_HOST</code></td>
+<td><code>server.host</code></td>
+<td>string</td>
+<td>Web 服务监听地址，默认 <code>127.0.0.1</code></td>
+</tr>
+<tr>
+<td><code>LINGXIAO_WEB_PORT</code></td>
+<td><code>server.port</code></td>
+<td>number</td>
+<td>Web 服务端口，默认自动分配</td>
+</tr>
+<tr>
+<td><code>LINGXIAO_WEB_PROXY_TARGET</code></td>
+<td>-</td>
+<td>string</td>
+<td>Vite 开发代理目标</td>
+</tr>
+<tr>
+<td><code>LINGXIAO_PROXY_URL</code></td>
+<td><code>network.proxy.url</code></td>
+<td>string</td>
+<td>代理 URL</td>
+</tr>
+<tr>
+<td><code>LINGXIAO_PROXY_LLM</code></td>
+<td><code>network.proxy.llm_enabled</code></td>
+<td>boolean</td>
+<td>LLM 请求走代理</td>
+</tr>
+<tr>
+<td><code>LINGXIAO_PROXY_TOOLS</code></td>
+<td><code>network.proxy.tools_enabled</code></td>
+<td>boolean</td>
+<td>工具请求走代理</td>
+</tr>
+<tr>
+<td><code>LINGXIAO_USER_AGENT</code></td>
+<td><code>network.user_agent</code></td>
+<td>string</td>
+<td>自定义 User-Agent</td>
+</tr>
+</tbody></table></div>
+<h3>路径与目录</h3>
+<div class="table-wrap"><table>
+<thead><tr>
+<th>变量</th>
+<th>配置路径</th>
+<th>类型</th>
+<th>说明</th>
+</tr></thead><tbody>
+<tr>
+<td><code>LINGXIAO_DB_PATH</code></td>
+<td><code>paths.db_path</code></td>
+<td>string</td>
+<td>数据库路径</td>
+</tr>
+<tr>
+<td><code>LINGXIAO_CHROME_PATH</code></td>
+<td><code>paths.chrome_path</code></td>
+<td>string</td>
+<td>Chrome 可执行路径</td>
+</tr>
+<tr>
+<td><code>CHROME_PATH</code></td>
+<td><code>paths.chrome_path</code></td>
+<td>string</td>
+<td>同上（别名）</td>
+</tr>
+<tr>
+<td><code>CHROME_BIN</code></td>
+<td><code>paths.chrome_path</code></td>
+<td>string</td>
+<td>同上（别名）</td>
+</tr>
+<tr>
+<td><code>LINGXIAO_BUNDLED_SKILLS_DIR</code></td>
+<td><code>paths.bundled_skills_dir</code></td>
+<td>string</td>
+<td>内置技能目录</td>
+</tr>
+<tr>
+<td><code>LINGXIAO_GLOBAL_SKILLS_DIR</code></td>
+<td><code>paths.global_skills_dir</code></td>
+<td>string</td>
+<td>全局技能目录</td>
+</tr>
+</tbody></table></div>
+<h3>安全与权限</h3>
+<div class="table-wrap"><table>
+<thead><tr>
+<th>变量</th>
+<th>配置路径</th>
+<th>类型</th>
+<th>说明</th>
+</tr></thead><tbody>
+<tr>
+<td><code>LINGXIAO_IDENTITY_JUDGE_LLM</code></td>
+<td><code>security.identity_judge_llm_enabled</code></td>
+<td>boolean</td>
+<td>LLM 身份判定</td>
+</tr>
+<tr>
+<td><code>LINGXIAO_HARDENED_MODE</code></td>
+<td><code>security.hardened_mode</code></td>
+<td>boolean</td>
+<td>加固模式（单向锁）</td>
+</tr>
+</tbody></table></div>
+<p>:::caution[加固模式单向锁]</p>
+<p><code>LINGXIAO_HARDENED_MODE</code> 是单向锁：设置为 truthy 值后强制开启加固模式，Settings 路由会拒绝关闭请求。</p>
+<p>:::</p>
+<h3>其他</h3>
+<div class="table-wrap"><table>
+<thead><tr>
+<th>变量</th>
+<th>配置路径</th>
+<th>类型</th>
+<th>说明</th>
+</tr></thead><tbody>
+<tr>
+<td><code>LINGXIAO_WORKER_SPAWN_TIMEOUT_MS</code></td>
+<td><code>timeouts.worker_spawn_ms</code></td>
+<td>number</td>
+<td>Worker 启动超时</td>
+</tr>
+<tr>
+<td><code>LINGXIAO_LANGUAGE</code></td>
+<td><code>ui.language</code></td>
+<td>string</td>
+<td>界面语言 <code>zh</code> / <code>en</code></td>
+</tr>
+<tr>
+<td><code>LINGXIAO_BLACKBOARD</code></td>
+<td><code>blackboard.enabled</code></td>
+<td>boolean</td>
+<td>黑板系统开关</td>
+</tr>
+</tbody></table></div>
+<h2>配置文件</h2>
+<p>除环境变量外，配置也可写入 <code>~/.lingxiao/settings.json</code>：</p>
+<pre><code class="lang-json">{
+  &quot;llm&quot;: {
+    &quot;provider&quot;: &quot;openai&quot;,
+    &quot;leader_model&quot;: &quot;gpt-4o&quot;,
+    &quot;agent_model&quot;: &quot;gpt-4o-mini&quot;
+  },
+  &quot;agents&quot;: {
+    &quot;max_concurrent&quot;: 5,
+    &quot;max_iterations&quot;: 50
+  },
+  &quot;security&quot;: {
+    &quot;permission_mode&quot;: &quot;dev&quot;
+  }
+}</code></pre>
+<h2>配置组</h2>
+<p>凌霄的配置分为 31 个主要组：</p>
+<div class="table-wrap"><table>
+<thead><tr>
+<th>组</th>
+<th>说明</th>
+</tr></thead><tbody>
+<tr>
+<td><code>llm</code></td>
+<td>LLM 提供商、模型、超时、重试</td>
+</tr>
+<tr>
+<td><code>llm_gateway</code></td>
+<td>本地 LLM 网关配置</td>
+</tr>
+<tr>
+<td><code>agents</code></td>
+<td>Worker 容量与运行时</td>
+</tr>
+<tr>
+<td><code>verification</code></td>
+<td>完成门控与验证</td>
+</tr>
+<tr>
+<td><code>leader</code></td>
+<td>Leader 运行时控制</td>
+</tr>
+<tr>
+<td><code>health</code></td>
+<td>健康检查</td>
+</tr>
+<tr>
+<td><code>context</code></td>
+<td>上下文管理</td>
+</tr>
+<tr>
+<td><code>truncation</code></td>
+<td>上下文截断策略</td>
+</tr>
+<tr>
+<td><code>timeouts</code></td>
+<td>超时设置</td>
+</tr>
+<tr>
+<td><code>web_api</code></td>
+<td>Web API 配置</td>
+</tr>
+<tr>
+<td><code>paths</code></td>
+<td>文件路径</td>
+</tr>
+<tr>
+<td><code>skills</code></td>
+<td>技能系统</td>
+</tr>
+<tr>
+<td><code>plugins</code></td>
+<td>插件管理</td>
+</tr>
+<tr>
+<td><code>marketplaces</code></td>
+<td>市场配置</td>
+</tr>
+<tr>
+<td><code>mcp</code></td>
+<td>MCP 服务器</td>
+</tr>
+<tr>
+<td><code>tools</code></td>
+<td>工具注册</td>
+</tr>
+<tr>
+<td><code>roles</code></td>
+<td>角色定义</td>
+</tr>
+<tr>
+<td><code>server</code></td>
+<td>Web 服务</td>
+</tr>
+<tr>
+<td><code>network</code></td>
+<td>网络与代理</td>
+</tr>
+<tr>
+<td><code>browser</code></td>
+<td>浏览器自动化</td>
+</tr>
+<tr>
+<td><code>security</code></td>
+<td>安全与权限</td>
+</tr>
+<tr>
+<td><code>memory</code></td>
+<td>记忆系统</td>
+</tr>
+<tr>
+<td><code>checkpoint</code></td>
+<td>文件检查点</td>
+</tr>
+<tr>
+<td><code>ui</code></td>
+<td>界面配置</td>
+</tr>
+<tr>
+<td><code>message_bus</code></td>
+<td>消息总线</td>
+</tr>
+<tr>
+<td><code>observability</code></td>
+<td>可观测性</td>
+</tr>
+<tr>
+<td><code>taskPriority</code></td>
+<td>任务优先级</td>
+</tr>
+<tr>
+<td><code>scaling</code></td>
+<td>扩缩容</td>
+</tr>
+<tr>
+<td><code>git</code></td>
+<td>Git 集成</td>
+</tr>
+<tr>
+<td><code>blackboard</code></td>
+<td>黑板系统</td>
+</tr>
+<tr>
+<td><code>advanced</code></td>
+<td>高级选项</td>
+</tr>
+<tr>
+<td><code>credentials</code></td>
+<td>凭据管理</td>
+</tr>
+</tbody></table></div>
+<h2>配置规则</h2>
+<ol>
+<li>新配置值必须同时添加到 Zod schema 和 defaults</li>
+<li>用户可调值仅在安全时通过 settings 路由暴露</li>
+<li>环境变量覆盖必须在此文档中列出</li>
+<li>敏感信息（如 Git token）不得由 <code>/api/v1/settings</code> 原样返回</li>
+<li>影响服务器启动的值可能需要重启进程</li>
+</ol>
+    </div>
+<div class="prev-next">
+<a href="/docs/core/llm-gateway/" class="prev-page"><span class="pn-label">← 上一页</span><span class="pn-title">LLM Gateway</span></a>
+<a href="/docs/config/models/" class="next-page"><span class="pn-label">下一页 →</span><span class="pn-title">模型配置</span></a>
+</div>
+  </main>
+</div>
+</body>
+</html>

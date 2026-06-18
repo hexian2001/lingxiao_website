@@ -1,0 +1,734 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Slash 命令 | 凌霄剑域</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%E5%89%91%3C/text%3E%3C/svg%3E">
+<style>
+/* ===== 古籍宣纸设计令牌（与首页同步） ===== */
+:root{
+  --paper:#f4ede0;--paper-bright:#faf5ea;--paper-dim:#e8dfce;--paper-deep:#ddd2bc;
+  --ink:#2a2218;--ink-mid:#4a3f30;--ink-light:#6b5e4a;--ink-wash:#8a7d68;--ink-faint:#a89a82;
+  --gold:#a8895a;--gold-bright:#c4a468;--gold-deep:#8a6e42;
+  --gold-line:rgba(168,137,90,0.22);--gold-wash:rgba(168,137,90,0.06);
+  --cinnabar:#a04030;--cinnabar-light:#c25a48;--cinnabar-wash:rgba(160,64,48,0.06);
+  --jade:#5a8a6a;--jade-wash:rgba(90,138,106,0.06);
+  --fg:var(--ink);--fg-muted:var(--ink-light);--fg-dim:var(--ink-wash);
+  --font-sans:'Noto Sans SC','Inter',-apple-system,system-ui,sans-serif;
+  --font-serif:'Noto Serif SC','Songti SC','STSong',serif;
+  --font-mono:'JetBrains Mono','Fira Code','SF Mono',monospace;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;font-size:16px}
+body{font-family:var(--font-sans);background:var(--paper);color:var(--fg);position:relative;overflow-x:hidden;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;line-height:1.6}
+
+/* 宣纸纹理背景 */
+.paper-texture{position:fixed;inset:0;z-index:0;pointer-events:none;
+  background:radial-gradient(ellipse 1200px 800px at 50% 0%,rgba(250,245,234,0.6),transparent 70%),radial-gradient(ellipse 800px 600px at 20% 80%,rgba(168,137,90,0.03),transparent 60%),radial-gradient(ellipse 800px 600px at 80% 40%,rgba(160,64,48,0.02),transparent 60%)}
+.paper-grain{position:fixed;inset:0;z-index:0;pointer-events:none;opacity:0.4;
+  background-image:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(168,137,90,0.012) 2px,rgba(168,137,90,0.012) 3px),repeating-linear-gradient(90deg,transparent,transparent 3px,rgba(168,137,90,0.008) 3px,rgba(168,137,90,0.008) 4px)}
+
+/* 导航 */
+.nav{position:fixed;top:0;left:0;right:0;z-index:100;backdrop-filter:blur(20px) saturate(140%);-webkit-backdrop-filter:blur(20px) saturate(140%);background:rgba(244,237,224,0.85);border-bottom:1px solid var(--gold-line)}
+.nav-inner{max-width:1400px;margin:0 auto;padding:0.75rem 1.5rem;display:flex;align-items:center;justify-content:space-between}
+.nav-brand{display:flex;align-items:center;gap:0.625rem;font-weight:700;font-size:1.05rem;color:var(--ink);text-decoration:none}
+.nav-brand .brand-mark{width:32px;height:32px;border-radius:8px;background:linear-gradient(135deg,var(--gold),var(--gold-bright));display:flex;align-items:center;justify-content:center;font-family:var(--font-serif);font-size:1.1rem;color:var(--paper-bright);font-weight:900}
+.nav-brand .brand-sub{font-size:0.7rem;font-weight:500;color:var(--fg-dim);letter-spacing:0.05em}
+.nav-links{display:flex;align-items:center;gap:1.5rem}
+.nav-links a{font-size:0.875rem;color:var(--fg-muted);text-decoration:none;transition:color 0.2s}
+.nav-links a:hover{color:var(--gold-deep)}
+
+/* 文档布局 */
+.doc-layout{position:relative;z-index:1;display:flex;max-width:1400px;margin:0 auto;padding-top:64px;min-height:100vh}
+
+/* 侧栏 */
+.doc-sidebar{position:sticky;top:64px;width:260px;height:calc(100vh - 64px);overflow-y:auto;padding:1.5rem 0.75rem;border-right:1px solid var(--gold-line);flex-shrink:0}
+.sidebar-group{margin-bottom:1.5rem}
+.sidebar-group-label{font-size:0.7rem;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:var(--fg-dim);padding:0 0.875rem 0.5rem}
+.sidebar-link{display:block;padding:0.4rem 0.875rem;border-radius:6px;font-size:0.82rem;color:var(--fg-muted);text-decoration:none;transition:all 0.15s;line-height:1.5}
+.sidebar-link:hover{background:var(--gold-wash);color:var(--ink)}
+.sidebar-link.active{background:var(--gold-wash);color:var(--gold-deep);font-weight:600;border-left:2px solid var(--gold)}
+
+/* 主内容 */
+.doc-main{flex:1;padding:2rem 3rem;max-width:900px;min-width:0}
+.doc-content h1{font-family:var(--font-serif);font-size:2.2rem;font-weight:700;margin-bottom:1.5rem;color:var(--ink);letter-spacing:0.02em}
+.doc-content h2{font-family:var(--font-serif);font-size:1.5rem;font-weight:600;margin:2rem 0 1rem;color:var(--ink-mid);border-bottom:1px solid var(--gold-line);padding-bottom:0.5rem}
+.doc-content h3{font-size:1.15rem;font-weight:600;margin:1.5rem 0 0.75rem;color:var(--ink-mid)}
+.doc-content p{font-size:0.9rem;line-height:1.8;color:var(--fg-muted);margin-bottom:1rem}
+.doc-content strong{color:var(--gold-deep);font-weight:600}
+.doc-content a{color:var(--cinnabar);text-decoration:none;transition:color 0.2s;border-bottom:1px solid transparent}
+.doc-content a:hover{color:var(--cinnabar-light);border-bottom-color:var(--cinnabar-light)}
+.doc-content ul,.doc-content ol{margin:0.5rem 0 1rem 1.5rem}
+.doc-content li{font-size:0.9rem;line-height:1.8;color:var(--fg-muted);margin-bottom:0.25rem}
+.doc-content blockquote{border-left:3px solid var(--gold);padding:0.5rem 1rem;margin:1rem 0;background:var(--gold-wash);border-radius:0 6px 6px 0;color:var(--fg-muted);font-size:0.875rem;font-style:italic}
+.doc-content code{font-family:var(--font-mono);font-size:0.82rem;background:var(--paper-dim);padding:0.15rem 0.4rem;border-radius:4px;color:var(--cinnabar)}
+.doc-content pre{background:var(--paper-bright);border:1px solid var(--gold-line);border-radius:8px;padding:1rem;overflow-x:auto;margin:1rem 0}
+.doc-content pre code{background:none;padding:0;font-size:0.8rem;color:var(--ink-mid);line-height:1.6}
+.doc-content hr{border:none;border-top:1px solid var(--gold-line);margin:2rem 0}
+.doc-content .table-wrap{overflow-x:auto;margin:1rem 0}
+.doc-content table{width:100%;border-collapse:collapse;font-size:0.85rem}
+.doc-content th{padding:0.625rem 0.875rem;text-align:left;border-bottom:2px solid var(--gold-line);color:var(--ink);font-weight:600}
+.doc-content td{padding:0.5rem 0.875rem;border-bottom:1px solid var(--gold-line);color:var(--fg-muted)}
+.doc-content .ascii-art-removed{padding:0.75rem 1rem;border:1px dashed var(--gold-line);border-radius:6px;color:var(--fg-dim);font-size:0.8rem;margin:1rem 0;text-align:center}
+
+/* 上下页导航 */
+.prev-next{display:flex;justify-content:space-between;margin-top:3rem;padding-top:1.5rem;border-top:1px solid var(--gold-line);gap:1rem}
+.prev-next a{display:flex;flex-direction:column;gap:0.25rem;padding:0.75rem 1rem;border:1px solid var(--gold-line);border-radius:8px;text-decoration:none;transition:all 0.2s;max-width:48%}
+.prev-next a:hover{border-color:var(--gold);background:var(--gold-wash)}
+.prev-next .pn-label{font-size:0.72rem;color:var(--fg-dim)}
+.prev-next .pn-title{font-size:0.85rem;color:var(--ink);font-weight:500}
+.prev-next .next-page{text-align:right;margin-left:auto}
+.prev-page .pn-title{text-align:left}
+
+/* 响应式 */
+@media(max-width:900px){
+  .doc-sidebar{display:none}
+  .doc-main{padding:1.5rem 1rem}
+  .nav-links a:not(.nav-cta){display:none}
+}
+</style>
+</head>
+<body>
+<div class="paper-texture"></div>
+<div class="paper-grain"></div>
+<nav class="nav"><div class="nav-inner">
+  <a href="/" class="nav-brand"><span class="brand-mark">剑</span><span>凌霄剑域</span><span class="brand-sub">LingXiao</span></a>
+  <div class="nav-links">
+    <a href="/docs/getting-started/introduction/">文档</a>
+    <a href="https://github.com/hexian2001/lingxiao" target="_blank" rel="noopener">GitHub</a>
+    <a href="/docs/getting-started/introduction/" class="nav-cta" style="padding:0.4rem 1rem;border-radius:8px;background:var(--gold-wash);color:var(--gold-deep);font-weight:600;font-size:0.8rem;border:1px solid var(--gold-line)">快速上手</a>
+  </div>
+</div></nav>
+<div class="doc-layout">
+  <aside class="doc-sidebar">
+<div class="sidebar-group">
+<div class="sidebar-group-label">入门</div>
+<a href="/docs/getting-started/introduction/" class="sidebar-link">简介</a>
+<a href="/docs/getting-started/install/" class="sidebar-link">安装与启动</a>
+<a href="/docs/getting-started/connect-models/" class="sidebar-link">连接模型</a>
+<a href="/docs/getting-started/first-run/" class="sidebar-link">第一次运行</a>
+</div>
+<div class="sidebar-group">
+<div class="sidebar-group-label">核心功能</div>
+<a href="/docs/core/expert-team/" class="sidebar-link">专家团系统</a>
+<a href="/docs/core/task-dag/" class="sidebar-link">任务DAG编排</a>
+<a href="/docs/core/state-sync/" class="sidebar-link">全状态同步</a>
+<a href="/docs/core/webui/" class="sidebar-link">WebUI指挥中心</a>
+<a href="/docs/core/tool-kernel/" class="sidebar-link">工具内核</a>
+<a href="/docs/core/orchestration/" class="sidebar-link">编排验收</a>
+<a href="/docs/core/mcp-skills/" class="sidebar-link">MCP Forge与Skills</a>
+<a href="/docs/core/memory/" class="sidebar-link">持久记忆</a>
+<a href="/docs/core/eternal/" class="sidebar-link">Eternal自治模式</a>
+<a href="/docs/core/llm-gateway/" class="sidebar-link">LLM Gateway</a>
+</div>
+<div class="sidebar-group">
+<div class="sidebar-group-label">配置与自定义</div>
+<a href="/docs/config/env-vars/" class="sidebar-link">环境变量</a>
+<a href="/docs/config/models/" class="sidebar-link">模型配置</a>
+<a href="/docs/config/permissions/" class="sidebar-link">权限系统</a>
+<a href="/docs/config/network/" class="sidebar-link">网络配置</a>
+<a href="/docs/config/theme/" class="sidebar-link">主题</a>
+<a href="/docs/config/custom-commands/" class="sidebar-link">自定义命令</a>
+<a href="/docs/config/mcp/" class="sidebar-link">MCP</a>
+<a href="/docs/config/agents/" class="sidebar-link">Agents</a>
+<a href="/docs/config/skills/" class="sidebar-link">Skills 系统</a>
+<a href="/docs/config/rules/" class="sidebar-link">规则</a>
+</div>
+<div class="sidebar-group">
+<div class="sidebar-group-label">参考</div>
+<a href="/docs/reference/cli/" class="sidebar-link">CLI命令</a>
+<a href="/docs/reference/slash-commands/" class="sidebar-link active">Slash命令</a>
+<a href="/docs/reference/architecture/" class="sidebar-link">架构概览</a>
+<a href="/docs/reference/api-index/" class="sidebar-link">API契约索引</a>
+<a href="/docs/reference/faq/" class="sidebar-link">FAQ</a>
+<a href="/docs/reference/security/" class="sidebar-link">安全须知</a>
+<a href="/docs/reference/changelog/" class="sidebar-link">更新日志</a>
+</div>
+  </aside>
+  <main class="doc-main">
+    <div class="doc-content">
+<h1>Slash 命令</h1>
+<p>凌霄内置 66 个 Slash 命令，在 TUI 和 WebUI 聊天输入中均可使用。命令注册源为 <code>src/commands/slash_registry.ts</code>，回调派发由 <code>src/commands/dispatcher.ts</code> 处理。</p>
+<h2>命令生命周期</h2>
+<pre><code class="lang-text">sequenceDiagram
+  participant UI as Web/TUI 输入
+  participant R as slash_registry
+  participant ACP as AcpHandler session/command
+  participant D as dispatchCallbackCommand
+  participant SM as SessionManager
+
+  UI-&gt;&gt;R: 检测 slash 命令和元数据
+  UI-&gt;&gt;ACP: session/command {command, args}
+  ACP-&gt;&gt;D: dispatchCallbackCommand(commandLine, context)
+  D-&gt;&gt;SM: 可选运行时操作
+  D--&gt;&gt;ACP: CommandResult
+  ACP--&gt;&gt;UI: JSON-RPC 结果</code></pre>
+<h2>处理器类型</h2>
+<div class="table-wrap"><table>
+<thead><tr>
+<th>处理器</th>
+<th>含义</th>
+<th>说明</th>
+</tr></thead><tbody>
+<tr>
+<td><code>tui-local</code></td>
+<td>客户端本地处理，不调用后端</td>
+<td>用于视图切换、帮助、退出等纯前端操作</td>
+</tr>
+<tr>
+<td><code>callback</code></td>
+<td>必须发送到后端 dispatcher</td>
+<td>用于运行时状态、会话、工具、权限、模型、工作流等</td>
+</tr>
+</tbody></table></div>
+<h2>命令分类</h2>
+<div class="table-wrap"><table>
+<thead><tr>
+<th>分类</th>
+<th>用途</th>
+</tr></thead><tbody>
+<tr>
+<td><code>session</code></td>
+<td>会话生命周期与历史</td>
+</tr>
+<tr>
+<td><code>view</code></td>
+<td>TUI/Web 面板与报告</td>
+</tr>
+<tr>
+<td><code>permission</code></td>
+<td>工具权限与审批控制</td>
+</tr>
+<tr>
+<td><code>project</code></td>
+<td>编排项目控制</td>
+</tr>
+<tr>
+<td><code>model</code></td>
+<td>模型、语言与配置</td>
+</tr>
+<tr>
+<td><code>tools</code></td>
+<td>运行时工具、插件、网络辅助、技能</td>
+</tr>
+<tr>
+<td><code>misc</code></td>
+<td>帮助、诊断、退出等未分类命令</td>
+</tr>
+</tbody></table></div>
+<h2>会话命令</h2>
+<div class="table-wrap"><table>
+<thead><tr>
+<th>命令</th>
+<th>处理器</th>
+<th>说明</th>
+</tr></thead><tbody>
+<tr>
+<td><code>/resume</code></td>
+<td>callback</td>
+<td>恢复会话或打开恢复弹窗</td>
+</tr>
+<tr>
+<td><code>/session</code></td>
+<td>callback</td>
+<td>显示当前会话/工作区/权限摘要</td>
+</tr>
+<tr>
+<td><code>/clear</code></td>
+<td>callback</td>
+<td>清空当前对话（数据库和内存）</td>
+</tr>
+<tr>
+<td><code>/compact</code></td>
+<td>callback</td>
+<td>强制 Leader 上下文压缩</td>
+</tr>
+<tr>
+<td><code>/fork</code></td>
+<td>callback</td>
+<td><code>/fork [messageId]</code>；从指定消息分叉会话（当前已注册但无处理函数）</td>
+</tr>
+<tr>
+<td><code>/dream</code></td>
+<td>callback</td>
+<td>将检查点整合为结构化 <code>MEMORY.md</code></td>
+</tr>
+<tr>
+<td><code>/history</code></td>
+<td>callback</td>
+<td>最近会话弹窗</td>
+</tr>
+<tr>
+<td><code>/stop</code></td>
+<td>callback</td>
+<td>中断当前会话</td>
+</tr>
+</tbody></table></div>
+<h2>视图命令</h2>
+<div class="table-wrap"><table>
+<thead><tr>
+<th>命令</th>
+<th>处理器</th>
+<th>说明</th>
+</tr></thead><tbody>
+<tr>
+<td><code>/tasks</code></td>
+<td>tui-local</td>
+<td>打开任务板/DAG 视图</td>
+</tr>
+<tr>
+<td><code>/agents</code></td>
+<td>tui-local</td>
+<td>打开 Agent 总览</td>
+</tr>
+<tr>
+<td><code>/graph</code></td>
+<td>tui-local</td>
+<td>打开知识图谱/黑板视图</td>
+</tr>
+<tr>
+<td><code>/notes</code></td>
+<td>tui-local</td>
+<td>打开工作笔记</td>
+</tr>
+<tr>
+<td><code>/git</code></td>
+<td>tui-local</td>
+<td>打开 Git 工作区面板</td>
+</tr>
+<tr>
+<td><code>/changes</code></td>
+<td>callback</td>
+<td>文件变更/检查点报告</td>
+</tr>
+<tr>
+<td><code>/main</code></td>
+<td>tui-local</td>
+<td>返回主频道</td>
+</tr>
+<tr>
+<td><code>/refresh</code></td>
+<td>callback</td>
+<td>刷新当前会话快照</td>
+</tr>
+<tr>
+<td><code>/reset</code></td>
+<td>tui-local</td>
+<td>重置当前视图</td>
+</tr>
+</tbody></table></div>
+<h2>权限命令</h2>
+<div class="table-wrap"><table>
+<thead><tr>
+<th>命令</th>
+<th>处理器</th>
+<th>说明</th>
+</tr></thead><tbody>
+<tr>
+<td><code>/permissions</code></td>
+<td>callback</td>
+<td>权限有效层/待审批弹窗</td>
+</tr>
+<tr>
+<td><code>/mode</code></td>
+<td>callback</td>
+<td>`/mode <strict</td>
+<td>dev</td>
+<td>networked</td>
+<td>yolo> [session</td>
+<td>project</td>
+<td>local</td>
+<td>user]`</td>
+</tr>
+<tr>
+<td><code>/allow-tool</code></td>
+<td>callback</td>
+<td>添加允许规则</td>
+</tr>
+<tr>
+<td><code>/deny-tool</code></td>
+<td>callback</td>
+<td>添加拒绝规则</td>
+</tr>
+<tr>
+<td><code>/ask-tool</code></td>
+<td>callback</td>
+<td>添加询问规则</td>
+</tr>
+<tr>
+<td><code>/approve</code></td>
+<td>callback</td>
+<td>批准待处理权限或计划</td>
+</tr>
+<tr>
+<td><code>/deny</code></td>
+<td>callback</td>
+<td>拒绝待处理权限请求</td>
+</tr>
+</tbody></table></div>
+<h3>权限层目标</h3>
+<p><code>/mode</code>、<code>/allow-tool</code>、<code>/deny-tool</code>、<code>/ask-tool</code> 支持持久化到不同层级：</p>
+<ul>
+<li><code>session</code>：SQLite <code>session_state</code>，键 <code>TOOL_PERMISSION_CONTEXT</code></li>
+<li><code>project</code>：<code>.lingxiao/permissions.project.json</code></li>
+<li><code>local</code>：<code>.lingxiao/permissions.local.json</code></li>
+<li><code>user</code>：<code>~/.lingxiao/permissions.user.json</code></li>
+</ul>
+<p>未指定时默认写入 <code>session</code>。</p>
+<h2>项目编排命令</h2>
+<div class="table-wrap"><table>
+<thead><tr>
+<th>命令</th>
+<th>处理器</th>
+<th>说明</th>
+</tr></thead><tbody>
+<tr>
+<td><code>/eternal</code></td>
+<td>callback</td>
+<td>`/eternal <goal></td>
+<td>status</td>
+<td>pause</td>
+<td>resume</td>
+<td>clear</td>
+<td>delete</td>
+<td>set`；管理 Eternal 长期目标</td>
+</tr>
+<tr>
+<td><code>/team</code></td>
+<td>callback</td>
+<td>`/team status</td>
+<td>on</td>
+<td>off`；显示或切换协作模式</td>
+</tr>
+<tr>
+<td><code>/route</code></td>
+<td>callback</td>
+<td>`/route <auto</td>
+<td>direct</td>
+<td>hybrid</td>
+<td>delegate>`；设置 Leader 执行路由偏好</td>
+</tr>
+<tr>
+<td><code>/projects</code></td>
+<td>callback</td>
+<td>编排项目板</td>
+</tr>
+<tr>
+<td><code>/project-pause</code></td>
+<td>callback</td>
+<td>暂停当前项目</td>
+</tr>
+<tr>
+<td><code>/project-resume</code></td>
+<td>callback</td>
+<td>恢复当前项目</td>
+</tr>
+<tr>
+<td><code>/project-priority</code></td>
+<td>callback</td>
+<td>`/project-priority <critical</td>
+<td>high</td>
+<td>normal</td>
+<td>low>`</td>
+</tr>
+<tr>
+<td><code>/project-replan</code></td>
+<td>callback</td>
+<td>强制当前项目重新规划</td>
+</tr>
+<tr>
+<td><code>/project-reset</code></td>
+<td>callback</td>
+<td>强制恢复/重置当前项目</td>
+</tr>
+<tr>
+<td><code>/project-unblock</code></td>
+<td>callback</td>
+<td><code>/project-unblock <dependency-id></code></td>
+</tr>
+<tr>
+<td><code>/project-archive</code></td>
+<td>callback</td>
+<td>归档当前项目</td>
+</tr>
+<tr>
+<td><code>/intervene</code></td>
+<td>callback</td>
+<td><code>/intervene @agent <message></code></td>
+</tr>
+<tr>
+<td><code>/cancel-task</code></td>
+<td>callback</td>
+<td><code>/cancel-task <task-id> [reason]</code></td>
+</tr>
+<tr>
+<td><code>/broadcast</code></td>
+<td>callback</td>
+<td>向所有 Agent 广播消息</td>
+</tr>
+</tbody></table></div>
+<h2>模型与配置命令</h2>
+<div class="table-wrap"><table>
+<thead><tr>
+<th>命令</th>
+<th>处理器</th>
+<th>说明</th>
+</tr></thead><tbody>
+<tr>
+<td><code>/models</code></td>
+<td>callback</td>
+<td>列出已配置模型（按 provider 分组）</td>
+</tr>
+<tr>
+<td><code>/model</code></td>
+<td>callback</td>
+<td><code>/model <model-id></code>；更新 Leader 模型并持久化</td>
+</tr>
+<tr>
+<td><code>/language</code></td>
+<td>tui-local</td>
+<td>`/language <zh</td>
+<td>en>`</td>
+</tr>
+<tr>
+<td><code>/config</code></td>
+<td>tui-local</td>
+<td>`/config</td>
+<td>/config set <key> <value></td>
+<td>/config reset <key></td>
+<td>/config reset-all</td>
+<td>/config init`</td>
+</tr>
+</tbody></table></div>
+<h2>工具与插件命令</h2>
+<div class="table-wrap"><table>
+<thead><tr>
+<th>命令</th>
+<th>处理器</th>
+<th>说明</th>
+</tr></thead><tbody>
+<tr>
+<td><code>/bughunt</code></td>
+<td>callback</td>
+<td><code>/bughunt [target]</code>；启动或恢复 bughunt 账本</td>
+</tr>
+<tr>
+<td><code>/bughunt-status</code></td>
+<td>callback</td>
+<td>显示 bughunt 账本摘要</td>
+</tr>
+<tr>
+<td><code>/bughunt-report</code></td>
+<td>callback</td>
+<td>从账本生成 bughunt 报告</td>
+</tr>
+<tr>
+<td><code>/office</code></td>
+<td>callback</td>
+<td>`/office [on</td>
+<td>off]`；切换 Office 插件</td>
+</tr>
+<tr>
+<td><code>/workflow</code></td>
+<td>callback</td>
+<td>`/workflow [on</td>
+<td>off]`；切换工作流工具注入</td>
+</tr>
+<tr>
+<td><code>/skills</code></td>
+<td>callback</td>
+<td>技能来源和角色技能弹窗</td>
+</tr>
+<tr>
+<td><code>/hooks</code></td>
+<td>callback</td>
+<td>Hooks 配置报告</td>
+</tr>
+<tr>
+<td><code>/fetch</code></td>
+<td>callback</td>
+<td><code>/fetch <url></code>；抓取 URL 内容</td>
+</tr>
+<tr>
+<td><code>/search</code></td>
+<td>callback</td>
+<td><code>/search <query></code>；网络搜索辅助</td>
+</tr>
+<tr>
+<td><code>/ls</code></td>
+<td>callback</td>
+<td><code>/ls <path></code>；目录预览</td>
+</tr>
+<tr>
+<td><code>/open</code></td>
+<td>callback</td>
+<td><code>/open <path></code>；读取前 200 行</td>
+</tr>
+<tr>
+<td><code>/loop</code></td>
+<td>callback</td>
+<td><code>/loop [interval] <prompt></code>；循环任务管理</td>
+</tr>
+</tbody></table></div>
+<h3>插件切换语义</h3>
+<div class="table-wrap"><table>
+<thead><tr>
+<th>命令</th>
+<th>会话键</th>
+<th>运行时效果</th>
+</tr></thead><tbody>
+<tr>
+<td><code>/office</code></td>
+<td><code>OFFICE_MODE_ACTIVE</code></td>
+<td>启用 Office 文档/画布能力</td>
+</tr>
+<tr>
+<td><code>/workflow</code></td>
+<td><code>WORKFLOW_MODE_ACTIVE</code></td>
+<td>暴露工作流 Leader 工具</td>
+</tr>
+</tbody></table></div>
+<h2>MCP 命令</h2>
+<p><code>/mcp</code> 是 MCP 服务器管理的 slash 命令入口，与 ToolRegistry 的 <code>mcp</code> 工具共享同一配置和运行时客户端。</p>
+<div class="table-wrap"><table>
+<thead><tr>
+<th>子命令</th>
+<th>说明</th>
+</tr></thead><tbody>
+<tr>
+<td><code>/mcp list</code></td>
+<td>列出已配置的服务器</td>
+</tr>
+<tr>
+<td><code>/mcp search <query></code></td>
+<td>动态查询市场源</td>
+</tr>
+<tr>
+<td><code>/mcp install <entry-id></code></td>
+<td>安装市场 MCP 条目</td>
+</tr>
+<tr>
+<td><code>/mcp tools [server-id]</code></td>
+<td>查看服务器暴露的工具</td>
+</tr>
+<tr>
+<td><code>/mcp call <server-id> <tool-name> [args]</code></td>
+<td>调用服务器工具</td>
+</tr>
+<tr>
+<td><code>/mcp resources [server-id]</code></td>
+<td>查看服务器资源</td>
+</tr>
+<tr>
+<td><code>/mcp read-resource <server-id> <uri></code></td>
+<td>读取服务器资源</td>
+</tr>
+<tr>
+<td><code>/mcp prompts [server-id]</code></td>
+<td>查看服务器 prompts</td>
+</tr>
+<tr>
+<td><code>/mcp get-prompt <server-id> <prompt-name> [args]</code></td>
+<td>获取 prompt</td>
+</tr>
+<tr>
+<td><code>/mcp templates [server-id]</code></td>
+<td>列出资源模板</td>
+</tr>
+<tr>
+<td><code>/mcp snapshot [server-id]</code></td>
+<td>显示初始化能力快照</td>
+</tr>
+<tr>
+<td><code>/mcp add-remote <id> <url> [name]</code></td>
+<td>创建 streamable-http 服务器</td>
+</tr>
+<tr>
+<td><code>/mcp add-stdio <id> <command> [args...]</code></td>
+<td>创建 stdio 服务器</td>
+</tr>
+</tbody></table></div>
+<h2>其他命令</h2>
+<div class="table-wrap"><table>
+<thead><tr>
+<th>命令</th>
+<th>处理器</th>
+<th>说明</th>
+</tr></thead><tbody>
+<tr>
+<td><code>/help</code></td>
+<td>tui-local</td>
+<td>显示分组帮助</td>
+</tr>
+<tr>
+<td><code>/doctor</code></td>
+<td>callback</td>
+<td>运行时诊断弹窗</td>
+</tr>
+<tr>
+<td><code>/quit</code></td>
+<td>tui-local</td>
+<td>退出客户端</td>
+</tr>
+<tr>
+<td><code>/exit</code></td>
+<td>tui-local</td>
+<td>退出客户端</td>
+</tr>
+</tbody></table></div>
+<h2>命令结果类型</h2>
+<p>每个命令结果携带 <code>content</code> 字符串和可选 <code>type</code>。结果通过 <code>action</code> 字段区分：</p>
+<div class="table-wrap"><table>
+<thead><tr>
+<th>类型</th>
+<th>action</th>
+<th>附加字段</th>
+</tr></thead><tbody>
+<tr>
+<td><code>CommandMessageResult</code></td>
+<td>无</td>
+<td>无，纯系统消息</td>
+</tr>
+<tr>
+<td><code>CommandResumeModalResult</code></td>
+<td><code>resume_modal</code></td>
+<td><code>sessions</code></td>
+</tr>
+<tr>
+<td><code>CommandItemsModalResult</code></td>
+<td><code>history_modal</code> / <code>skills_modal</code> / <code>doctor_modal</code> / <code>permissions_modal</code> / <code>projects_modal</code></td>
+<td><code>items</code></td>
+</tr>
+<tr>
+<td><code>CommandReportModalResult</code></td>
+<td><code>report_modal</code></td>
+<td><code>title</code>, <code>report</code></td>
+</tr>
+<tr>
+<td><code>CommandHydrateResult</code></td>
+<td><code>hydrate</code></td>
+<td><code>sessionStatus</code>, <code>tasks</code>, <code>messages</code>, <code>channels</code>, <code>tokenUsage?</code>, <code>agentTokens?</code>, <code>leaderStatus</code>, <code>leaderMode?</code>, <code>leaderReason?</code></td>
+</tr>
+</tbody></table></div>
+<h2>已知限制</h2>
+<ul>
+<li><code>/fork</code> 已注册为 <code>callback</code> 类型，但 <code>dispatcher.ts</code> 的 <code>commandRegistry</code> 中无对应处理函数，当前不可用。</li>
+</ul>
+<h2>演进规则</h2>
+<ol>
+<li>新增 slash 命令必须注册到 <code>slash_registry.ts</code></li>
+<li><code>handledBy</code> 为 <code>callback</code> 的命令必须在 <code>dispatcher.ts</code> 中添加处理逻辑</li>
+<li>Web 自动补全仅在后端注册表存在后更新</li>
+<li>新命令结果动作必须在此文档记录并由目标客户端处理</li>
+<li>同义命令（如 <code>/quit</code> 和 <code>/exit</code>）注册为独立条目，命令名不做归一化</li>
+</ol>
+    </div>
+<div class="prev-next">
+<a href="/docs/reference/cli/" class="prev-page"><span class="pn-label">← 上一页</span><span class="pn-title">CLI命令</span></a>
+<a href="/docs/reference/architecture/" class="next-page"><span class="pn-label">下一页 →</span><span class="pn-title">架构概览</span></a>
+</div>
+  </main>
+</div>
+</body>
+</html>

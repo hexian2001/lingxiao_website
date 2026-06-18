@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Skills System | 凌霄剑域</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%E5%89%91%3C/text%3E%3C/svg%3E">
+<style>
+/* ===== 古籍宣纸设计令牌（与首页同步） ===== */
+:root{
+  --paper:#f4ede0;--paper-bright:#faf5ea;--paper-dim:#e8dfce;--paper-deep:#ddd2bc;
+  --ink:#2a2218;--ink-mid:#4a3f30;--ink-light:#6b5e4a;--ink-wash:#8a7d68;--ink-faint:#a89a82;
+  --gold:#a8895a;--gold-bright:#c4a468;--gold-deep:#8a6e42;
+  --gold-line:rgba(168,137,90,0.22);--gold-wash:rgba(168,137,90,0.06);
+  --cinnabar:#a04030;--cinnabar-light:#c25a48;--cinnabar-wash:rgba(160,64,48,0.06);
+  --jade:#5a8a6a;--jade-wash:rgba(90,138,106,0.06);
+  --fg:var(--ink);--fg-muted:var(--ink-light);--fg-dim:var(--ink-wash);
+  --font-sans:'Noto Sans SC','Inter',-apple-system,system-ui,sans-serif;
+  --font-serif:'Noto Serif SC','Songti SC','STSong',serif;
+  --font-mono:'JetBrains Mono','Fira Code','SF Mono',monospace;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;font-size:16px}
+body{font-family:var(--font-sans);background:var(--paper);color:var(--fg);position:relative;overflow-x:hidden;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;line-height:1.6}
+
+/* 宣纸纹理背景 */
+.paper-texture{position:fixed;inset:0;z-index:0;pointer-events:none;
+  background:radial-gradient(ellipse 1200px 800px at 50% 0%,rgba(250,245,234,0.6),transparent 70%),radial-gradient(ellipse 800px 600px at 20% 80%,rgba(168,137,90,0.03),transparent 60%),radial-gradient(ellipse 800px 600px at 80% 40%,rgba(160,64,48,0.02),transparent 60%)}
+.paper-grain{position:fixed;inset:0;z-index:0;pointer-events:none;opacity:0.4;
+  background-image:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(168,137,90,0.012) 2px,rgba(168,137,90,0.012) 3px),repeating-linear-gradient(90deg,transparent,transparent 3px,rgba(168,137,90,0.008) 3px,rgba(168,137,90,0.008) 4px)}
+
+/* 导航 */
+.nav{position:fixed;top:0;left:0;right:0;z-index:100;backdrop-filter:blur(20px) saturate(140%);-webkit-backdrop-filter:blur(20px) saturate(140%);background:rgba(244,237,224,0.85);border-bottom:1px solid var(--gold-line)}
+.nav-inner{max-width:1400px;margin:0 auto;padding:0.75rem 1.5rem;display:flex;align-items:center;justify-content:space-between}
+.nav-brand{display:flex;align-items:center;gap:0.625rem;font-weight:700;font-size:1.05rem;color:var(--ink);text-decoration:none}
+.nav-brand .brand-mark{width:32px;height:32px;border-radius:8px;background:linear-gradient(135deg,var(--gold),var(--gold-bright));display:flex;align-items:center;justify-content:center;font-family:var(--font-serif);font-size:1.1rem;color:var(--paper-bright);font-weight:900}
+.nav-brand .brand-sub{font-size:0.7rem;font-weight:500;color:var(--fg-dim);letter-spacing:0.05em}
+.nav-links{display:flex;align-items:center;gap:1.5rem}
+.nav-links a{font-size:0.875rem;color:var(--fg-muted);text-decoration:none;transition:color 0.2s}
+.nav-links a:hover{color:var(--gold-deep)}
+
+/* 文档布局 */
+.doc-layout{position:relative;z-index:1;display:flex;max-width:1400px;margin:0 auto;padding-top:64px;min-height:100vh}
+
+/* 侧栏 */
+.doc-sidebar{position:sticky;top:64px;width:260px;height:calc(100vh - 64px);overflow-y:auto;padding:1.5rem 0.75rem;border-right:1px solid var(--gold-line);flex-shrink:0}
+.sidebar-group{margin-bottom:1.5rem}
+.sidebar-group-label{font-size:0.7rem;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:var(--fg-dim);padding:0 0.875rem 0.5rem}
+.sidebar-link{display:block;padding:0.4rem 0.875rem;border-radius:6px;font-size:0.82rem;color:var(--fg-muted);text-decoration:none;transition:all 0.15s;line-height:1.5}
+.sidebar-link:hover{background:var(--gold-wash);color:var(--ink)}
+.sidebar-link.active{background:var(--gold-wash);color:var(--gold-deep);font-weight:600;border-left:2px solid var(--gold)}
+
+/* 主内容 */
+.doc-main{flex:1;padding:2rem 3rem;max-width:900px;min-width:0}
+.doc-content h1{font-family:var(--font-serif);font-size:2.2rem;font-weight:700;margin-bottom:1.5rem;color:var(--ink);letter-spacing:0.02em}
+.doc-content h2{font-family:var(--font-serif);font-size:1.5rem;font-weight:600;margin:2rem 0 1rem;color:var(--ink-mid);border-bottom:1px solid var(--gold-line);padding-bottom:0.5rem}
+.doc-content h3{font-size:1.15rem;font-weight:600;margin:1.5rem 0 0.75rem;color:var(--ink-mid)}
+.doc-content p{font-size:0.9rem;line-height:1.8;color:var(--fg-muted);margin-bottom:1rem}
+.doc-content strong{color:var(--gold-deep);font-weight:600}
+.doc-content a{color:var(--cinnabar);text-decoration:none;transition:color 0.2s;border-bottom:1px solid transparent}
+.doc-content a:hover{color:var(--cinnabar-light);border-bottom-color:var(--cinnabar-light)}
+.doc-content ul,.doc-content ol{margin:0.5rem 0 1rem 1.5rem}
+.doc-content li{font-size:0.9rem;line-height:1.8;color:var(--fg-muted);margin-bottom:0.25rem}
+.doc-content blockquote{border-left:3px solid var(--gold);padding:0.5rem 1rem;margin:1rem 0;background:var(--gold-wash);border-radius:0 6px 6px 0;color:var(--fg-muted);font-size:0.875rem;font-style:italic}
+.doc-content code{font-family:var(--font-mono);font-size:0.82rem;background:var(--paper-dim);padding:0.15rem 0.4rem;border-radius:4px;color:var(--cinnabar)}
+.doc-content pre{background:var(--paper-bright);border:1px solid var(--gold-line);border-radius:8px;padding:1rem;overflow-x:auto;margin:1rem 0}
+.doc-content pre code{background:none;padding:0;font-size:0.8rem;color:var(--ink-mid);line-height:1.6}
+.doc-content hr{border:none;border-top:1px solid var(--gold-line);margin:2rem 0}
+.doc-content .table-wrap{overflow-x:auto;margin:1rem 0}
+.doc-content table{width:100%;border-collapse:collapse;font-size:0.85rem}
+.doc-content th{padding:0.625rem 0.875rem;text-align:left;border-bottom:2px solid var(--gold-line);color:var(--ink);font-weight:600}
+.doc-content td{padding:0.5rem 0.875rem;border-bottom:1px solid var(--gold-line);color:var(--fg-muted)}
+.doc-content .ascii-art-removed{padding:0.75rem 1rem;border:1px dashed var(--gold-line);border-radius:6px;color:var(--fg-dim);font-size:0.8rem;margin:1rem 0;text-align:center}
+
+/* 上下页导航 */
+.prev-next{display:flex;justify-content:space-between;margin-top:3rem;padding-top:1.5rem;border-top:1px solid var(--gold-line);gap:1rem}
+.prev-next a{display:flex;flex-direction:column;gap:0.25rem;padding:0.75rem 1rem;border:1px solid var(--gold-line);border-radius:8px;text-decoration:none;transition:all 0.2s;max-width:48%}
+.prev-next a:hover{border-color:var(--gold);background:var(--gold-wash)}
+.prev-next .pn-label{font-size:0.72rem;color:var(--fg-dim)}
+.prev-next .pn-title{font-size:0.85rem;color:var(--ink);font-weight:500}
+.prev-next .next-page{text-align:right;margin-left:auto}
+.prev-page .pn-title{text-align:left}
+
+/* 响应式 */
+@media(max-width:900px){
+  .doc-sidebar{display:none}
+  .doc-main{padding:1.5rem 1rem}
+  .nav-links a:not(.nav-cta){display:none}
+}
+</style>
+</head>
+<body>
+<div class="paper-texture"></div>
+<div class="paper-grain"></div>
+<nav class="nav"><div class="nav-inner">
+  <a href="/" class="nav-brand"><span class="brand-mark">剑</span><span>凌霄剑域</span><span class="brand-sub">LingXiao</span></a>
+  <div class="nav-links">
+    <a href="/docs/en/getting-started/introduction/">文档</a>
+    <a href="https://github.com/hexian2001/lingxiao" target="_blank" rel="noopener">GitHub</a>
+    <a href="/docs/en/getting-started/introduction/" class="nav-cta" style="padding:0.4rem 1rem;border-radius:8px;background:var(--gold-wash);color:var(--gold-deep);font-weight:600;font-size:0.8rem;border:1px solid var(--gold-line)">快速上手</a>
+  </div>
+</div></nav>
+<div class="doc-layout">
+  <aside class="doc-sidebar">
+<div class="sidebar-group">
+<div class="sidebar-group-label">Getting Started</div>
+<a href="/docs/en/getting-started/introduction/" class="sidebar-link">Introduction</a>
+<a href="/docs/en/getting-started/install/" class="sidebar-link">Installation</a>
+<a href="/docs/en/getting-started/connect-models/" class="sidebar-link">Connect Models</a>
+<a href="/docs/en/getting-started/first-run/" class="sidebar-link">First Run</a>
+</div>
+<div class="sidebar-group">
+<div class="sidebar-group-label">Core Features</div>
+<a href="/docs/en/core/expert-team/" class="sidebar-link">Expert Panel</a>
+<a href="/docs/en/core/task-dag/" class="sidebar-link">Task DAG</a>
+<a href="/docs/en/core/state-sync/" class="sidebar-link">State Sync</a>
+<a href="/docs/en/core/webui/" class="sidebar-link">WebUI Center</a>
+<a href="/docs/en/core/tool-kernel/" class="sidebar-link">Tool Kernel</a>
+<a href="/docs/en/core/orchestration/" class="sidebar-link">Orchestration</a>
+<a href="/docs/en/core/mcp-skills/" class="sidebar-link">MCP Forge &amp; Skills</a>
+<a href="/docs/en/core/memory/" class="sidebar-link">Memory</a>
+<a href="/docs/en/core/eternal/" class="sidebar-link">Eternal Mode</a>
+<a href="/docs/en/core/llm-gateway/" class="sidebar-link">LLM Gateway</a>
+</div>
+<div class="sidebar-group">
+<div class="sidebar-group-label">Configuration</div>
+<a href="/docs/en/config/env-vars/" class="sidebar-link">Environment Variables</a>
+<a href="/docs/en/config/models/" class="sidebar-link">Models</a>
+<a href="/docs/en/config/permissions/" class="sidebar-link">Permissions</a>
+<a href="/docs/en/config/network/" class="sidebar-link">Network</a>
+<a href="/docs/en/config/theme/" class="sidebar-link">Theme</a>
+<a href="/docs/en/config/custom-commands/" class="sidebar-link">Custom Commands</a>
+<a href="/docs/en/config/mcp/" class="sidebar-link">MCP</a>
+<a href="/docs/en/config/agents/" class="sidebar-link">Agents</a>
+<a href="/docs/en/config/skills/" class="sidebar-link active">Skills</a>
+<a href="/docs/en/config/rules/" class="sidebar-link">Rules</a>
+</div>
+<div class="sidebar-group">
+<div class="sidebar-group-label">Reference</div>
+<a href="/docs/en/reference/cli/" class="sidebar-link">CLI</a>
+<a href="/docs/en/reference/slash-commands/" class="sidebar-link">Slash Commands</a>
+<a href="/docs/en/reference/architecture/" class="sidebar-link">Architecture</a>
+<a href="/docs/en/reference/api-index/" class="sidebar-link">API Index</a>
+<a href="/docs/en/reference/faq/" class="sidebar-link">FAQ</a>
+<a href="/docs/en/reference/security/" class="sidebar-link">Security</a>
+<a href="/docs/en/reference/changelog/" class="sidebar-link">Changelog</a>
+</div>
+  </aside>
+  <main class="doc-main">
+    <div class="doc-content">
+<h1>Skills System</h1>
+<p>LingXiao's Skill system is the <strong>execution-knowledge surface</strong> for Agents. A skill is a structured Markdown document (YAML frontmatter + body) that the runtime injects into a worker's task prompt as a <code><skill></code> block, giving the LLM in-context procedures, domain constraints, and quality gates.</p>
+<p>Skills are <em>not</em> runtime tools and <em>not</em> plugin manifests. They are declarative knowledge packs, scoped and versioned by source.</p>
+<h2>4-Tier Priority</h2>
+<p>Skills are loaded by source priority (higher overrides lower):</p>
+<div class="table-wrap"><table>
+<thead><tr>
+<th>Priority</th>
+<th>Source</th>
+<th>Directory</th>
+</tr></thead><tbody>
+<tr>
+<td>1 (highest)</td>
+<td>Project</td>
+<td><code>.lingxiao/skills/</code></td>
+</tr>
+<tr>
+<td>2</td>
+<td>Plugin contributed</td>
+<td>Plugin directory</td>
+</tr>
+<tr>
+<td>3</td>
+<td>User</td>
+<td><code>~/.lingxiao/skills/</code></td>
+</tr>
+<tr>
+<td>4 (lowest)</td>
+<td>Bundled</td>
+<td>Package bundled</td>
+</tr>
+</tbody></table></div>
+<h2>Skill Definition Format</h2>
+<p>The on-disk format is <strong>YAML frontmatter + Markdown body</strong>:</p>
+<pre><code class="lang-markdown">---
+name: my-skill
+description: A one-line summary
+---
+&lt;markdown body — procedures, gates, references&gt;</code></pre>
+<h3>Required Fields</h3>
+<div class="table-wrap"><table>
+<thead><tr>
+<th>Field</th>
+<th>Rule</th>
+<th>Description</th>
+</tr></thead><tbody>
+<tr>
+<td><code>name</code></td>
+<td>kebab-case, validated by <code>validateSkillName</code></td>
+<td>Skill name</td>
+</tr>
+<tr>
+<td><code>description</code></td>
+<td>Non-empty, single line</td>
+<td>Skill description</td>
+</tr>
+</tbody></table></div>
+<h3>Optional Fields</h3>
+<div class="table-wrap"><table>
+<thead><tr>
+<th>Field</th>
+<th>Description</th>
+</tr></thead><tbody>
+<tr>
+<td><code>triggers</code></td>
+<td>Trigger conditions (reserved extension point)</td>
+</tr>
+<tr>
+<td><code>content</code></td>
+<td>Content reference (reserved extension point)</td>
+</tr>
+</tbody></table></div>
+<h3>Validation Rules</h3>
+<ul>
+<li><code>description</code> and <code>body</code> are both <strong>required</strong> at write time</li>
+<li><code>validateSkillName</code> enforces kebab-case; invalid names throw on save and are skipped on read</li>
+<li>Files missing both <code>description</code> and a non-empty body are silently dropped on read</li>
+</ul>
+<h2>Phase Loading & Quality Gates</h2>
+<p>A skill directory may contain a <code>phases/</code> subdirectory. Each <code>*.md</code> file becomes a <code>SkillPhase</code>:</p>
+<pre><code class="lang-ts">interface SkillPhase { name: string; path: string; content: string; }
+interface QualityGate { checks: string[]; skipConditions: string[]; }</code></pre>
+<p><code>loadSkillPhases(skillDir)</code> returns an ordered list of phases, each potentially containing quality gate checks and skip conditions.</p>
+<h2>Auto-Injection Mechanism</h2>
+<h3>Injection Points</h3>
+<div class="table-wrap"><table>
+<thead><tr>
+<th>Injection Point</th>
+<th>Scenario</th>
+<th>Budget</th>
+</tr></thead><tbody>
+<tr>
+<td>Worker task prompt</td>
+<td><code>BaseAgentRuntime.buildTaskPrompt</code></td>
+<td>Total 18,000 chars, per-skill 7,500 chars</td>
+</tr>
+<tr>
+<td>TUI messages</td>
+<td><code>SessionManagerRuntime</code></td>
+<td>On-demand injection</td>
+</tr>
+</tbody></table></div>
+<h3>Skill Name Sources</h3>
+<p>Three sources are merged and de-duplicated for injection:</p>
+<div class="table-wrap"><table>
+<thead><tr>
+<th>Source</th>
+<th>Origin</th>
+<th>When It Applies</th>
+</tr></thead><tbody>
+<tr>
+<td><code>skillNames</code></td>
+<td>Role capability (<code>RoleCapabilityModel</code>)</td>
+<td>Role-based, always when this agent runs</td>
+</tr>
+<tr>
+<td><code>explicitSkills</code></td>
+<td><code>$skill</code> mentions in task description and system prompt</td>
+<td>User/role opted in via syntax</td>
+</tr>
+<tr>
+<td><code>officeSkill</code></td>
+<td><code>OFFICE_MODE_ACTIVE</code> session state + <code>OFFICE_SUITE_SKILL_NAME</code> availability</td>
+<td>Session-level office mode</td>
+</tr>
+</tbody></table></div>
+<h3><code>$skill</code> Mention Syntax</h3>
+<p>Reference skills in task descriptions or system prompts using <code>$skill-name</code>:</p>
+<pre><code>$debug-frontend-backend-contract
+$office_suite
+$explore_implement_verify</code></pre>
+<p>Regex match: <code>/ \$([a-zA-Z0-9_][a-zA-Z0-9_-]*) /g</code>, deduplicated after matching.</p>
+<h3>Injection Budget</h3>
+<div class="table-wrap"><table>
+<thead><tr>
+<th>Limit</th>
+<th>Value</th>
+<th>Effect When Exceeded</th>
+</tr></thead><tbody>
+<tr>
+<td><code>maxTotalChars</code></td>
+<td>18,000</td>
+<td>Subsequent skills dropped in arrival order</td>
+</tr>
+<tr>
+<td><code>maxPerSkillChars</code></td>
+<td>7,500</td>
+<td>Each skill body clipped to this length</td>
+</tr>
+<tr>
+<td>Visibility</td>
+<td><code>truncated: true</code></td>
+<td>Caller reads <code>descriptor.path</code> for full content</td>
+</tr>
+</tbody></table></div>
+<h2>Built-in Skill Packs</h2>
+<p>LingXiao includes 14 built-in skill packs:</p>
+<div class="table-wrap"><table>
+<thead><tr>
+<th>Skill</th>
+<th>Description</th>
+</tr></thead><tbody>
+<tr>
+<td><code>code-quality</code></td>
+<td>Code quality checks</td>
+</tr>
+<tr>
+<td><code>commit-message</code></td>
+<td>Git commit message conventions</td>
+</tr>
+<tr>
+<td><code>doc-coauthoring</code></td>
+<td>Document collaboration</td>
+</tr>
+<tr>
+<td><code>docx</code></td>
+<td>Word document generation</td>
+</tr>
+<tr>
+<td><code>frontend-design</code></td>
+<td>Frontend design</td>
+</tr>
+<tr>
+<td><code>office-suite</code></td>
+<td>Office suite</td>
+</tr>
+<tr>
+<td><code>pdf</code></td>
+<td>PDF generation</td>
+</tr>
+<tr>
+<td><code>pptx</code></td>
+<td>PPT generation</td>
+</tr>
+<tr>
+<td><code>skill-creator</code></td>
+<td>Skill creator</td>
+</tr>
+<tr>
+<td><code>slidev</code></td>
+<td>Slidev presentations</td>
+</tr>
+<tr>
+<td><code>theme-factory</code></td>
+<td>Theme factory</td>
+</tr>
+<tr>
+<td><code>web-artifacts-builder</code></td>
+<td>Web artifacts builder</td>
+</tr>
+<tr>
+<td><code>xlsx</code></td>
+<td>Excel generation</td>
+</tr>
+<tr>
+<td><code>design-market</code></td>
+<td>Design asset marketplace</td>
+</tr>
+</tbody></table></div>
+<h2>Custom Skills</h2>
+<h3>Via skill-creator</h3>
+<p>Use the <code>skill-creator</code> skill pack to auto-create custom skills.</p>
+<h3>Manual Creation</h3>
+<p>Write in project or user-level directories:</p>
+<pre><code class="lang-bash"># Project level
+mkdir -p .lingxiao/skills/my-skill
+cat &gt; .lingxiao/skills/my-skill/SKILL.md &lt;&lt; &#x27;EOF&#x27;
+---
+name: my-skill
+description: My custom skill
+---
+
+# My Skill
+
+## Procedure
+1. Step one
+2. Step two
+
+## Quality Gates
+- Check one
+- Check two
+EOF</code></pre>
+<h3>HTTP API</h3>
+<p>Manage skills via <code>/api/v1/skills</code> routes:</p>
+<div class="table-wrap"><table>
+<thead><tr>
+<th>Endpoint</th>
+<th>Method</th>
+<th>Description</th>
+</tr></thead><tbody>
+<tr>
+<td><code>/api/v1/skills</code></td>
+<td>GET</td>
+<td>List skills</td>
+</tr>
+<tr>
+<td><code>/api/v1/skills</code></td>
+<td>POST</td>
+<td>Create skill</td>
+</tr>
+<tr>
+<td><code>/api/v1/skills/:name</code></td>
+<td>PUT</td>
+<td>Update skill</td>
+</tr>
+<tr>
+<td><code>/api/v1/skills/:name</code></td>
+<td>DELETE</td>
+<td>Delete skill</td>
+</tr>
+</tbody></table></div>
+<h2>Selection Policy</h2>
+<p><code>SkillSelectionPolicy.digestGuidance</code> defines 5 selection rules that appear in the Leader's digest prompt, guiding automatic skill selection and disabling.</p>
+    </div>
+<div class="prev-next">
+<a href="/docs/en/config/agents/" class="prev-page"><span class="pn-label">← Previous</span><span class="pn-title">Agents</span></a>
+<a href="/docs/en/config/rules/" class="next-page"><span class="pn-label">Next →</span><span class="pn-title">Rules</span></a>
+</div>
+  </main>
+</div>
+</body>
+</html>

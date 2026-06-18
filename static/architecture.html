@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>凌霄剑域 · 运行时拓扑</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%E5%89%91%3C/text%3E%3C/svg%3E">
+<style>
+:root{
+  --paper:#f4ede0;--paper-bright:#faf5ea;--paper-dim:#e8dfce;--paper-deep:#ddd2bc;
+  --ink:#2a2218;--ink-mid:#4a3f30;--ink-light:#6b5e4a;--ink-wash:#8a7d68;--ink-faint:#a89a82;
+  --gold:#a8895a;--gold-bright:#c4a468;--gold-deep:#8a6e42;
+  --gold-line:rgba(168,137,90,0.22);--gold-wash:rgba(168,137,90,0.06);
+  --cinnabar:#a04030;--cinnabar-light:#c25a48;--cinnabar-wash:rgba(160,64,48,0.06);
+  --jade:#5a8a6a;--jade-wash:rgba(90,138,106,0.06);
+  --fg:var(--ink);--fg-muted:var(--ink-light);--fg-dim:var(--ink-wash);
+  --font-sans:'Noto Sans SC','Inter',-apple-system,system-ui,sans-serif;
+  --font-serif:'Noto Serif SC','Songti SC','STSong',serif;
+  --font-mono:'JetBrains Mono','Fira Code','SF Mono',monospace;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--font-sans);background:var(--paper);color:var(--fg);overflow-x:hidden;-webkit-font-smoothing:antialiased;line-height:1.6}
+
+.paper-bg{position:fixed;inset:0;z-index:0;pointer-events:none;
+  background:radial-gradient(ellipse 1200px 800px at 50% 0%,rgba(250,245,234,0.6),transparent 70%),radial-gradient(ellipse 800px 600px at 20% 80%,rgba(168,137,90,0.03),transparent 60%)}
+.paper-grain{position:fixed;inset:0;z-index:0;pointer-events:none;opacity:0.4;
+  background-image:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(168,137,90,0.012) 2px,rgba(168,137,90,0.012) 3px),repeating-linear-gradient(90deg,transparent,transparent 3px,rgba(168,137,90,0.008) 3px,rgba(168,137,90,0.008) 4px)}
+
+.page{position:relative;z-index:1;max-width:1400px;margin:0 auto;padding:3rem 2rem 5rem}
+.page-header{text-align:center;margin-bottom:2.5rem}
+.seal{display:inline-block;width:56px;height:56px;line-height:56px;background:var(--cinnabar);color:var(--paper-bright);font-family:var(--font-serif);font-size:1.6rem;font-weight:900;border-radius:6px;box-shadow:0 2px 8px rgba(160,64,48,0.25);margin-bottom:1rem}
+.page-header h1{font-family:var(--font-serif);font-size:2.2rem;font-weight:700;color:var(--ink);letter-spacing:0.08em}
+.subtitle{font-size:0.9rem;color:var(--fg-dim);letter-spacing:0.15em;margin-top:0.5rem;text-transform:uppercase}
+.desc{max-width:640px;margin:1.2rem auto 0;font-size:0.95rem;color:var(--fg-muted);line-height:1.7}
+
+.topo-wrap{position:relative;width:100%;overflow-x:auto;padding:1rem 0}
+.topo{position:relative;width:1280px;height:880px;margin:0 auto}
+.topo svg{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:1}
+
+.n{position:absolute;z-index:2;border-radius:8px;padding:0.6rem 0.8rem;text-align:center;transition:transform 0.2s,box-shadow 0.2s}
+.n:hover{transform:translateY(-2px);z-index:10}
+.n-t{font-weight:700;font-size:0.82rem;line-height:1.3}
+.n-s{font-family:var(--font-mono);font-size:0.62rem;color:var(--fg-dim);margin-top:0.15rem;line-height:1.2}
+
+.n-user{background:var(--cinnabar);color:var(--paper-bright);border:2px solid var(--cinnabar-light);box-shadow:0 2px 12px rgba(160,64,48,0.2)}
+.n-user .n-s{color:rgba(250,245,234,0.7)}
+.n-entry{background:var(--paper-bright);border:1.5px solid var(--gold);box-shadow:0 1px 6px rgba(168,137,90,0.12)}
+.n-server{background:var(--gold-wash);border:1.5px solid var(--gold);box-shadow:0 1px 6px rgba(168,137,90,0.1)}
+.n-runtime{background:var(--jade-wash);border:1.5px solid var(--jade);box-shadow:0 1px 6px rgba(90,138,106,0.1)}
+.n-orch{background:var(--cinnabar-wash);border:1.5px solid var(--cinnabar);box-shadow:0 1px 6px rgba(160,64,48,0.1)}
+.n-infra{background:var(--paper-dim);border:1.5px solid var(--ink-wash);box-shadow:0 1px 4px rgba(74,63,48,0.08)}
+.n-data{background:var(--paper-deep);border:1.5px solid var(--ink-light);box-shadow:0 1px 4px rgba(74,63,48,0.1)}
+
+.legend{display:flex;flex-wrap:wrap;gap:1rem;justify-content:center;margin-top:2rem;padding:1rem;background:var(--paper-bright);border:1px solid var(--gold-line);border-radius:8px}
+.li{display:flex;align-items:center;gap:0.4rem;font-size:0.8rem;color:var(--fg-muted)}
+.ld{width:14px;height:14px;border-radius:4px;border:1.5px solid}
+</style>
+</head>
+<body>
+<div class="paper-bg"></div>
+<div class="paper-grain"></div>
+<div class="page">
+  <div class="page-header">
+    <div class="seal">剑</div>
+    <h1>运行时拓扑</h1>
+    <div class="subtitle">Runtime Topology</div>
+    <p class="desc">从用户入口到工具内核——凌霄剑域的完整运行时架构。每一层都可观测、可恢复、可审查。</p>
+  </div>
+  <div class="topo-wrap">
+    <div class="topo">
+      <svg viewBox="0 0 1280 880" preserveAspectRatio="none">
+        <defs>
+          <marker id="ag" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 L2,4 Z" fill="rgba(168,137,90,0.55)"/></marker>
+          <marker id="ai" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 L2,4 Z" fill="rgba(74,63,48,0.4)"/></marker>
+          <marker id="aj" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 L2,4 Z" fill="rgba(90,138,106,0.55)"/></marker>
+          <marker id="ac" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 L2,4 Z" fill="rgba(160,64,48,0.55)"/></marker>
+        </defs>
+
+        <!-- Row Y centers: User=440, Web=140, Server=140, Gateway=60, ACP=220, Browser=620, Terminal=620, Sessions=440, RuntimeState=560, Eternal=680, Leader=440, DAG=300, Workers=560, Tools=630, SQLite=680, Memory=780, Skills=680, MCP=780 -->
+        <!-- Col X centers: User=80, CLI/Web=250, Server=420, Gateway/ACP/Browser/Terminal=590, Sessions/RuntimeState/Eternal/SQLite=760, Leader/DAG/Workers/Tools/Skills/MCP/Memory=930 -->
+
+        <!-- User → CLI -->
+        <path d="M 130,440 L 190,440" stroke="rgba(160,64,48,0.5)" stroke-width="2" fill="none" marker-end="url(#ac)"/>
+        <!-- User → Web (curve up) -->
+        <path d="M 130,440 C 160,440 160,140 190,140" stroke="rgba(160,64,48,0.5)" stroke-width="2" fill="none" marker-end="url(#ac)"/>
+
+        <!-- CLI → Sessions (long horizontal) -->
+        <path d="M 310,440 C 400,440 500,440 590,440" stroke="rgba(168,137,90,0.5)" stroke-width="2" fill="none" marker-end="url(#ag)"/>
+        <!-- Web → Server -->
+        <path d="M 310,140 L 360,140" stroke="rgba(168,137,90,0.5)" stroke-width="2" fill="none" marker-end="url(#ag)"/>
+
+        <!-- Server → ACP (curve down) -->
+        <path d="M 480,140 C 530,140 530,220 560,220" stroke="rgba(168,137,90,0.5)" stroke-width="2" fill="none" marker-end="url(#ag)"/>
+        <!-- Server → Gateway (curve up) -->
+        <path d="M 480,140 C 530,140 530,60 560,60" stroke="rgba(168,137,90,0.5)" stroke-width="2" fill="none" marker-end="url(#ag)"/>
+        <!-- Server → Browser (long curve down) -->
+        <path d="M 420,190 C 420,300 420,500 420,595" stroke="rgba(168,137,90,0.35)" stroke-width="1.5" fill="none" marker-end="url(#ag)" stroke-dasharray="5,3"/>
+        <!-- Server → Terminal (curve down-right) -->
+        <path d="M 460,190 C 460,300 520,500 560,595" stroke="rgba(168,137,90,0.35)" stroke-width="1.5" fill="none" marker-end="url(#ag)" stroke-dasharray="5,3"/>
+        <!-- Server → SQLite (long curve) -->
+        <path d="M 480,140 C 530,140 530,680 560,680" stroke="rgba(168,137,90,0.3)" stroke-width="1.5" fill="none" marker-end="url(#ag)" stroke-dasharray="5,3"/>
+
+        <!-- ACP → Sessions -->
+        <path d="M 620,220 C 680,220 680,440 700,440" stroke="rgba(168,137,90,0.5)" stroke-width="2" fill="none" marker-end="url(#ag)"/>
+
+        <!-- Sessions → Leader -->
+        <path d="M 820,440 L 870,440" stroke="rgba(90,138,106,0.55)" stroke-width="2" fill="none" marker-end="url(#aj)"/>
+        <!-- Sessions → RuntimeState (down) -->
+        <path d="M 760,490 L 760,535" stroke="rgba(90,138,106,0.45)" stroke-width="1.5" fill="none" marker-end="url(#aj)"/>
+        <!-- Sessions → Eternal (long down) -->
+        <path d="M 720,490 C 700,490 700,680 700,680" stroke="rgba(90,138,106,0.4)" stroke-width="1.5" fill="none" marker-end="url(#aj)" stroke-dasharray="5,3"/>
+        <!-- Sessions → SQLite (down-left) -->
+        <path d="M 720,490 C 700,520 650,680 620,680" stroke="rgba(90,138,106,0.35)" stroke-width="1.5" fill="none" marker-end="url(#aj)" stroke-dasharray="5,3"/>
+
+        <!-- RuntimeState → ACP (feedback loop, curve up-left) -->
+        <path d="M 700,560 C 660,560 660,240 620,240" stroke="rgba(90,138,106,0.35)" stroke-width="1.5" fill="none" marker-end="url(#aj)" stroke-dasharray="3,3"/>
+
+        <!-- Leader → DAG (up) -->
+        <path d="M 930,410 L 930,330" stroke="rgba(160,64,48,0.5)" stroke-width="2" fill="none" marker-end="url(#ac)"/>
+        <!-- Leader → Workers (down) -->
+        <path d="M 930,470 L 930,535" stroke="rgba(160,64,48,0.5)" stroke-width="2" fill="none" marker-end="url(#ac)"/>
+        <!-- Leader → Memory (long down-left) -->
+        <path d="M 870,470 C 830,470 830,780 820,780" stroke="rgba(160,64,48,0.35)" stroke-width="1.5" fill="none" marker-end="url(#ac)" stroke-dasharray="5,3"/>
+        <!-- Leader → Tools (down) -->
+        <path d="M 960,470 C 980,470 980,600 960,615" stroke="rgba(160,64,48,0.35)" stroke-width="1.5" fill="none" marker-end="url(#ac)" stroke-dasharray="5,3"/>
+
+        <!-- DAG → SQLite (long curve left-down) -->
+        <path d="M 870,300 C 780,300 680,680 620,680" stroke="rgba(160,64,48,0.25)" stroke-width="1.5" fill="none" marker-end="url(#ac)" stroke-dasharray="3,4"/>
+
+        <!-- Workers → Skills (down) -->
+        <path d="M 960,585 C 990,585 990,660 960,665" stroke="rgba(160,64,48,0.35)" stroke-width="1.5" fill="none" marker-end="url(#ac)" stroke-dasharray="5,3"/>
+        <!-- Workers → Tools (down) -->
+        <path d="M 930,585 L 930,605" stroke="rgba(160,64,48,0.3)" stroke-width="1.5" fill="none" marker-end="url(#ac)"/>
+
+        <!-- Tools → SQLite (long curve left) -->
+        <path d="M 870,630 C 800,630 680,680 620,680" stroke="rgba(74,63,48,0.25)" stroke-width="1.5" fill="none" marker-end="url(#ai)" stroke-dasharray="3,4"/>
+        <!-- Tools → MCP Forge (down) -->
+        <path d="M 960,655 C 990,655 990,760 960,765" stroke="rgba(74,63,48,0.3)" stroke-width="1.5" fill="none" marker-end="url(#ai)" stroke-dasharray="5,3"/>
+      </svg>
+
+      <!-- Nodes: left,top in px. Width=120, Height=50 default -->
+
+      <!-- Col 1: User (x=20) -->
+      <div class="n n-user" style="left:20px;top:415px;width:110px;height:50px;display:flex;align-items:center;justify-content:center">
+        <div class="n-t">用户</div>
+      </div>
+
+      <!-- Col 2: CLI (x=190), Web (x=190) -->
+      <div class="n n-entry" style="left:190px;top:415px;width:120px;height:50px;display:flex;align-items:center;justify-content:center">
+        <div><div class="n-t">CLI / TUI</div><div class="n-s">src/cli.ts</div></div>
+      </div>
+      <div class="n n-entry" style="left:190px;top:115px;width:120px;height:50px;display:flex;align-items:center;justify-content:center">
+        <div><div class="n-t">React Web UI</div><div class="n-s">web/src</div></div>
+      </div>
+
+      <!-- Col 3: Fastify Server (x=360) -->
+      <div class="n n-server" style="left:360px;top:115px;width:120px;height:50px;display:flex;align-items:center;justify-content:center">
+        <div><div class="n-t">Fastify Server</div><div class="n-s">src/server.ts</div></div>
+      </div>
+
+      <!-- Col 4: Gateway (x=560,y=35), ACP (x=560,y=195), Browser (x=360,y=595), Terminal (x=560,y=595) -->
+      <div class="n n-server" style="left:560px;top:35px;width:120px;height:50px;display:flex;align-items:center;justify-content:center">
+        <div><div class="n-t">LLM Gateway</div><div class="n-s">OpenAI / Anthropic</div></div>
+      </div>
+      <div class="n n-server" style="left:560px;top:195px;width:120px;height:50px;display:flex;align-items:center;justify-content:center">
+        <div><div class="n-t">ACP JSON-RPC</div><div class="n-s">+ SSE</div></div>
+      </div>
+      <div class="n n-infra" style="left:360px;top:595px;width:120px;height:50px;display:flex;align-items:center;justify-content:center">
+        <div><div class="n-t">Browser</div><div class="n-s">Playwright</div></div>
+      </div>
+      <div class="n n-infra" style="left:560px;top:595px;width:120px;height:50px;display:flex;align-items:center;justify-content:center">
+        <div><div class="n-t">Terminal</div><div class="n-s">WS / PTY</div></div>
+      </div>
+
+      <!-- Col 5: Sessions (x=700,y=415), RuntimeState (x=700,y=535), Eternal (x=700,y=655), SQLite (x=560,y=655) -->
+      <div class="n n-runtime" style="left:700px;top:415px;width:120px;height:50px;display:flex;align-items:center;justify-content:center">
+        <div><div class="n-t">SessionManager</div><div class="n-s">SessionRuntime</div></div>
+      </div>
+      <div class="n n-runtime" style="left:700px;top:535px;width:120px;height:50px;display:flex;align-items:center;justify-content:center">
+        <div><div class="n-t">RuntimeState</div><div class="n-s">统一快照</div></div>
+      </div>
+      <div class="n n-runtime" style="left:700px;top:655px;width:120px;height:50px;display:flex;align-items:center;justify-content:center">
+        <div><div class="n-t">Eternal Loop</div><div class="n-s">Autonomous</div></div>
+      </div>
+      <div class="n n-data" style="left:560px;top:655px;width:120px;height:50px;display:flex;align-items:center;justify-content:center">
+        <div><div class="n-t">SQLite</div><div class="n-s">DatabaseManager</div></div>
+      </div>
+
+      <!-- Col 6: DAG (x=870,y=275), Leader (x=870,y=410), Workers (x=870,y=535), Tools (x=870,y=605), Skills (x=870,y=655), MCP (x=870,y=755), Memory (x=700,y=755) -->
+      <div class="n n-orch" style="left:870px;top:275px;width:120px;height:50px;display:flex;align-items:center;justify-content:center">
+        <div><div class="n-t">TaskBoard / DAG</div><div class="n-s">OrchestrationRuntime</div></div>
+      </div>
+      <div class="n n-orch" style="left:870px;top:410px;width:120px;height:60px;display:flex;align-items:center;justify-content:center">
+        <div><div class="n-t" style="font-size:0.95rem">LeaderAgent</div><div class="n-s">src/agents</div></div>
+      </div>
+      <div class="n n-orch" style="left:870px;top:535px;width:120px;height:50px;display:flex;align-items:center;justify-content:center">
+        <div><div class="n-t">Worker Agents</div><div class="n-s">AgentPool</div></div>
+      </div>
+      <div class="n n-infra" style="left:870px;top:605px;width:120px;height:50px;display:flex;align-items:center;justify-content:center">
+        <div><div class="n-t">ToolRegistry</div><div class="n-s">src/tools</div></div>
+      </div>
+      <div class="n n-infra" style="left:870px;top:655px;width:120px;height:50px;display:flex;align-items:center;justify-content:center">
+        <div><div class="n-t">Skills Catalog</div><div class="n-s">Phase Loader</div></div>
+      </div>
+      <div class="n n-infra" style="left:870px;top:755px;width:120px;height:50px;display:flex;align-items:center;justify-content:center">
+        <div><div class="n-t">MCP Forge</div><div class="n-s">Server Gen</div></div>
+      </div>
+      <div class="n n-data" style="left:700px;top:755px;width:120px;height:50px;display:flex;align-items:center;justify-content:center">
+        <div><div class="n-t">Memory System</div><div class="n-s">FTS5 + AutoDream</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="legend">
+    <div class="li"><div class="ld" style="background:var(--cinnabar);border-color:var(--cinnabar-light)"></div>用户入口</div>
+    <div class="li"><div class="ld" style="background:var(--paper-bright);border-color:var(--gold)"></div>前端入口</div>
+    <div class="li"><div class="ld" style="background:var(--gold-wash);border-color:var(--gold)"></div>服务层</div>
+    <div class="li"><div class="ld" style="background:var(--jade-wash);border-color:var(--jade)"></div>运行时</div>
+    <div class="li"><div class="ld" style="background:var(--cinnabar-wash);border-color:var(--cinnabar)"></div>编排层</div>
+    <div class="li"><div class="ld" style="background:var(--paper-dim);border-color:var(--ink-wash)"></div>工具/基础设施</div>
+    <div class="li"><div class="ld" style="background:var(--paper-deep);border-color:var(--ink-light)"></div>数据存储</div>
+    <div class="li" style="margin-left:0.5rem"><span style="color:var(--fg-dim)">━━ 主链路</span></div>
+    <div class="li"><span style="color:var(--fg-dim)">┄┄ 辅助/数据</span></div>
+  </div>
+</div>
+</body>
+</html>

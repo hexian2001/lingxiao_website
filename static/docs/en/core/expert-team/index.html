@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Expert Panel System | 凌霄剑域</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%E5%89%91%3C/text%3E%3C/svg%3E">
+<style>
+/* ===== 古籍宣纸设计令牌（与首页同步） ===== */
+:root{
+  --paper:#f4ede0;--paper-bright:#faf5ea;--paper-dim:#e8dfce;--paper-deep:#ddd2bc;
+  --ink:#2a2218;--ink-mid:#4a3f30;--ink-light:#6b5e4a;--ink-wash:#8a7d68;--ink-faint:#a89a82;
+  --gold:#a8895a;--gold-bright:#c4a468;--gold-deep:#8a6e42;
+  --gold-line:rgba(168,137,90,0.22);--gold-wash:rgba(168,137,90,0.06);
+  --cinnabar:#a04030;--cinnabar-light:#c25a48;--cinnabar-wash:rgba(160,64,48,0.06);
+  --jade:#5a8a6a;--jade-wash:rgba(90,138,106,0.06);
+  --fg:var(--ink);--fg-muted:var(--ink-light);--fg-dim:var(--ink-wash);
+  --font-sans:'Noto Sans SC','Inter',-apple-system,system-ui,sans-serif;
+  --font-serif:'Noto Serif SC','Songti SC','STSong',serif;
+  --font-mono:'JetBrains Mono','Fira Code','SF Mono',monospace;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;font-size:16px}
+body{font-family:var(--font-sans);background:var(--paper);color:var(--fg);position:relative;overflow-x:hidden;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;line-height:1.6}
+
+/* 宣纸纹理背景 */
+.paper-texture{position:fixed;inset:0;z-index:0;pointer-events:none;
+  background:radial-gradient(ellipse 1200px 800px at 50% 0%,rgba(250,245,234,0.6),transparent 70%),radial-gradient(ellipse 800px 600px at 20% 80%,rgba(168,137,90,0.03),transparent 60%),radial-gradient(ellipse 800px 600px at 80% 40%,rgba(160,64,48,0.02),transparent 60%)}
+.paper-grain{position:fixed;inset:0;z-index:0;pointer-events:none;opacity:0.4;
+  background-image:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(168,137,90,0.012) 2px,rgba(168,137,90,0.012) 3px),repeating-linear-gradient(90deg,transparent,transparent 3px,rgba(168,137,90,0.008) 3px,rgba(168,137,90,0.008) 4px)}
+
+/* 导航 */
+.nav{position:fixed;top:0;left:0;right:0;z-index:100;backdrop-filter:blur(20px) saturate(140%);-webkit-backdrop-filter:blur(20px) saturate(140%);background:rgba(244,237,224,0.85);border-bottom:1px solid var(--gold-line)}
+.nav-inner{max-width:1400px;margin:0 auto;padding:0.75rem 1.5rem;display:flex;align-items:center;justify-content:space-between}
+.nav-brand{display:flex;align-items:center;gap:0.625rem;font-weight:700;font-size:1.05rem;color:var(--ink);text-decoration:none}
+.nav-brand .brand-mark{width:32px;height:32px;border-radius:8px;background:linear-gradient(135deg,var(--gold),var(--gold-bright));display:flex;align-items:center;justify-content:center;font-family:var(--font-serif);font-size:1.1rem;color:var(--paper-bright);font-weight:900}
+.nav-brand .brand-sub{font-size:0.7rem;font-weight:500;color:var(--fg-dim);letter-spacing:0.05em}
+.nav-links{display:flex;align-items:center;gap:1.5rem}
+.nav-links a{font-size:0.875rem;color:var(--fg-muted);text-decoration:none;transition:color 0.2s}
+.nav-links a:hover{color:var(--gold-deep)}
+
+/* 文档布局 */
+.doc-layout{position:relative;z-index:1;display:flex;max-width:1400px;margin:0 auto;padding-top:64px;min-height:100vh}
+
+/* 侧栏 */
+.doc-sidebar{position:sticky;top:64px;width:260px;height:calc(100vh - 64px);overflow-y:auto;padding:1.5rem 0.75rem;border-right:1px solid var(--gold-line);flex-shrink:0}
+.sidebar-group{margin-bottom:1.5rem}
+.sidebar-group-label{font-size:0.7rem;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:var(--fg-dim);padding:0 0.875rem 0.5rem}
+.sidebar-link{display:block;padding:0.4rem 0.875rem;border-radius:6px;font-size:0.82rem;color:var(--fg-muted);text-decoration:none;transition:all 0.15s;line-height:1.5}
+.sidebar-link:hover{background:var(--gold-wash);color:var(--ink)}
+.sidebar-link.active{background:var(--gold-wash);color:var(--gold-deep);font-weight:600;border-left:2px solid var(--gold)}
+
+/* 主内容 */
+.doc-main{flex:1;padding:2rem 3rem;max-width:900px;min-width:0}
+.doc-content h1{font-family:var(--font-serif);font-size:2.2rem;font-weight:700;margin-bottom:1.5rem;color:var(--ink);letter-spacing:0.02em}
+.doc-content h2{font-family:var(--font-serif);font-size:1.5rem;font-weight:600;margin:2rem 0 1rem;color:var(--ink-mid);border-bottom:1px solid var(--gold-line);padding-bottom:0.5rem}
+.doc-content h3{font-size:1.15rem;font-weight:600;margin:1.5rem 0 0.75rem;color:var(--ink-mid)}
+.doc-content p{font-size:0.9rem;line-height:1.8;color:var(--fg-muted);margin-bottom:1rem}
+.doc-content strong{color:var(--gold-deep);font-weight:600}
+.doc-content a{color:var(--cinnabar);text-decoration:none;transition:color 0.2s;border-bottom:1px solid transparent}
+.doc-content a:hover{color:var(--cinnabar-light);border-bottom-color:var(--cinnabar-light)}
+.doc-content ul,.doc-content ol{margin:0.5rem 0 1rem 1.5rem}
+.doc-content li{font-size:0.9rem;line-height:1.8;color:var(--fg-muted);margin-bottom:0.25rem}
+.doc-content blockquote{border-left:3px solid var(--gold);padding:0.5rem 1rem;margin:1rem 0;background:var(--gold-wash);border-radius:0 6px 6px 0;color:var(--fg-muted);font-size:0.875rem;font-style:italic}
+.doc-content code{font-family:var(--font-mono);font-size:0.82rem;background:var(--paper-dim);padding:0.15rem 0.4rem;border-radius:4px;color:var(--cinnabar)}
+.doc-content pre{background:var(--paper-bright);border:1px solid var(--gold-line);border-radius:8px;padding:1rem;overflow-x:auto;margin:1rem 0}
+.doc-content pre code{background:none;padding:0;font-size:0.8rem;color:var(--ink-mid);line-height:1.6}
+.doc-content hr{border:none;border-top:1px solid var(--gold-line);margin:2rem 0}
+.doc-content .table-wrap{overflow-x:auto;margin:1rem 0}
+.doc-content table{width:100%;border-collapse:collapse;font-size:0.85rem}
+.doc-content th{padding:0.625rem 0.875rem;text-align:left;border-bottom:2px solid var(--gold-line);color:var(--ink);font-weight:600}
+.doc-content td{padding:0.5rem 0.875rem;border-bottom:1px solid var(--gold-line);color:var(--fg-muted)}
+.doc-content .ascii-art-removed{padding:0.75rem 1rem;border:1px dashed var(--gold-line);border-radius:6px;color:var(--fg-dim);font-size:0.8rem;margin:1rem 0;text-align:center}
+
+/* 上下页导航 */
+.prev-next{display:flex;justify-content:space-between;margin-top:3rem;padding-top:1.5rem;border-top:1px solid var(--gold-line);gap:1rem}
+.prev-next a{display:flex;flex-direction:column;gap:0.25rem;padding:0.75rem 1rem;border:1px solid var(--gold-line);border-radius:8px;text-decoration:none;transition:all 0.2s;max-width:48%}
+.prev-next a:hover{border-color:var(--gold);background:var(--gold-wash)}
+.prev-next .pn-label{font-size:0.72rem;color:var(--fg-dim)}
+.prev-next .pn-title{font-size:0.85rem;color:var(--ink);font-weight:500}
+.prev-next .next-page{text-align:right;margin-left:auto}
+.prev-page .pn-title{text-align:left}
+
+/* 响应式 */
+@media(max-width:900px){
+  .doc-sidebar{display:none}
+  .doc-main{padding:1.5rem 1rem}
+  .nav-links a:not(.nav-cta){display:none}
+}
+</style>
+</head>
+<body>
+<div class="paper-texture"></div>
+<div class="paper-grain"></div>
+<nav class="nav"><div class="nav-inner">
+  <a href="/" class="nav-brand"><span class="brand-mark">剑</span><span>凌霄剑域</span><span class="brand-sub">LingXiao</span></a>
+  <div class="nav-links">
+    <a href="/docs/en/getting-started/introduction/">文档</a>
+    <a href="https://github.com/hexian2001/lingxiao" target="_blank" rel="noopener">GitHub</a>
+    <a href="/docs/en/getting-started/introduction/" class="nav-cta" style="padding:0.4rem 1rem;border-radius:8px;background:var(--gold-wash);color:var(--gold-deep);font-weight:600;font-size:0.8rem;border:1px solid var(--gold-line)">快速上手</a>
+  </div>
+</div></nav>
+<div class="doc-layout">
+  <aside class="doc-sidebar">
+<div class="sidebar-group">
+<div class="sidebar-group-label">Getting Started</div>
+<a href="/docs/en/getting-started/introduction/" class="sidebar-link">Introduction</a>
+<a href="/docs/en/getting-started/install/" class="sidebar-link">Installation</a>
+<a href="/docs/en/getting-started/connect-models/" class="sidebar-link">Connect Models</a>
+<a href="/docs/en/getting-started/first-run/" class="sidebar-link">First Run</a>
+</div>
+<div class="sidebar-group">
+<div class="sidebar-group-label">Core Features</div>
+<a href="/docs/en/core/expert-team/" class="sidebar-link active">Expert Panel</a>
+<a href="/docs/en/core/task-dag/" class="sidebar-link">Task DAG</a>
+<a href="/docs/en/core/state-sync/" class="sidebar-link">State Sync</a>
+<a href="/docs/en/core/webui/" class="sidebar-link">WebUI Center</a>
+<a href="/docs/en/core/tool-kernel/" class="sidebar-link">Tool Kernel</a>
+<a href="/docs/en/core/orchestration/" class="sidebar-link">Orchestration</a>
+<a href="/docs/en/core/mcp-skills/" class="sidebar-link">MCP Forge &amp; Skills</a>
+<a href="/docs/en/core/memory/" class="sidebar-link">Memory</a>
+<a href="/docs/en/core/eternal/" class="sidebar-link">Eternal Mode</a>
+<a href="/docs/en/core/llm-gateway/" class="sidebar-link">LLM Gateway</a>
+</div>
+<div class="sidebar-group">
+<div class="sidebar-group-label">Configuration</div>
+<a href="/docs/en/config/env-vars/" class="sidebar-link">Environment Variables</a>
+<a href="/docs/en/config/models/" class="sidebar-link">Models</a>
+<a href="/docs/en/config/permissions/" class="sidebar-link">Permissions</a>
+<a href="/docs/en/config/network/" class="sidebar-link">Network</a>
+<a href="/docs/en/config/theme/" class="sidebar-link">Theme</a>
+<a href="/docs/en/config/custom-commands/" class="sidebar-link">Custom Commands</a>
+<a href="/docs/en/config/mcp/" class="sidebar-link">MCP</a>
+<a href="/docs/en/config/agents/" class="sidebar-link">Agents</a>
+<a href="/docs/en/config/skills/" class="sidebar-link">Skills</a>
+<a href="/docs/en/config/rules/" class="sidebar-link">Rules</a>
+</div>
+<div class="sidebar-group">
+<div class="sidebar-group-label">Reference</div>
+<a href="/docs/en/reference/cli/" class="sidebar-link">CLI</a>
+<a href="/docs/en/reference/slash-commands/" class="sidebar-link">Slash Commands</a>
+<a href="/docs/en/reference/architecture/" class="sidebar-link">Architecture</a>
+<a href="/docs/en/reference/api-index/" class="sidebar-link">API Index</a>
+<a href="/docs/en/reference/faq/" class="sidebar-link">FAQ</a>
+<a href="/docs/en/reference/security/" class="sidebar-link">Security</a>
+<a href="/docs/en/reference/changelog/" class="sidebar-link">Changelog</a>
+</div>
+  </aside>
+  <main class="doc-main">
+    <div class="doc-content">
+<h1>Expert Panel System</h1>
+<p>The basic unit of LingXiao is not "an assistant" but a <strong>Leader + Worker expert panel</strong>. You provide the goal; the Leader handles judgment, decomposition, planning, DAG construction, team assembly, and task dispatch. Worker experts execute research, frontend, backend, testing, review, documentation, and other work in parallel.</p>
+<h2>Leader-Worker Architecture</h2>
+<pre><code class="lang-text">flowchart TD
+  User[&quot;User Goal&quot;] --&gt; Leader[&quot;LeaderAgent&quot;]
+  Leader --&gt; DAG[&quot;TaskBoard / DAG&quot;]
+  DAG --&gt; W1[&quot;Worker: Backend&quot;]
+  DAG --&gt; W2[&quot;Worker: Frontend&quot;]
+  DAG --&gt; W3[&quot;Worker: Researcher&quot;]
+  DAG --&gt; W4[&quot;Worker: QA/Reviewer&quot;]
+  W1 --&gt; Result[&quot;Result + Evidence Receipt&quot;]
+  W2 --&gt; Result
+  W3 --&gt; Result
+  W4 --&gt; Result
+  Result --&gt; Leader</code></pre>
+<h3>Leader Responsibilities</h3>
+<ul>
+<li>Understand user goals and decompose them into a dependency-aware task graph (DAG)</li>
+<li>Select appropriate Worker roles based on task type</li>
+<li>Handle user confirmation and interaction</li>
+<li>Monitor execution progress, handle blockers and failures</li>
+<li>Verify task results, extract PASS/FAIL/BLOCKED verdicts</li>
+<li>Coordinate cross-task dependencies, wrap up and summarize</li>
+</ul>
+<h3>Worker Responsibilities</h3>
+<ul>
+<li>Receive tasks dispatched by the Leader, execute in independent processes</li>
+<li>Have independent context, tool calls, runtime state, and logs</li>
+<li>Submit results and verification evidence via <code>attempt_completion</code></li>
+<li>Report progress or request help via <code>send_message</code></li>
+</ul>
+<h2>13 Preset Roles</h2>
+<div class="table-wrap"><table>
+<thead><tr>
+<th>Role</th>
+<th>Identifier</th>
+<th>Responsibilities</th>
+</tr></thead><tbody>
+<tr>
+<td>Architect</td>
+<td><code>architect</code></td>
+<td>Architecture design, interface boundaries, module decomposition, risk control</td>
+</tr>
+<tr>
+<td>Backend</td>
+<td><code>backend</code></td>
+<td>Backend implementation, state machines, APIs, databases, task scheduling</td>
+</tr>
+<tr>
+<td>Frontend</td>
+<td><code>frontend</code></td>
+<td>WebUI/TUI interaction, state projection, visualization workbench</td>
+</tr>
+<tr>
+<td>Fullstack</td>
+<td><code>fullstack</code></td>
+<td>Cross-stack implementation, contract-first, end-to-end verification</td>
+</tr>
+<tr>
+<td>Coding</td>
+<td><code>coding</code></td>
+<td>General coding implementation</td>
+</tr>
+<tr>
+<td>Research</td>
+<td><code>research</code></td>
+<td>Research, solution comparison, external verification</td>
+</tr>
+<tr>
+<td>Explore</td>
+<td><code>explore</code></td>
+<td>Code exploration, architecture understanding, entry point localization</td>
+</tr>
+<tr>
+<td>Verify</td>
+<td><code>verify</code></td>
+<td>Verification, regression testing, build checks</td>
+</tr>
+<tr>
+<td>Review</td>
+<td><code>review</code></td>
+<td>Code review, quality assessment</td>
+</tr>
+<tr>
+<td>QA</td>
+<td><code>qa</code></td>
+<td>Test case writing, quality assurance</td>
+</tr>
+<tr>
+<td>Planner</td>
+<td><code>planner</code></td>
+<td>Planning, task decomposition</td>
+</tr>
+<tr>
+<td>Evaluator</td>
+<td><code>evaluator</code></td>
+<td>Evaluation, acceptance</td>
+</tr>
+<tr>
+<td>UX Designer</td>
+<td><code>ux_designer</code></td>
+<td>Usability review, interaction design</td>
+</tr>
+</tbody></table></div>
+<h2>Process Isolation and Communication</h2>
+<p>Each Worker runs in an independent process, communicating with the Leader via IPC:</p>
+<ul>
+<li><strong>Heartbeat mechanism</strong>: 30-second heartbeat timeout for automatic Worker liveness detection</li>
+<li><strong>State channel</strong>: Worker state, logs, conversations, and results flow through agent communication channels</li>
+<li><strong>Supervision and intervention</strong>: The Leader uses orchestration tools rather than process flags for supervision</li>
+</ul>
+<h2>Custom Roles</h2>
+<p>LingXiao supports extending expert capabilities through multiple approaches:</p>
+<ol>
+<li><strong>Role registration</strong>: Define new roles in <code>builtinRoles.ts</code> or via the WebUI role management interface</li>
+<li><strong>Skill system</strong>: Bind domain knowledge and execution flows to roles via <code>skill_names</code></li>
+<li><strong>Tool permissions</strong>: Configure allowed/requested tool sets per role</li>
+<li><strong>Dynamic roles</strong>: The Leader can dynamically create roles at runtime via <code>define_agent_role</code></li>
+</ol>
+<h3>Creating a Custom Role</h3>
+<pre><code class="lang-typescript">// Role definition example
+{
+  name: &quot;security-auditor&quot;,
+  description: &quot;Security audit expert&quot;,
+  systemPrompt: &quot;You are a security audit expert...&quot;,
+  allowedTools: [&quot;code_search&quot;, &quot;file_read&quot;, &quot;shell&quot;],
+  skillNames: [&quot;security-review&quot;],
+  suggestedModel: &quot;claude-sonnet-4&quot;
+}</code></pre>
+<h2>Agent Panel</h2>
+<p>The WebUI Agent panel shows each Worker's real-time:</p>
+<ul>
+<li>Role identity and current task</li>
+<li>Tool call records (parameters, permissions, output, duration)</li>
+<li>Runtime status and live logs</li>
+<li>Result receipts and verification evidence</li>
+</ul>
+    </div>
+<div class="prev-next">
+<a href="/docs/en/getting-started/first-run/" class="prev-page"><span class="pn-label">← Previous</span><span class="pn-title">First Run</span></a>
+<a href="/docs/en/core/task-dag/" class="next-page"><span class="pn-label">Next →</span><span class="pn-title">Task DAG</span></a>
+</div>
+  </main>
+</div>
+</body>
+</html>

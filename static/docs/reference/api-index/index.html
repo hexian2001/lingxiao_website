@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>API 契约索引 | 凌霄剑域</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%E5%89%91%3C/text%3E%3C/svg%3E">
+<style>
+/* ===== 古籍宣纸设计令牌（与首页同步） ===== */
+:root{
+  --paper:#f4ede0;--paper-bright:#faf5ea;--paper-dim:#e8dfce;--paper-deep:#ddd2bc;
+  --ink:#2a2218;--ink-mid:#4a3f30;--ink-light:#6b5e4a;--ink-wash:#8a7d68;--ink-faint:#a89a82;
+  --gold:#a8895a;--gold-bright:#c4a468;--gold-deep:#8a6e42;
+  --gold-line:rgba(168,137,90,0.22);--gold-wash:rgba(168,137,90,0.06);
+  --cinnabar:#a04030;--cinnabar-light:#c25a48;--cinnabar-wash:rgba(160,64,48,0.06);
+  --jade:#5a8a6a;--jade-wash:rgba(90,138,106,0.06);
+  --fg:var(--ink);--fg-muted:var(--ink-light);--fg-dim:var(--ink-wash);
+  --font-sans:'Noto Sans SC','Inter',-apple-system,system-ui,sans-serif;
+  --font-serif:'Noto Serif SC','Songti SC','STSong',serif;
+  --font-mono:'JetBrains Mono','Fira Code','SF Mono',monospace;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;font-size:16px}
+body{font-family:var(--font-sans);background:var(--paper);color:var(--fg);position:relative;overflow-x:hidden;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;line-height:1.6}
+
+/* 宣纸纹理背景 */
+.paper-texture{position:fixed;inset:0;z-index:0;pointer-events:none;
+  background:radial-gradient(ellipse 1200px 800px at 50% 0%,rgba(250,245,234,0.6),transparent 70%),radial-gradient(ellipse 800px 600px at 20% 80%,rgba(168,137,90,0.03),transparent 60%),radial-gradient(ellipse 800px 600px at 80% 40%,rgba(160,64,48,0.02),transparent 60%)}
+.paper-grain{position:fixed;inset:0;z-index:0;pointer-events:none;opacity:0.4;
+  background-image:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(168,137,90,0.012) 2px,rgba(168,137,90,0.012) 3px),repeating-linear-gradient(90deg,transparent,transparent 3px,rgba(168,137,90,0.008) 3px,rgba(168,137,90,0.008) 4px)}
+
+/* 导航 */
+.nav{position:fixed;top:0;left:0;right:0;z-index:100;backdrop-filter:blur(20px) saturate(140%);-webkit-backdrop-filter:blur(20px) saturate(140%);background:rgba(244,237,224,0.85);border-bottom:1px solid var(--gold-line)}
+.nav-inner{max-width:1400px;margin:0 auto;padding:0.75rem 1.5rem;display:flex;align-items:center;justify-content:space-between}
+.nav-brand{display:flex;align-items:center;gap:0.625rem;font-weight:700;font-size:1.05rem;color:var(--ink);text-decoration:none}
+.nav-brand .brand-mark{width:32px;height:32px;border-radius:8px;background:linear-gradient(135deg,var(--gold),var(--gold-bright));display:flex;align-items:center;justify-content:center;font-family:var(--font-serif);font-size:1.1rem;color:var(--paper-bright);font-weight:900}
+.nav-brand .brand-sub{font-size:0.7rem;font-weight:500;color:var(--fg-dim);letter-spacing:0.05em}
+.nav-links{display:flex;align-items:center;gap:1.5rem}
+.nav-links a{font-size:0.875rem;color:var(--fg-muted);text-decoration:none;transition:color 0.2s}
+.nav-links a:hover{color:var(--gold-deep)}
+
+/* 文档布局 */
+.doc-layout{position:relative;z-index:1;display:flex;max-width:1400px;margin:0 auto;padding-top:64px;min-height:100vh}
+
+/* 侧栏 */
+.doc-sidebar{position:sticky;top:64px;width:260px;height:calc(100vh - 64px);overflow-y:auto;padding:1.5rem 0.75rem;border-right:1px solid var(--gold-line);flex-shrink:0}
+.sidebar-group{margin-bottom:1.5rem}
+.sidebar-group-label{font-size:0.7rem;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:var(--fg-dim);padding:0 0.875rem 0.5rem}
+.sidebar-link{display:block;padding:0.4rem 0.875rem;border-radius:6px;font-size:0.82rem;color:var(--fg-muted);text-decoration:none;transition:all 0.15s;line-height:1.5}
+.sidebar-link:hover{background:var(--gold-wash);color:var(--ink)}
+.sidebar-link.active{background:var(--gold-wash);color:var(--gold-deep);font-weight:600;border-left:2px solid var(--gold)}
+
+/* 主内容 */
+.doc-main{flex:1;padding:2rem 3rem;max-width:900px;min-width:0}
+.doc-content h1{font-family:var(--font-serif);font-size:2.2rem;font-weight:700;margin-bottom:1.5rem;color:var(--ink);letter-spacing:0.02em}
+.doc-content h2{font-family:var(--font-serif);font-size:1.5rem;font-weight:600;margin:2rem 0 1rem;color:var(--ink-mid);border-bottom:1px solid var(--gold-line);padding-bottom:0.5rem}
+.doc-content h3{font-size:1.15rem;font-weight:600;margin:1.5rem 0 0.75rem;color:var(--ink-mid)}
+.doc-content p{font-size:0.9rem;line-height:1.8;color:var(--fg-muted);margin-bottom:1rem}
+.doc-content strong{color:var(--gold-deep);font-weight:600}
+.doc-content a{color:var(--cinnabar);text-decoration:none;transition:color 0.2s;border-bottom:1px solid transparent}
+.doc-content a:hover{color:var(--cinnabar-light);border-bottom-color:var(--cinnabar-light)}
+.doc-content ul,.doc-content ol{margin:0.5rem 0 1rem 1.5rem}
+.doc-content li{font-size:0.9rem;line-height:1.8;color:var(--fg-muted);margin-bottom:0.25rem}
+.doc-content blockquote{border-left:3px solid var(--gold);padding:0.5rem 1rem;margin:1rem 0;background:var(--gold-wash);border-radius:0 6px 6px 0;color:var(--fg-muted);font-size:0.875rem;font-style:italic}
+.doc-content code{font-family:var(--font-mono);font-size:0.82rem;background:var(--paper-dim);padding:0.15rem 0.4rem;border-radius:4px;color:var(--cinnabar)}
+.doc-content pre{background:var(--paper-bright);border:1px solid var(--gold-line);border-radius:8px;padding:1rem;overflow-x:auto;margin:1rem 0}
+.doc-content pre code{background:none;padding:0;font-size:0.8rem;color:var(--ink-mid);line-height:1.6}
+.doc-content hr{border:none;border-top:1px solid var(--gold-line);margin:2rem 0}
+.doc-content .table-wrap{overflow-x:auto;margin:1rem 0}
+.doc-content table{width:100%;border-collapse:collapse;font-size:0.85rem}
+.doc-content th{padding:0.625rem 0.875rem;text-align:left;border-bottom:2px solid var(--gold-line);color:var(--ink);font-weight:600}
+.doc-content td{padding:0.5rem 0.875rem;border-bottom:1px solid var(--gold-line);color:var(--fg-muted)}
+.doc-content .ascii-art-removed{padding:0.75rem 1rem;border:1px dashed var(--gold-line);border-radius:6px;color:var(--fg-dim);font-size:0.8rem;margin:1rem 0;text-align:center}
+
+/* 上下页导航 */
+.prev-next{display:flex;justify-content:space-between;margin-top:3rem;padding-top:1.5rem;border-top:1px solid var(--gold-line);gap:1rem}
+.prev-next a{display:flex;flex-direction:column;gap:0.25rem;padding:0.75rem 1rem;border:1px solid var(--gold-line);border-radius:8px;text-decoration:none;transition:all 0.2s;max-width:48%}
+.prev-next a:hover{border-color:var(--gold);background:var(--gold-wash)}
+.prev-next .pn-label{font-size:0.72rem;color:var(--fg-dim)}
+.prev-next .pn-title{font-size:0.85rem;color:var(--ink);font-weight:500}
+.prev-next .next-page{text-align:right;margin-left:auto}
+.prev-page .pn-title{text-align:left}
+
+/* 响应式 */
+@media(max-width:900px){
+  .doc-sidebar{display:none}
+  .doc-main{padding:1.5rem 1rem}
+  .nav-links a:not(.nav-cta){display:none}
+}
+</style>
+</head>
+<body>
+<div class="paper-texture"></div>
+<div class="paper-grain"></div>
+<nav class="nav"><div class="nav-inner">
+  <a href="/" class="nav-brand"><span class="brand-mark">剑</span><span>凌霄剑域</span><span class="brand-sub">LingXiao</span></a>
+  <div class="nav-links">
+    <a href="/docs/getting-started/introduction/">文档</a>
+    <a href="https://github.com/hexian2001/lingxiao" target="_blank" rel="noopener">GitHub</a>
+    <a href="/docs/getting-started/introduction/" class="nav-cta" style="padding:0.4rem 1rem;border-radius:8px;background:var(--gold-wash);color:var(--gold-deep);font-weight:600;font-size:0.8rem;border:1px solid var(--gold-line)">快速上手</a>
+  </div>
+</div></nav>
+<div class="doc-layout">
+  <aside class="doc-sidebar">
+<div class="sidebar-group">
+<div class="sidebar-group-label">入门</div>
+<a href="/docs/getting-started/introduction/" class="sidebar-link">简介</a>
+<a href="/docs/getting-started/install/" class="sidebar-link">安装与启动</a>
+<a href="/docs/getting-started/connect-models/" class="sidebar-link">连接模型</a>
+<a href="/docs/getting-started/first-run/" class="sidebar-link">第一次运行</a>
+</div>
+<div class="sidebar-group">
+<div class="sidebar-group-label">核心功能</div>
+<a href="/docs/core/expert-team/" class="sidebar-link">专家团系统</a>
+<a href="/docs/core/task-dag/" class="sidebar-link">任务DAG编排</a>
+<a href="/docs/core/state-sync/" class="sidebar-link">全状态同步</a>
+<a href="/docs/core/webui/" class="sidebar-link">WebUI指挥中心</a>
+<a href="/docs/core/tool-kernel/" class="sidebar-link">工具内核</a>
+<a href="/docs/core/orchestration/" class="sidebar-link">编排验收</a>
+<a href="/docs/core/mcp-skills/" class="sidebar-link">MCP Forge与Skills</a>
+<a href="/docs/core/memory/" class="sidebar-link">持久记忆</a>
+<a href="/docs/core/eternal/" class="sidebar-link">Eternal自治模式</a>
+<a href="/docs/core/llm-gateway/" class="sidebar-link">LLM Gateway</a>
+</div>
+<div class="sidebar-group">
+<div class="sidebar-group-label">配置与自定义</div>
+<a href="/docs/config/env-vars/" class="sidebar-link">环境变量</a>
+<a href="/docs/config/models/" class="sidebar-link">模型配置</a>
+<a href="/docs/config/permissions/" class="sidebar-link">权限系统</a>
+<a href="/docs/config/network/" class="sidebar-link">网络配置</a>
+<a href="/docs/config/theme/" class="sidebar-link">主题</a>
+<a href="/docs/config/custom-commands/" class="sidebar-link">自定义命令</a>
+<a href="/docs/config/mcp/" class="sidebar-link">MCP</a>
+<a href="/docs/config/agents/" class="sidebar-link">Agents</a>
+<a href="/docs/config/skills/" class="sidebar-link">Skills 系统</a>
+<a href="/docs/config/rules/" class="sidebar-link">规则</a>
+</div>
+<div class="sidebar-group">
+<div class="sidebar-group-label">参考</div>
+<a href="/docs/reference/cli/" class="sidebar-link">CLI命令</a>
+<a href="/docs/reference/slash-commands/" class="sidebar-link">Slash命令</a>
+<a href="/docs/reference/architecture/" class="sidebar-link">架构概览</a>
+<a href="/docs/reference/api-index/" class="sidebar-link active">API契约索引</a>
+<a href="/docs/reference/faq/" class="sidebar-link">FAQ</a>
+<a href="/docs/reference/security/" class="sidebar-link">安全须知</a>
+<a href="/docs/reference/changelog/" class="sidebar-link">更新日志</a>
+</div>
+  </aside>
+  <main class="doc-main">
+    <div class="doc-content">
+<h1>API 契约索引</h1>
+<p>凌霄 Fastify 服务器对外暴露 HTTP REST + SSE + WebSocket + ACP JSON-RPC 全部端点。共注册 207 个路由，由 <code>src/server.ts</code> 装配，25 个 <code>src/web-server/*Routes.ts</code> 文件分模块注册。</p>
+<h2>鉴权矩阵</h2>
+<div class="table-wrap"><table>
+<thead><tr>
+<th>端点族</th>
+<th>鉴权方式</th>
+<th>说明</th>
+</tr></thead><tbody>
+<tr>
+<td><code>/health</code>、<code>/*</code>（静态 web）、<code>/api/v1/acp/connect</code></td>
+<td>公开 / 静态 / 无鉴权</td>
+<td>connect 阶段获取 connectionId + sessionToken</td>
+</tr>
+<tr>
+<td><code>/api/v1/*<em></code>（除 acp/connect 与 /llm/</em>）</td>
+<td>server token</td>
+<td>header <code>x-lingxiao-token</code> 或 <code>?token=</code> query；加固模式仅 header</td>
+</tr>
+<tr>
+<td><code>/api/v1/acp</code>（GET SSE / POST JSON-RPC）</td>
+<td>server token + ACP 凭据</td>
+<td>header <code>acp-connection-id</code> + <code>acp-session-token</code></td>
+</tr>
+<tr>
+<td><code>/llm/openai/v1/<strong></code>、<code>/llm/anthropic/v1/</strong></code></td>
+<td>gateway virtual key</td>
+<td>header <code>Authorization: Bearer <key></code> 或 <code>x-api-key</code></td>
+</tr>
+<tr>
+<td><code>/api/v1/storage</code> PUT</td>
+<td>server token</td>
+<td>写后立即落 <code>session_state</code></td>
+</tr>
+</tbody></table></div>
+<h2>限流与加固</h2>
+<ul>
+<li>进程内自调用（无 remoteAddress）→ 始终豁免</li>
+<li>非加固模式 localhost（127.0.0.1/::1）→ 豁免</li>
+<li>加固模式 / 非 localhost → 不豁免，429 触发冷却</li>
+<li>非 loopback 绑定且未加固 → 强警告，不门控</li>
+</ul>
+<h2>端点分组索引</h2>
+<h3>Health / Static</h3>
+<div class="table-wrap"><table>
+<thead><tr>
+<th>方法</th>
+<th>路径</th>
+<th>说明</th>
+</tr></thead><tbody>
+<tr>
+<td>GET</td>
+<td><code>/health</code></td>
+<td>健康探测，公开</td>
+</tr>
+<tr>
+<td>GET</td>
+<td><code>/*</code></td>
+<td>静态 Web 资源 + SPA fallback</td>
+</tr>
+</tbody></table></div>
+<h3>ACP 协议</h3>
+<div class="table-wrap"><table>
+<thead><tr>
+<th>方法</th>
+<th>路径</th>
+<th>说明</th>
+</tr></thead><tbody>
+<tr>
+<td>POST</td>
+<td><code>/api/v1/acp/connect</code></td>
+<td>获取 connectionId + sessionToken</td>
+</tr>
+<tr>
+<td>GET</td>
+<td><code>/api/v1/acp</code></td>
+<td>SSE 连接（需 ACP 凭据）</td>
+</tr>
+<tr>
+<td>POST</td>
+<td><code>/api/v1/acp</code></td>
+<td>JSON-RPC 请求（需 ACP 凭据）</td>
+</tr>
+<tr>
+<td>DELETE</td>
+<td><code>/api/v1/acp</code></td>
+<td>断开 ACP 连接</td>
+</tr>
+</tbody></table></div>
+<p>ACP JSON-RPC 方法包括：<code>session/send</code>、<code>session/command</code>、<code>session/interrupt</code>、<code>session/hydrate</code> 等。</p>
+<h3>Sessions</h3>
+<div class="table-wrap"><table>
+<thead><tr>
+<th>方法</th>
+<th>路径</th>
+<th>说明</th>
+</tr></thead><tbody>
+<tr>
+<td>GET</td>
+<td><code>/api/sessions</code></td>
+<td>列出所有会话</td>
+</tr>
+<tr>
+<td>POST</td>
+<td><code>/api/sessions</code></td>
+<td>创建新会话</td>
+</tr>
+<tr>
+<td>GET</td>
+<td><code>/api/v1/sessions/active</code></td>
+<td>获取活跃会话</td>
+</tr>
+<tr>
+<td>POST</td>
+<td><code>/api/v1/sessions/side-thread</code></td>
+<td>创建侧线程</td>
+</tr>
+</tbody></table></div>
+<h3>Settings / Model / Prompt</h3>
+<div class="table-wrap"><table>
+<thead><tr>
+<th>方法</th>
+<th>路径</th>
+<th>说明</th>
+</tr></thead><tbody>
+<tr>
+<td>GET</td>
+<td><code>/api/v1/settings</code></td>
+<td>获取设置（脱敏）</td>
+</tr>
+<tr>
+<td>PUT</td>
+<td><code>/api/v1/settings</code></td>
+<td>更新设置</td>
+</tr>
+<tr>
+<td>GET</td>
+<td><code>/api/v1/model/list</code></td>
+<td>列出已配置模型</td>
+</tr>
+<tr>
+<td>PUT</td>
+<td><code>/api/v1/model</code></td>
+<td>更新 Leader 模型</td>
+</tr>
+<tr>
+<td>GET</td>
+<td><code>/api/v1/prompt/list</code></td>
+<td>列出可用 prompt</td>
+</tr>
+<tr>
+<td>GET</td>
+<td><code>/api/v1/intuition</code></td>
+<td>获取直觉运行时状态</td>
+</tr>
+</tbody></table></div>
+<h3>Roles / Commands</h3>
+<div class="table-wrap"><table>
+<thead><tr>
+<th>方法</th>
+<th>路径</th>
+<th>说明</th>
+</tr></thead><tbody>
+<tr>
+<td>GET</td>
+<td><code>/api/v1/roles</code></td>
+<td>列出角色定义</td>
+</tr>
+<tr>
+<td>GET</td>
+<td><code>/api/v1/commands</code></td>
+<td>列出 slash 命令注册表</td>
+</tr>
+</tbody></table></div>
+<h3>Tasks / Workflow</h3>
+<div class="table-wrap"><table>
+<thead><tr>
+<th>方法</th>
+<th>路径</th>
+<th>说明</th>
+</tr></thead><tbody>
+<tr>
+<td>GET</td>
+<td><code>/api/v1/tasks</code></td>
+<td>列出任务</td>
+</tr>
+<tr>
+<td>POST</td>
+<td><code>/api/v1/tasks</code></td>
+<td>创建任务</td>
+</tr>
+<tr>
+<td>GET</td>
+<td><code>/api/v1/workflow/state</code></td>
+<td>工作流状态</td>
+</tr>
+<tr>
+<td>POST</td>
+<td><code>/api/v1/workflow/toggle</code></td>
+<td>切换工作流模式</td>
+</tr>
+</tbody></table></div>
+<h3>Stats / Storage</h3>
+<div class="table-wrap"><table>
+<thead><tr>
+<th>方法</th>
+<th>路径</th>
+<th>说明</th>
+</tr></thead><tbody>
+<tr>
+<td>GET</td>
+<td><code>/api/v1/stats</code></td>
+<td>会话统计</td>
+</tr>
+<tr>
+<td>GET</td>
+<td><code>/api/v1/storage</code></td>
+<td>读取 session_state 键</td>
+</tr>
+<tr>
+<td>PUT</td>
+<td><code>/api/v1/storage</code></td>
+<td>写入 session_state 键</td>
+</tr>
+</tbody></table></div>
+<h3>Files / Wiki / Git</h3>
+<div class="table-wrap"><table>
+<thead><tr>
+<th>方法</th>
+<th>路径</th>
+<th>说明</th>
+</tr></thead><tbody>
+<tr>
+<td>GET</td>
+<td><code>/api/v1/files</code></td>
+<td>列出工作区文件</td>
+</tr>
+<tr>
+<td>GET</td>
+<td><code>/api/v1/files/content</code></td>
+<td>读取文件内容</td>
+</tr>
+<tr>
+<td>GET</td>
+<td><code>/api/v1/wiki</code></td>
+<td>Wiki 页面列表</td>
+</tr>
+<tr>
+<td>GET</td>
+<td><code>/api/v1/git/status</code></td>
+<td>Git 状态</td>
+</tr>
+<tr>
+<td>POST</td>
+<td><code>/api/v1/git/init</code></td>
+<td>初始化仓库</td>
+</tr>
+<tr>
+<td>GET</td>
+<td><code>/api/v1/git/platform/info</code></td>
+<td>平台集成信息</td>
+</tr>
+<tr>
+<td>GET</td>
+<td><code>/api/v1/git/platform/mrs</code></td>
+<td>列出 MR/PR</td>
+</tr>
+<tr>
+<td>POST</td>
+<td><code>/api/v1/git/platform/mrs</code></td>
+<td>创建 MR/PR</td>
+</tr>
+</tbody></table></div>
+<h3>Worktrees</h3>
+<div class="table-wrap"><table>
+<thead><tr>
+<th>方法</th>
+<th>路径</th>
+<th>说明</th>
+</tr></thead><tbody>
+<tr>
+<td>GET</td>
+<td><code>/api/v1/worktrees</code></td>
+<td>列出 worktree</td>
+</tr>
+<tr>
+<td>POST</td>
+<td><code>/api/v1/worktrees</code></td>
+<td>创建 worktree</td>
+</tr>
+<tr>
+<td>GET</td>
+<td><code>/api/v1/worktrees/:id</code></td>
+<td>获取单个 worktree</td>
+</tr>
+<tr>
+<td>POST</td>
+<td><code>/api/v1/worktrees/:id/merge</code></td>
+<td>合并 worktree 分支</td>
+</tr>
+<tr>
+<td>DELETE</td>
+<td><code>/api/v1/worktrees/:id</code></td>
+<td>删除 worktree</td>
+</tr>
+</tbody></table></div>
+<h3>Plugins / MCP Forge / Design Market</h3>
+<div class="table-wrap"><table>
+<thead><tr>
+<th>方法</th>
+<th>路径</th>
+<th>说明</th>
+</tr></thead><tbody>
+<tr>
+<td>GET</td>
+<td><code>/api/v1/plugins</code></td>
+<td>列出插件</td>
+</tr>
+<tr>
+<td>POST</td>
+<td><code>/api/v1/mcp-forge/generate</code></td>
+<td>生成 MCP 服务器</td>
+</tr>
+<tr>
+<td>GET</td>
+<td><code>/api/v1/design-market/themes</code></td>
+<td>列出设计主题</td>
+</tr>
+<tr>
+<td>GET</td>
+<td><code>/api/v1/design-market/search</code></td>
+<td>搜索设计素材</td>
+</tr>
+</tbody></table></div>
+<h3>Local LLM Gateway</h3>
+<div class="table-wrap"><table>
+<thead><tr>
+<th>方法</th>
+<th>路径</th>
+<th>说明</th>
+</tr></thead><tbody>
+<tr>
+<td>GET</td>
+<td><code>/llm/openai/v1/models</code></td>
+<td>OpenAI 模型列表</td>
+</tr>
+<tr>
+<td>POST</td>
+<td><code>/llm/openai/v1/chat/completions</code></td>
+<td>OpenAI chat 代理</td>
+</tr>
+<tr>
+<td>POST</td>
+<td><code>/llm/anthropic/v1/messages</code></td>
+<td>Anthropic messages 代理</td>
+</tr>
+</tbody></table></div>
+<h3>WebSocket</h3>
+<div class="table-wrap"><table>
+<thead><tr>
+<th>路径</th>
+<th>说明</th>
+</tr></thead><tbody>
+<tr>
+<td><code>/ws/terminal</code></td>
+<td>终端 PTY WebSocket</td>
+</tr>
+<tr>
+<td><code>/ws/browser</code></td>
+<td>浏览器实时交互</td>
+</tr>
+</tbody></table></div>
+<h2>错误码</h2>
+<div class="table-wrap"><table>
+<thead><tr>
+<th>状态码</th>
+<th>含义</th>
+</tr></thead><tbody>
+<tr>
+<td>401</td>
+<td>未授权（token 缺失或无效）</td>
+</tr>
+<tr>
+<td>403</td>
+<td>禁止访问（加固模式限制）</td>
+</tr>
+<tr>
+<td>404</td>
+<td>资源不存在</td>
+</tr>
+<tr>
+<td>429</td>
+<td>限流触发（冷却期 30s）</td>
+</tr>
+<tr>
+<td>500</td>
+<td>服务器内部错误</td>
+</tr>
+</tbody></table></div>
+<h2>相关文档</h2>
+<ul>
+<li><a href="https://github.com/hexian2001/lingxiao/blob/main/docs/contracts/acp.md">ACP 协议契约</a></li>
+<li><a href="https://github.com/hexian2001/lingxiao/blob/main/docs/contracts/http-api.md">HTTP API 契约</a></li>
+<li><a href="https://github.com/hexian2001/lingxiao/blob/main/docs/contracts/session-events.md">Session 事件契约</a></li>
+</ul>
+    </div>
+<div class="prev-next">
+<a href="/docs/reference/architecture/" class="prev-page"><span class="pn-label">← 上一页</span><span class="pn-title">架构概览</span></a>
+<a href="/docs/reference/faq/" class="next-page"><span class="pn-label">下一页 →</span><span class="pn-title">FAQ</span></a>
+</div>
+  </main>
+</div>
+</body>
+</html>

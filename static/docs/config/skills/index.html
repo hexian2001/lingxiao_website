@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Skills 系统 | 凌霄剑域</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%E5%89%91%3C/text%3E%3C/svg%3E">
+<style>
+/* ===== 古籍宣纸设计令牌（与首页同步） ===== */
+:root{
+  --paper:#f4ede0;--paper-bright:#faf5ea;--paper-dim:#e8dfce;--paper-deep:#ddd2bc;
+  --ink:#2a2218;--ink-mid:#4a3f30;--ink-light:#6b5e4a;--ink-wash:#8a7d68;--ink-faint:#a89a82;
+  --gold:#a8895a;--gold-bright:#c4a468;--gold-deep:#8a6e42;
+  --gold-line:rgba(168,137,90,0.22);--gold-wash:rgba(168,137,90,0.06);
+  --cinnabar:#a04030;--cinnabar-light:#c25a48;--cinnabar-wash:rgba(160,64,48,0.06);
+  --jade:#5a8a6a;--jade-wash:rgba(90,138,106,0.06);
+  --fg:var(--ink);--fg-muted:var(--ink-light);--fg-dim:var(--ink-wash);
+  --font-sans:'Noto Sans SC','Inter',-apple-system,system-ui,sans-serif;
+  --font-serif:'Noto Serif SC','Songti SC','STSong',serif;
+  --font-mono:'JetBrains Mono','Fira Code','SF Mono',monospace;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;font-size:16px}
+body{font-family:var(--font-sans);background:var(--paper);color:var(--fg);position:relative;overflow-x:hidden;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;line-height:1.6}
+
+/* 宣纸纹理背景 */
+.paper-texture{position:fixed;inset:0;z-index:0;pointer-events:none;
+  background:radial-gradient(ellipse 1200px 800px at 50% 0%,rgba(250,245,234,0.6),transparent 70%),radial-gradient(ellipse 800px 600px at 20% 80%,rgba(168,137,90,0.03),transparent 60%),radial-gradient(ellipse 800px 600px at 80% 40%,rgba(160,64,48,0.02),transparent 60%)}
+.paper-grain{position:fixed;inset:0;z-index:0;pointer-events:none;opacity:0.4;
+  background-image:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(168,137,90,0.012) 2px,rgba(168,137,90,0.012) 3px),repeating-linear-gradient(90deg,transparent,transparent 3px,rgba(168,137,90,0.008) 3px,rgba(168,137,90,0.008) 4px)}
+
+/* 导航 */
+.nav{position:fixed;top:0;left:0;right:0;z-index:100;backdrop-filter:blur(20px) saturate(140%);-webkit-backdrop-filter:blur(20px) saturate(140%);background:rgba(244,237,224,0.85);border-bottom:1px solid var(--gold-line)}
+.nav-inner{max-width:1400px;margin:0 auto;padding:0.75rem 1.5rem;display:flex;align-items:center;justify-content:space-between}
+.nav-brand{display:flex;align-items:center;gap:0.625rem;font-weight:700;font-size:1.05rem;color:var(--ink);text-decoration:none}
+.nav-brand .brand-mark{width:32px;height:32px;border-radius:8px;background:linear-gradient(135deg,var(--gold),var(--gold-bright));display:flex;align-items:center;justify-content:center;font-family:var(--font-serif);font-size:1.1rem;color:var(--paper-bright);font-weight:900}
+.nav-brand .brand-sub{font-size:0.7rem;font-weight:500;color:var(--fg-dim);letter-spacing:0.05em}
+.nav-links{display:flex;align-items:center;gap:1.5rem}
+.nav-links a{font-size:0.875rem;color:var(--fg-muted);text-decoration:none;transition:color 0.2s}
+.nav-links a:hover{color:var(--gold-deep)}
+
+/* 文档布局 */
+.doc-layout{position:relative;z-index:1;display:flex;max-width:1400px;margin:0 auto;padding-top:64px;min-height:100vh}
+
+/* 侧栏 */
+.doc-sidebar{position:sticky;top:64px;width:260px;height:calc(100vh - 64px);overflow-y:auto;padding:1.5rem 0.75rem;border-right:1px solid var(--gold-line);flex-shrink:0}
+.sidebar-group{margin-bottom:1.5rem}
+.sidebar-group-label{font-size:0.7rem;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:var(--fg-dim);padding:0 0.875rem 0.5rem}
+.sidebar-link{display:block;padding:0.4rem 0.875rem;border-radius:6px;font-size:0.82rem;color:var(--fg-muted);text-decoration:none;transition:all 0.15s;line-height:1.5}
+.sidebar-link:hover{background:var(--gold-wash);color:var(--ink)}
+.sidebar-link.active{background:var(--gold-wash);color:var(--gold-deep);font-weight:600;border-left:2px solid var(--gold)}
+
+/* 主内容 */
+.doc-main{flex:1;padding:2rem 3rem;max-width:900px;min-width:0}
+.doc-content h1{font-family:var(--font-serif);font-size:2.2rem;font-weight:700;margin-bottom:1.5rem;color:var(--ink);letter-spacing:0.02em}
+.doc-content h2{font-family:var(--font-serif);font-size:1.5rem;font-weight:600;margin:2rem 0 1rem;color:var(--ink-mid);border-bottom:1px solid var(--gold-line);padding-bottom:0.5rem}
+.doc-content h3{font-size:1.15rem;font-weight:600;margin:1.5rem 0 0.75rem;color:var(--ink-mid)}
+.doc-content p{font-size:0.9rem;line-height:1.8;color:var(--fg-muted);margin-bottom:1rem}
+.doc-content strong{color:var(--gold-deep);font-weight:600}
+.doc-content a{color:var(--cinnabar);text-decoration:none;transition:color 0.2s;border-bottom:1px solid transparent}
+.doc-content a:hover{color:var(--cinnabar-light);border-bottom-color:var(--cinnabar-light)}
+.doc-content ul,.doc-content ol{margin:0.5rem 0 1rem 1.5rem}
+.doc-content li{font-size:0.9rem;line-height:1.8;color:var(--fg-muted);margin-bottom:0.25rem}
+.doc-content blockquote{border-left:3px solid var(--gold);padding:0.5rem 1rem;margin:1rem 0;background:var(--gold-wash);border-radius:0 6px 6px 0;color:var(--fg-muted);font-size:0.875rem;font-style:italic}
+.doc-content code{font-family:var(--font-mono);font-size:0.82rem;background:var(--paper-dim);padding:0.15rem 0.4rem;border-radius:4px;color:var(--cinnabar)}
+.doc-content pre{background:var(--paper-bright);border:1px solid var(--gold-line);border-radius:8px;padding:1rem;overflow-x:auto;margin:1rem 0}
+.doc-content pre code{background:none;padding:0;font-size:0.8rem;color:var(--ink-mid);line-height:1.6}
+.doc-content hr{border:none;border-top:1px solid var(--gold-line);margin:2rem 0}
+.doc-content .table-wrap{overflow-x:auto;margin:1rem 0}
+.doc-content table{width:100%;border-collapse:collapse;font-size:0.85rem}
+.doc-content th{padding:0.625rem 0.875rem;text-align:left;border-bottom:2px solid var(--gold-line);color:var(--ink);font-weight:600}
+.doc-content td{padding:0.5rem 0.875rem;border-bottom:1px solid var(--gold-line);color:var(--fg-muted)}
+.doc-content .ascii-art-removed{padding:0.75rem 1rem;border:1px dashed var(--gold-line);border-radius:6px;color:var(--fg-dim);font-size:0.8rem;margin:1rem 0;text-align:center}
+
+/* 上下页导航 */
+.prev-next{display:flex;justify-content:space-between;margin-top:3rem;padding-top:1.5rem;border-top:1px solid var(--gold-line);gap:1rem}
+.prev-next a{display:flex;flex-direction:column;gap:0.25rem;padding:0.75rem 1rem;border:1px solid var(--gold-line);border-radius:8px;text-decoration:none;transition:all 0.2s;max-width:48%}
+.prev-next a:hover{border-color:var(--gold);background:var(--gold-wash)}
+.prev-next .pn-label{font-size:0.72rem;color:var(--fg-dim)}
+.prev-next .pn-title{font-size:0.85rem;color:var(--ink);font-weight:500}
+.prev-next .next-page{text-align:right;margin-left:auto}
+.prev-page .pn-title{text-align:left}
+
+/* 响应式 */
+@media(max-width:900px){
+  .doc-sidebar{display:none}
+  .doc-main{padding:1.5rem 1rem}
+  .nav-links a:not(.nav-cta){display:none}
+}
+</style>
+</head>
+<body>
+<div class="paper-texture"></div>
+<div class="paper-grain"></div>
+<nav class="nav"><div class="nav-inner">
+  <a href="/" class="nav-brand"><span class="brand-mark">剑</span><span>凌霄剑域</span><span class="brand-sub">LingXiao</span></a>
+  <div class="nav-links">
+    <a href="/docs/getting-started/introduction/">文档</a>
+    <a href="https://github.com/hexian2001/lingxiao" target="_blank" rel="noopener">GitHub</a>
+    <a href="/docs/getting-started/introduction/" class="nav-cta" style="padding:0.4rem 1rem;border-radius:8px;background:var(--gold-wash);color:var(--gold-deep);font-weight:600;font-size:0.8rem;border:1px solid var(--gold-line)">快速上手</a>
+  </div>
+</div></nav>
+<div class="doc-layout">
+  <aside class="doc-sidebar">
+<div class="sidebar-group">
+<div class="sidebar-group-label">入门</div>
+<a href="/docs/getting-started/introduction/" class="sidebar-link">简介</a>
+<a href="/docs/getting-started/install/" class="sidebar-link">安装与启动</a>
+<a href="/docs/getting-started/connect-models/" class="sidebar-link">连接模型</a>
+<a href="/docs/getting-started/first-run/" class="sidebar-link">第一次运行</a>
+</div>
+<div class="sidebar-group">
+<div class="sidebar-group-label">核心功能</div>
+<a href="/docs/core/expert-team/" class="sidebar-link">专家团系统</a>
+<a href="/docs/core/task-dag/" class="sidebar-link">任务DAG编排</a>
+<a href="/docs/core/state-sync/" class="sidebar-link">全状态同步</a>
+<a href="/docs/core/webui/" class="sidebar-link">WebUI指挥中心</a>
+<a href="/docs/core/tool-kernel/" class="sidebar-link">工具内核</a>
+<a href="/docs/core/orchestration/" class="sidebar-link">编排验收</a>
+<a href="/docs/core/mcp-skills/" class="sidebar-link">MCP Forge与Skills</a>
+<a href="/docs/core/memory/" class="sidebar-link">持久记忆</a>
+<a href="/docs/core/eternal/" class="sidebar-link">Eternal自治模式</a>
+<a href="/docs/core/llm-gateway/" class="sidebar-link">LLM Gateway</a>
+</div>
+<div class="sidebar-group">
+<div class="sidebar-group-label">配置与自定义</div>
+<a href="/docs/config/env-vars/" class="sidebar-link">环境变量</a>
+<a href="/docs/config/models/" class="sidebar-link">模型配置</a>
+<a href="/docs/config/permissions/" class="sidebar-link">权限系统</a>
+<a href="/docs/config/network/" class="sidebar-link">网络配置</a>
+<a href="/docs/config/theme/" class="sidebar-link">主题</a>
+<a href="/docs/config/custom-commands/" class="sidebar-link">自定义命令</a>
+<a href="/docs/config/mcp/" class="sidebar-link">MCP</a>
+<a href="/docs/config/agents/" class="sidebar-link">Agents</a>
+<a href="/docs/config/skills/" class="sidebar-link active">Skills 系统</a>
+<a href="/docs/config/rules/" class="sidebar-link">规则</a>
+</div>
+<div class="sidebar-group">
+<div class="sidebar-group-label">参考</div>
+<a href="/docs/reference/cli/" class="sidebar-link">CLI命令</a>
+<a href="/docs/reference/slash-commands/" class="sidebar-link">Slash命令</a>
+<a href="/docs/reference/architecture/" class="sidebar-link">架构概览</a>
+<a href="/docs/reference/api-index/" class="sidebar-link">API契约索引</a>
+<a href="/docs/reference/faq/" class="sidebar-link">FAQ</a>
+<a href="/docs/reference/security/" class="sidebar-link">安全须知</a>
+<a href="/docs/reference/changelog/" class="sidebar-link">更新日志</a>
+</div>
+  </aside>
+  <main class="doc-main">
+    <div class="doc-content">
+<h1>Skills 系统</h1>
+<p>凌霄的 Skill 系统是 Agent 的<strong>执行知识面</strong>。Skill 是结构化的 Markdown 文档（YAML frontmatter + body），运行时注入到 Worker 的任务提示词中作为 <code><skill></code> 块，为 LLM 提供上下文流程、领域约束和质量门。</p>
+<p>Skill <strong>不是</strong>运行时工具，也<strong>不是</strong>插件清单。它们是声明式知识包，按来源分级和版本化。</p>
+<h2>4 层优先级</h2>
+<p>Skill 按来源优先级加载（高优先级覆盖低优先级）：</p>
+<div class="table-wrap"><table>
+<thead><tr>
+<th>优先级</th>
+<th>来源</th>
+<th>目录</th>
+</tr></thead><tbody>
+<tr>
+<td>1（最高）</td>
+<td>项目级</td>
+<td><code>.lingxiao/skills/</code></td>
+</tr>
+<tr>
+<td>2</td>
+<td>插件贡献</td>
+<td>插件目录</td>
+</tr>
+<tr>
+<td>3</td>
+<td>用户级</td>
+<td><code>~/.lingxiao/skills/</code></td>
+</tr>
+<tr>
+<td>4（最低）</td>
+<td>内置</td>
+<td>包内 bundled</td>
+</tr>
+</tbody></table></div>
+<h2>Skill 定义格式</h2>
+<p>磁盘格式为 <strong>YAML frontmatter + Markdown body</strong>：</p>
+<pre><code class="lang-markdown">---
+name: my-skill
+description: 一行简短描述
+---
+&lt;markdown body — 流程、质量门、参考&gt;</code></pre>
+<h3>必填字段</h3>
+<div class="table-wrap"><table>
+<thead><tr>
+<th>字段</th>
+<th>规则</th>
+<th>说明</th>
+</tr></thead><tbody>
+<tr>
+<td><code>name</code></td>
+<td>kebab-case，由 <code>validateSkillName</code> 校验</td>
+<td>技能名称</td>
+</tr>
+<tr>
+<td><code>description</code></td>
+<td>非空，单行</td>
+<td>技能描述</td>
+</tr>
+</tbody></table></div>
+<h3>可选字段</h3>
+<div class="table-wrap"><table>
+<thead><tr>
+<th>字段</th>
+<th>说明</th>
+</tr></thead><tbody>
+<tr>
+<td><code>triggers</code></td>
+<td>触发条件（保留扩展点）</td>
+</tr>
+<tr>
+<td><code>content</code></td>
+<td>内容引用（保留扩展点）</td>
+</tr>
+</tbody></table></div>
+<h3>验证规则</h3>
+<ul>
+<li><code>description</code> 和 <code>body</code> 在写入时均为<strong>必填</strong></li>
+<li><code>validateSkillName</code> 强制 kebab-case；无效名称写入时抛出，读取时跳过</li>
+<li>缺少 <code>description</code> 且 body 为空的文件在读取时被静默丢弃</li>
+</ul>
+<h2>阶段加载与质量门</h2>
+<p>Skill 目录可包含 <code>phases/</code> 子目录，每个 <code>*.md</code> 文件成为一个 <code>SkillPhase</code>：</p>
+<pre><code class="lang-ts">interface SkillPhase { name: string; path: string; content: string; }
+interface QualityGate { checks: string[]; skipConditions: string[]; }</code></pre>
+<p><code>loadSkillPhases(skillDir)</code> 返回有序的阶段列表，每个阶段可包含质量门检查和跳过条件。</p>
+<h2>自动注入机制</h2>
+<h3>注入点</h3>
+<div class="table-wrap"><table>
+<thead><tr>
+<th>注入点</th>
+<th>场景</th>
+<th>预算</th>
+</tr></thead><tbody>
+<tr>
+<td>Worker 任务提示词</td>
+<td><code>BaseAgentRuntime.buildTaskPrompt</code></td>
+<td>总计 18,000 字符，单技能 7,500 字符</td>
+</tr>
+<tr>
+<td>TUI 消息</td>
+<td><code>SessionManagerRuntime</code></td>
+<td>按需注入</td>
+</tr>
+</tbody></table></div>
+<h3>技能名称来源</h3>
+<p>三个来源合并去重后注入：</p>
+<div class="table-wrap"><table>
+<thead><tr>
+<th>来源</th>
+<th>起源</th>
+<th>应用时机</th>
+</tr></thead><tbody>
+<tr>
+<td><code>skillNames</code></td>
+<td>角色能力（<code>RoleCapabilityModel</code>）</td>
+<td>基于角色，始终生效</td>
+</tr>
+<tr>
+<td><code>explicitSkills</code></td>
+<td>任务描述和系统提示词中的 <code>$skill</code> 引用</td>
+<td>用户/角色通过语法选择</td>
+</tr>
+<tr>
+<td><code>officeSkill</code></td>
+<td><code>OFFICE_MODE_ACTIVE</code> 会话状态</td>
+<td>会话级 office 模式</td>
+</tr>
+</tbody></table></div>
+<h3><code>$skill</code> 引用语法</h3>
+<p>在任务描述或系统提示词中使用 <code>$skill-name</code> 引用技能：</p>
+<pre><code>$debug-frontend-backend-contract
+$office_suite
+$explore_implement_verify</code></pre>
+<p>正则匹配：<code>/ \$([a-zA-Z0-9_][a-zA-Z0-9_-]*) /g</code>，去重后注入。</p>
+<h3>注入预算</h3>
+<div class="table-wrap"><table>
+<thead><tr>
+<th>限制</th>
+<th>值</th>
+<th>超限效果</th>
+</tr></thead><tbody>
+<tr>
+<td><code>maxTotalChars</code></td>
+<td>18,000</td>
+<td>后续技能按到达顺序丢弃</td>
+</tr>
+<tr>
+<td><code>maxPerSkillChars</code></td>
+<td>7,500</td>
+<td>每个技能 body 截断到此长度</td>
+</tr>
+<tr>
+<td>可见性</td>
+<td><code>truncated: true</code></td>
+<td>调用方可读取 <code>descriptor.path</code> 获取完整内容</td>
+</tr>
+</tbody></table></div>
+<h2>内置技能包</h2>
+<p>凌霄内置 14 个技能包：</p>
+<div class="table-wrap"><table>
+<thead><tr>
+<th>技能</th>
+<th>说明</th>
+</tr></thead><tbody>
+<tr>
+<td><code>code-quality</code></td>
+<td>代码质量检查</td>
+</tr>
+<tr>
+<td><code>commit-message</code></td>
+<td>Git 提交信息规范</td>
+</tr>
+<tr>
+<td><code>doc-coauthoring</code></td>
+<td>文档协同</td>
+</tr>
+<tr>
+<td><code>docx</code></td>
+<td>Word 文档生成</td>
+</tr>
+<tr>
+<td><code>frontend-design</code></td>
+<td>前端设计</td>
+</tr>
+<tr>
+<td><code>office-suite</code></td>
+<td>Office 套件</td>
+</tr>
+<tr>
+<td><code>pdf</code></td>
+<td>PDF 生成</td>
+</tr>
+<tr>
+<td><code>pptx</code></td>
+<td>PPT 生成</td>
+</tr>
+<tr>
+<td><code>skill-creator</code></td>
+<td>技能创建器</td>
+</tr>
+<tr>
+<td><code>slidev</code></td>
+<td>Slidev 演示</td>
+</tr>
+<tr>
+<td><code>theme-factory</code></td>
+<td>主题工厂</td>
+</tr>
+<tr>
+<td><code>web-artifacts-builder</code></td>
+<td>Web 产物构建</td>
+</tr>
+<tr>
+<td><code>xlsx</code></td>
+<td>Excel 生成</td>
+</tr>
+<tr>
+<td><code>design-market</code></td>
+<td>设计素材市场</td>
+</tr>
+</tbody></table></div>
+<h2>自定义技能</h2>
+<h3>通过 skill-creator 创建</h3>
+<p>使用 <code>skill-creator</code> 技能包自动创建自定义技能。</p>
+<h3>手动创建</h3>
+<p>在项目级或用户级目录中编写：</p>
+<pre><code class="lang-bash"># 项目级
+mkdir -p .lingxiao/skills/my-skill
+cat &gt; .lingxiao/skills/my-skill/SKILL.md &lt;&lt; &#x27;EOF&#x27;
+---
+name: my-skill
+description: 我的自定义技能
+---
+
+# 我的技能
+
+## 流程
+1. 步骤一
+2. 步骤二
+
+## 质量门
+- 检查项一
+- 检查项二
+EOF</code></pre>
+<h3>HTTP API</h3>
+<p>通过 <code>/api/v1/skills</code> 路由管理技能：</p>
+<div class="table-wrap"><table>
+<thead><tr>
+<th>端点</th>
+<th>方法</th>
+<th>说明</th>
+</tr></thead><tbody>
+<tr>
+<td><code>/api/v1/skills</code></td>
+<td>GET</td>
+<td>列出技能</td>
+</tr>
+<tr>
+<td><code>/api/v1/skills</code></td>
+<td>POST</td>
+<td>创建技能</td>
+</tr>
+<tr>
+<td><code>/api/v1/skills/:name</code></td>
+<td>PUT</td>
+<td>更新技能</td>
+</tr>
+<tr>
+<td><code>/api/v1/skills/:name</code></td>
+<td>DELETE</td>
+<td>删除技能</td>
+</tr>
+</tbody></table></div>
+<h2>选择策略</h2>
+<p><code>SkillSelectionPolicy.digestGuidance</code> 定义了 5 条选择规则，这些规则会出现在 Leader 的摘要提示词中，指导技能的自动选择和禁用。</p>
+    </div>
+<div class="prev-next">
+<a href="/docs/config/agents/" class="prev-page"><span class="pn-label">← 上一页</span><span class="pn-title">Agents</span></a>
+<a href="/docs/config/rules/" class="next-page"><span class="pn-label">下一页 →</span><span class="pn-title">规则</span></a>
+</div>
+  </main>
+</div>
+</body>
+</html>
