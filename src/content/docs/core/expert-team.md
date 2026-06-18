@@ -1,7 +1,6 @@
 ---
 title: 专家团系统
 description: Leader + Worker 专家团架构、13 种预设角色与自定义角色
-lang: zh-CN
 ---
 
 # 专家团系统
@@ -10,7 +9,7 @@ lang: zh-CN
 
 ## Leader-Worker 架构
 
-```mermaid
+```text
 flowchart TD
   User["用户目标"] --> Leader["LeaderAgent"]
   Leader --> DAG["TaskBoard / DAG"]

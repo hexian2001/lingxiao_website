@@ -1,7 +1,6 @@
 ---
 title: WebUI Command Center
 description: Chat/Tasks/Agents/Review/Git/Blackboard/Terminal/Settings eight panels
-lang: en
 ---
 
 # WebUI Command Center

@@ -1,7 +1,6 @@
 ---
 title: Full State Synchronization
 description: session_runtime_state, SSE, ACP, and WebUI/TUI three-way sync
-lang: en
 ---
 
 # Full State Synchronization

@@ -9,7 +9,7 @@ LingXiao is a Node.js 24, TypeScript, React, Fastify, SQLite based AI engineerin
 
 ## Runtime Topology
 
-```mermaid
+```text
 flowchart LR
   User["User"]
   CLI["CLI/TUI<br/>src/cli.ts"]

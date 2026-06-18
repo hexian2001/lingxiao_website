@@ -1,7 +1,6 @@
 ---
 title: MCP Forge and Skills
 description: MCP Server generation engine, share codes, Skills 4-layer priority
-lang: en
 ---
 
 # MCP Forge and Skills

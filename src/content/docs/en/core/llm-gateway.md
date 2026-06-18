@@ -1,7 +1,6 @@
 ---
 title: Local LLM Gateway
 description: OpenAI/Anthropic dual-format proxy, virtual keys, RPM/TPM limits
-lang: en
 ---
 
 # Local LLM Gateway

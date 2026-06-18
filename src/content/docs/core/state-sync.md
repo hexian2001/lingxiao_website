@@ -1,7 +1,6 @@
 ---
 title: 全状态同步
 description: session_runtime_state、SSE、ACP 与 WebUI/TUI 三端同步
-lang: zh-CN
 ---
 
 # 全状态同步

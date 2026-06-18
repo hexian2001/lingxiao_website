@@ -1,7 +1,6 @@
 ---
 title: 连接模型
 description: 配置 LLM 提供商和模型
-lang: zh
 ---
 
 # 连接模型

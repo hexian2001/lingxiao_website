@@ -1,7 +1,6 @@
 ---
 title: WebUI 指挥中心
 description: Chat/Tasks/Agents/Review/Git/Blackboard/Terminal/Settings 八大面板
-lang: zh-CN
 ---
 
 # WebUI 指挥中心

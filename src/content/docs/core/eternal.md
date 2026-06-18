@@ -1,7 +1,6 @@
 ---
 title: Eternal 自治模式
 description: IDLE→CHECK→PATROL→THINK→WAIT 状态机、预算熔断、Supervisor 三层健康检查
-lang: zh-CN
 ---
 
 # Eternal 自治模式

@@ -1,7 +1,6 @@
 ---
 title: 第一次运行
 description: 启动你的第一个专家团
-lang: zh
 ---
 
 # 第一次运行

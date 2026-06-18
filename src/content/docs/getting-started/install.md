@@ -1,7 +1,6 @@
 ---
 title: 安装与启动
 description: 从零搭建凌霄运行环境
-lang: zh
 ---
 
 # 安装与启动

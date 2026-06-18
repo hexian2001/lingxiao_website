@@ -9,7 +9,7 @@ description: 内置 Slash 命令完整列表与说明
 
 ## 命令生命周期
 
-```mermaid
+```text
 sequenceDiagram
   participant UI as Web/TUI 输入
   participant R as slash_registry

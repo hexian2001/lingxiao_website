@@ -1,7 +1,6 @@
 ---
 title: Task DAG Orchestration
 description: Dependency-aware task graph scheduling, parallel execution, and state recovery
-lang: en
 ---
 
 # Task DAG Orchestration

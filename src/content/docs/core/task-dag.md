@@ -1,7 +1,6 @@
 ---
 title: 任务 DAG 编排
 description: 带依赖关系的任务图调度、并行执行与状态恢复
-lang: zh-CN
 ---
 
 # 任务 DAG 编排

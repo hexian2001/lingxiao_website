@@ -1,7 +1,6 @@
 ---
 title: 工具内核
 description: 100+ 内置工具、ToolRegistry 统一管理与权限系统
-lang: zh-CN
 ---
 
 # 工具内核

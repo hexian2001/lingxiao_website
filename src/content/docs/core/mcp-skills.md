@@ -1,7 +1,6 @@
 ---
 title: MCP Forge 与 Skills
 description: MCP Server 生成引擎、分享码、Skills 4 层优先级
-lang: zh-CN
 ---
 
 # MCP Forge 与 Skills

@@ -1,7 +1,6 @@
 ---
 title: 简介
 description: 凌霄剑域 — AI 工程指挥系统，不是聊天壳，而是本地编排内核
-lang: zh
 ---
 
 # 凌霄剑域 LingXiao

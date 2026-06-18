@@ -1,7 +1,6 @@
 ---
 title: Eternal Autonomous Mode
 description: IDLE→CHECK→PATROL→THINK→WAIT state machine, budget circuit breaker, Supervisor 3-layer health check
-lang: en
 ---
 
 # Eternal Autonomous Mode

@@ -1,7 +1,6 @@
 ---
 title: First Run
 description: Launch your first expert panel
-lang: en
 ---
 
 # First Run

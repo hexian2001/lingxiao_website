@@ -1,7 +1,6 @@
 ---
 title: Tool Kernel
 description: 100+ built-in tools, ToolRegistry unified management, and permission system
-lang: en
 ---
 
 # Tool Kernel

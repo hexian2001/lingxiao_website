@@ -1,7 +1,6 @@
 ---
 title: Orchestration Verification Kernel
 description: Speculative execution, adversarial verification, adaptive orchestration, contract loop, bug hunting, assumption tracking
-lang: en
 ---
 
 # Orchestration Verification Kernel

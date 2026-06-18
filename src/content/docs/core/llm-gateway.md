@@ -1,7 +1,6 @@
 ---
 title: 本地 LLM Gateway
 description: OpenAI/Anthropic 双格式代理、虚拟密钥、RPM/TPM 限制
-lang: zh-CN
 ---
 
 # 本地 LLM Gateway

@@ -1,7 +1,6 @@
 ---
 title: Installation
 description: Set up LingXiao from scratch
-lang: en
 ---
 
 # Installation

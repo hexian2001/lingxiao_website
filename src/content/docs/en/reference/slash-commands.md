@@ -9,7 +9,7 @@ LingXiao has 66 built-in slash commands available in both TUI and WebUI chat inp
 
 ## Command Lifecycle
 
-```mermaid
+```text
 sequenceDiagram
   participant UI as Web/TUI input
   participant R as slash_registry

@@ -1,7 +1,6 @@
 ---
 title: 持久记忆
 description: FTS5+BM25 全文搜索、4 种记忆类型、Distill/Dream、项目级/用户级
-lang: zh-CN
 ---
 
 # 持久记忆

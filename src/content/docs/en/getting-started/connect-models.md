@@ -1,7 +1,6 @@
 ---
 title: Connect Models
 description: Configure LLM providers and models
-lang: en
 ---
 
 # Connect Models

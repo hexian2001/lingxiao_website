@@ -9,7 +9,7 @@ description: 运行时拓扑、模块职责、控制/数据流与失败边界
 
 ## 运行时拓扑
 
-```mermaid
+```text
 flowchart LR
   User["用户"]
   CLI["CLI/TUI<br/>src/cli.ts"]

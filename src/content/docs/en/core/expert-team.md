@@ -1,7 +1,6 @@
 ---
 title: Expert Panel System
 description: Leader + Worker expert panel architecture, 13 preset roles, and custom roles
-lang: en
 ---
 
 # Expert Panel System
@@ -10,7 +9,7 @@ The basic unit of LingXiao is not "an assistant" but a **Leader + Worker expert 
 
 ## Leader-Worker Architecture
 
-```mermaid
+```text
 flowchart TD
   User["User Goal"] --> Leader["LeaderAgent"]
   Leader --> DAG["TaskBoard / DAG"]

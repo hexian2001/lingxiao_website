@@ -1,7 +1,6 @@
 ---
 title: Introduction
 description: LingXiao — AI Engineering Command System, not a chat shell but a local orchestration kernel
-lang: en
 ---
 
 # LingXiao

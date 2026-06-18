@@ -1,7 +1,6 @@
 ---
 title: Persistent Memory
 description: FTS5+BM25 full-text search, 4 memory types, Distill/Dream, project/user scope
-lang: en
 ---
 
 # Persistent Memory
