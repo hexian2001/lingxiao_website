@@ -27,7 +27,7 @@ lingxiao doctor
 
 脚本会自动检测平台和架构，下载对应的便携版二进制包，解压并配置命令链接。无需预装 Node.js。
 
-> **指定版本**：macOS/Linux 追加 `-- --version v0.3.9`，Windows 使用 `-Version "v0.3.9"` 参数。
+> **指定版本**：macOS/Linux 追加 `-- --version v1.0.0`，Windows 使用 `-Version "v1.0.0"` 参数。
 
 ## 前置条件
 
@@ -56,6 +56,20 @@ lingxiao doctor
 ```
 
 环境诊断命令会检查 Node.js 版本、Git、配置文件、LLM key 等。
+
+## 升级
+
+```bash
+lingxiao upgrade
+```
+
+自动检查 GitHub 最新 release，下载对应平台便携包并替换安装。也可以先检查是否有新版本：
+
+```bash
+lingxiao upgrade --check
+```
+
+> npm 全局安装的用户请使用 `npm update -g lingxiao_cli` 升级。
 
 ## 从源码开发
 

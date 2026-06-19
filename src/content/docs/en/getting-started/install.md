@@ -27,7 +27,7 @@ lingxiao doctor
 
 The script auto-detects your platform and architecture, downloads the matching portable binary, extracts it, and sets up the command link. No Node.js required.
 
-> **Specific version**: append `-- --version v0.3.9` on macOS/Linux, or use `-Version "v0.3.9"` parameter on Windows.
+> **Specific version**: append `-- --version v1.0.0` on macOS/Linux, or use `-Version "v1.0.0"` parameter on Windows.
 
 ## Prerequisites
 
@@ -56,6 +56,20 @@ lingxiao doctor
 ```
 
 The diagnostics command checks Node.js version, Git, config files, LLM keys, and more.
+
+## Upgrade
+
+```bash
+lingxiao upgrade
+```
+
+Automatically checks for the latest GitHub release, downloads the matching platform package, and replaces the installation. You can also check for updates without upgrading:
+
+```bash
+lingxiao upgrade --check
+```
+
+> For npm global installs, use `npm update -g lingxiao_cli` to upgrade.
 
 ## Development from Source
 

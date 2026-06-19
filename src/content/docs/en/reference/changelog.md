@@ -5,7 +5,7 @@ description: Version history and changes
 
 # Changelog
 
-## v0.3.9 (Current)
+## v1.0.0 (Current)
 
 ### Core System
 

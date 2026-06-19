@@ -909,19 +909,78 @@ header.header {
 
 .home-install {
   display: flex;
-  align-items: center;
-  gap: 10px;
+  flex-direction: column;
+  gap: 0;
   width: min(560px, 100%);
   margin-top: 20px;
-  padding: 11px 14px;
   border: 1px solid rgba(168, 137, 90, .18);
   border-left: 3px solid #a04030;
   border-radius: 15px;
   background: rgba(255, 250, 239, .56);
   box-shadow: 0 12px 30px rgba(76, 57, 34, .06);
+  overflow: hidden;
 }
 
-.home-install > span {
+.install-tabs {
+  display: flex;
+  gap: 0;
+  border-bottom: 1px solid rgba(168, 137, 90, .14);
+}
+
+.install-tab {
+  padding: 8px 18px;
+  border: none;
+  background: transparent;
+  color: #8a7a60;
+  font-size: .82rem;
+  font-family: var(--lx-font-serif);
+  cursor: pointer;
+  transition: all .2s ease;
+  border-bottom: 2px solid transparent;
+}
+
+.install-tab:hover {
+  color: #a04030;
+}
+
+.install-tab.active {
+  color: #a04030;
+  border-bottom-color: #a04030;
+  font-weight: 700;
+}
+
+.install-body {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 11px 14px;
+}
+
+.install-copy {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  margin-left: auto;
+  border: none;
+  border-radius: 8px;
+  background: rgba(160, 64, 48, .08);
+  color: #a04030;
+  cursor: pointer;
+  transition: all .2s ease;
+}
+
+.install-copy:hover {
+  background: rgba(160, 64, 48, .18);
+}
+
+.install-copy:active {
+  transform: scale(.92);
+}
+
+.install-body > span {
   flex: 0 0 auto;
   color: #a04030;
   font-family: var(--lx-font-serif);

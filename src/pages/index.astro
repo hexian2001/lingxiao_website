@@ -30,7 +30,8 @@ const evidenceNodes = [
   ['Git / Diff', '变更、提交与恢复'],
   ['Artifacts', '构建、日志、截图、报告'],
 ];
-const installCommand = 'git clone https://github.com/hexian2001/lingxiao.git && cd lingxiao && npm install && npm run build && npm link && lingxiao';
+const installMac = 'curl -fsSL https://raw.githubusercontent.com/hexian2001/lingxiao/main/scripts/install.sh | sh';
+const installWin = 'irm https://raw.githubusercontent.com/hexian2001/lingxiao/main/scripts/install.ps1 | iex';
 ---
 
 <LandingLayout title="凌霄剑域 · LingXiao — 国风 AI 工程指挥系统">
@@ -46,9 +47,43 @@ const installCommand = 'git clone https://github.com/hexian2001/lingxiao.git && 
           <h1><span>凌霄剑域</span><small>以工程为骨，以证据为锋</small></h1>
           <p class="home-lede">一念成令，诸工有序；百器入鞘，诸证归卷。凌霄将目标、任务、工具与验收织成一条可追溯的本地工程脉络：先定势，再分锋，后收卷。</p>
           <div class="home-actions"><a class="home-btn primary" href={docsUrl}>入门文档</a><a class="home-btn" href={githubUrl} target="_blank" rel="noopener">GitHub</a></div>
-          <div class="home-install" aria-label="安装与启动命令">
-            <span>令</span><code>{installCommand}</code>
+          <div class="home-install" aria-label="安装命令">
+            <div class="install-tabs">
+              <button class="install-tab active" data-cmd="mac">macOS / Linux</button>
+              <button class="install-tab" data-cmd="win">Windows</button>
+            </div>
+            <div class="install-body">
+              <span>令</span>
+              <code class="cmd-mac">{installMac}</code>
+              <code class="cmd-win" hidden>{installWin}</code>
+              <button class="install-copy" aria-label="复制命令" title="复制命令">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+              </button>
+            </div>
           </div>
+          <script is:inline>
+            document.querySelectorAll('.install-tab').forEach(tab => {
+              tab.addEventListener('click', () => {
+                document.querySelectorAll('.install-tab').forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+                const isWin = tab.dataset.cmd === 'win';
+                document.querySelector('.cmd-mac').hidden = isWin;
+                document.querySelector('.cmd-win').hidden = !isWin;
+              });
+            });
+            document.querySelector('.install-copy').addEventListener('click', async (e) => {
+              const codeEl = document.querySelector('.cmd-mac').hidden
+                ? document.querySelector('.cmd-win')
+                : document.querySelector('.cmd-mac');
+              try {
+                await navigator.clipboard.writeText(codeEl.textContent);
+                const btn = e.currentTarget;
+                const svg = btn.innerHTML;
+                btn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>';
+                setTimeout(() => { btn.innerHTML = svg; }, 1500);
+              } catch {}
+            });
+          </script>
           <div class="home-stats">{stats.map(([value,label]) => <div><strong>{value}</strong><span>{label}</span></div>)}</div>
         </div>
         <div class="home-showcase" id="showcase">
@@ -94,7 +129,7 @@ const installCommand = 'git clone https://github.com/hexian2001/lingxiao.git && 
     </section>
 
     <section class="home-cta">
-      <p class="home-kicker">LingXiao v0.3.9</p>
+      <p class="home-kicker">LingXiao v1.0.0</p>
       <h2>开卷立势，收卷有证</h2>
       <div class="home-actions"><a class="home-btn primary" href={docsUrl}>开始使用</a><a class="home-btn" href={githubUrl} target="_blank" rel="noopener">查看仓库</a></div>
     </section>
