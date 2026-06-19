@@ -1,30 +1,41 @@
 ---
 title: Installation
-description: Set up LingXiao from scratch
+description: One-line install for LingXiao
 ---
 
 # Installation
+
+## One-Line Install
+
+### macOS / Linux / WSL
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/hexian2001/lingxiao/main/scripts/install.sh | sh
+```
+
+### Windows PowerShell
+
+```powershell
+irm https://raw.githubusercontent.com/hexian2001/lingxiao/main/scripts/install.ps1 | iex
+```
+
+After installation, run:
+
+```bash
+lingxiao doctor
+```
+
+The script auto-detects your platform and architecture, downloads the matching portable binary, extracts it, and sets up the command link. No Node.js required.
+
+> **Specific version**: append `-- --version v0.3.9` on macOS/Linux, or use `-Version "v0.3.9"` parameter on Windows.
 
 ## Prerequisites
 
 | Dependency | Requirement |
 | --- | --- |
-| Node.js | `>=24.0.0` |
-| npm | Bundled with Node 24 |
-| Git | Recommended |
 | OS | Linux / macOS / Windows / WSL |
-
-## Install Steps
-
-```bash
-git clone https://github.com/hexian2001/lingxiao.git
-cd lingxiao
-npm install
-npm run build
-npm link
-```
-
-After installation, the `lingxiao` command is globally available.
+| Node.js | Not required for portable; `>=24.0.0` for source development |
+| Git | Recommended |
 
 ## First Configuration
 
@@ -49,6 +60,8 @@ The diagnostics command checks Node.js version, Git, config files, LLM keys, and
 ## Development from Source
 
 ```bash
+git clone https://github.com/hexian2001/lingxiao.git
+cd lingxiao
 npm install
 npm run build
 npm run cli

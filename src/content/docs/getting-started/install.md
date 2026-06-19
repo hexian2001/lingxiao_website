@@ -1,41 +1,41 @@
 ---
 title: 安装与启动
-description: 从零搭建凌霄运行环境
+description: 一行命令安装凌霄剑域
 ---
 
 # 安装与启动
+
+## 一行安装
+
+### macOS / Linux / WSL
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/hexian2001/lingxiao/main/scripts/install.sh | sh
+```
+
+### Windows PowerShell
+
+```powershell
+irm https://raw.githubusercontent.com/hexian2001/lingxiao/main/scripts/install.ps1 | iex
+```
+
+安装完成后运行：
+
+```bash
+lingxiao doctor
+```
+
+脚本会自动检测平台和架构，下载对应的便携版二进制包，解压并配置命令链接。无需预装 Node.js。
+
+> **指定版本**：macOS/Linux 追加 `-- --version v0.3.9`，Windows 使用 `-Version "v0.3.9"` 参数。
 
 ## 前置条件
 
 | 依赖 | 要求 |
 | --- | --- |
-| Node.js | `>=24.0.0` |
-| npm | 随 Node 24 配套版本 |
-| Git | 推荐安装 |
 | 操作系统 | Linux / macOS / Windows / WSL |
-
-## 安装步骤
-
-先取源码：
-
-```bash
-git clone https://github.com/hexian2001/lingxiao.git
-cd lingxiao
-```
-
-再安装、构建并链接 CLI：
-
-```bash
-npm install && npm run build && npm link
-```
-
-最后启动凌霄：
-
-```bash
-lingxiao
-```
-
-安装完成后，`lingxiao` 命令将全局可用。
+| Node.js | 便携版无需；从源码开发需 `>=24.0.0` |
+| Git | 推荐安装 |
 
 ## 首次配置
 
@@ -60,6 +60,8 @@ lingxiao doctor
 ## 从源码开发
 
 ```bash
+git clone https://github.com/hexian2001/lingxiao.git
+cd lingxiao
 npm install
 npm run build
 npm run cli
