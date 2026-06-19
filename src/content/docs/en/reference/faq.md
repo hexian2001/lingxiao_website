@@ -7,7 +7,7 @@ description: Frequently asked questions
 
 ## How is LingXiao different from other AI coding tools?
 
-LingXiao is not a chat shell — it's an orchestration kernel. Key differences:
+LingXiao is not a chat shell — it's an orchestration kernel. One sword cleaves the sky, build what you envision. Key differences:
 
 - **Expert Panel**: Leader + Worker multi-role collaboration, not single-agent dialogue
 - **DAG Orchestration**: Dependency-aware task graphs with parallel execution
