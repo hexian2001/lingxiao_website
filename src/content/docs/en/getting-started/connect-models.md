@@ -89,4 +89,4 @@ Enable in `~/.lingxiao/settings.json`:
 
 ## Next Steps
 
-- [First Run](./first-run) — Launch your first expert panel
+- [First Run](first-run) — Launch your first expert panel

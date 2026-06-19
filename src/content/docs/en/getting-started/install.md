@@ -42,6 +42,12 @@ lingxiao --version
 ## Upgrade
 
 ```bash
+lingxiao upgrade
+```
+
+Or manually:
+
+```bash
 cd lingxiao-coding
 git pull
 npm install
@@ -91,5 +97,5 @@ This project uses **AGPL v3 + Commercial Dual License**. See [LICENSE](https://g
 
 ## Next Steps
 
-- [Connect Models](./connect-models) — Configure LLM providers
-- [First Run](./first-run) — Launch your first expert panel
+- [Connect Models](connect-models) — Configure LLM providers
+- [First Run](first-run) — Launch your first expert panel

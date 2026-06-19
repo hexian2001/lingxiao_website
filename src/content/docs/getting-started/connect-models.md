@@ -89,4 +89,4 @@ export LINGXIAO_AGENT_MODEL=claude-sonnet-4-20250514
 
 ## 下一步
 
-- [第一次运行](./first-run) — 启动你的第一个专家团
+- [第一次运行](first-run) — 启动你的第一个专家团

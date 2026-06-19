@@ -42,6 +42,12 @@ lingxiao --version
 ## 升级
 
 ```bash
+lingxiao upgrade
+```
+
+或手动执行：
+
+```bash
 cd lingxiao-coding
 git pull
 npm install
@@ -91,5 +97,5 @@ npm test
 
 ## 下一步
 
-- [连接模型](./connect-models) — 配置 LLM 提供商
-- [第一次运行](./first-run) — 启动你的第一个专家团
+- [连接模型](connect-models) — 配置 LLM 提供商
+- [第一次运行](first-run) — 启动你的第一个专家团

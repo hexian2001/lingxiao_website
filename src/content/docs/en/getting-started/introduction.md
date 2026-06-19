@@ -98,6 +98,6 @@ LingXiao is built for long-running, complex, high-stakes AI engineering work. Fr
 
 ## Next Steps
 
-- [Installation](./install) — Set up LingXiao from scratch
-- [Connect Models](./connect-models) — Configure model providers and routing
-- [First Run](./first-run) — Launch your first observable, verifiable expert team
+- [Installation](install) — Set up LingXiao from scratch
+- [Connect Models](connect-models) — Configure model providers and routing
+- [First Run](first-run) — Launch your first observable, verifiable expert team
