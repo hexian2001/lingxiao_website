@@ -13,19 +13,19 @@ description: One-line install for LingXiao
 curl -fsSL https://raw.githubusercontent.com/hexian2001/lingxiao-coding/main/scripts/install.sh | sh
 ```
 
-### Windows PowerShell
+### Windows (CMD / PowerShell)
 
 ```powershell
-irm https://raw.githubusercontent.com/hexian2001/lingxiao-coding/main/scripts/install.ps1 | iex
+powershell -c "irm https://raw.githubusercontent.com/hexian2001/lingxiao-coding/main/scripts/install.ps1 | iex"
 ```
 
 After installation, run:
 
 ```bash
-lingxiao doctor
+lingxiao
 ```
 
-The script auto-detects your platform and architecture, downloads the matching portable binary, extracts it, and sets up the command link. No Node.js required.
+First launch guides you through model and API key setup. The script auto-detects your platform and architecture, downloads the matching portable binary, extracts it, and sets up the command link. No Node.js required.
 
 > **Specific version**: append `-- --version v1.0.0` on macOS/Linux, or use `-Version "v1.0.0"` parameter on Windows.
 
@@ -37,25 +37,13 @@ The script auto-detects your platform and architecture, downloads the matching p
 | Node.js | Not required for portable; `>=24.0.0` for source development |
 | Git | Recommended |
 
-## First Configuration
-
-```bash
-lingxiao init
-```
-
-This command guides you through initial configuration. The config file is located at:
-
-```text
-~/.lingxiao/settings.json
-```
-
 ## Verify Installation
 
 ```bash
-lingxiao doctor
+lingxiao
 ```
 
-The diagnostics command checks Node.js version, Git, config files, LLM keys, and more.
+First launch auto-guides you through configuration. The config file is at `~/.lingxiao/settings.json`.
 
 ## Upgrade
 

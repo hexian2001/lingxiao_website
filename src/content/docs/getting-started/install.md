@@ -13,19 +13,19 @@ description: 一行命令安装凌霄剑域
 curl -fsSL https://raw.githubusercontent.com/hexian2001/lingxiao-coding/main/scripts/install.sh | sh
 ```
 
-### Windows PowerShell
+### Windows (CMD / PowerShell)
 
 ```powershell
-irm https://raw.githubusercontent.com/hexian2001/lingxiao-coding/main/scripts/install.ps1 | iex
+powershell -c "irm https://raw.githubusercontent.com/hexian2001/lingxiao-coding/main/scripts/install.ps1 | iex"
 ```
 
-安装完成后运行：
+安装完成后直接运行：
 
 ```bash
-lingxiao doctor
+lingxiao
 ```
 
-脚本会自动检测平台和架构，下载对应的便携版二进制包，解压并配置命令链接。无需预装 Node.js。
+首次运行会引导配置模型和 API 密钥。脚本会自动检测平台和架构，下载对应的便携版二进制包，解压并配置命令链接。无需预装 Node.js。
 
 > **指定版本**：macOS/Linux 追加 `-- --version v1.0.0`，Windows 使用 `-Version "v1.0.0"` 参数。
 
@@ -37,25 +37,13 @@ lingxiao doctor
 | Node.js | 便携版无需；从源码开发需 `>=24.0.0` |
 | Git | 推荐安装 |
 
-## 首次配置
-
-```bash
-lingxiao init
-```
-
-该命令会引导你完成初始配置。配置文件位于：
-
-```text
-~/.lingxiao/settings.json
-```
-
 ## 验证安装
 
 ```bash
-lingxiao doctor
+lingxiao
 ```
 
-环境诊断命令会检查 Node.js 版本、Git、配置文件、LLM key 等。
+首次启动会自动引导配置。配置文件位于 `~/.lingxiao/settings.json`。
 
 ## 升级
 
