@@ -10,13 +10,13 @@ description: 一行命令安装凌霄剑域
 ### macOS / Linux / WSL
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/hexian2001/lingxiao/main/scripts/install.sh | sh
+curl -fsSL https://raw.githubusercontent.com/hexian2001/lingxiao-coding/main/scripts/install.sh | sh
 ```
 
 ### Windows PowerShell
 
 ```powershell
-irm https://raw.githubusercontent.com/hexian2001/lingxiao/main/scripts/install.ps1 | iex
+irm https://raw.githubusercontent.com/hexian2001/lingxiao-coding/main/scripts/install.ps1 | iex
 ```
 
 安装完成后运行：
@@ -74,7 +74,7 @@ lingxiao upgrade --check
 ## 从源码开发
 
 ```bash
-git clone https://github.com/hexian2001/lingxiao.git
+git clone https://github.com/hexian2001/lingxiao-coding.git
 cd lingxiao
 npm install
 npm run build

@@ -409,7 +409,7 @@ body{{font-family:var(--font-sans);background:var(--ink-deep);color:var(--fg);-w
   <a href="/" class="nav-brand"><span class="brand-mark">剑</span><span>凌霄剑域</span><span class="brand-sub">LingXiao</span></a>
   <div class="nav-links">
     <a href="{nav_docs}">文档</a>
-    <a href="https://github.com/hexian2001/lingxiao" target="_blank" rel="noopener">GitHub</a>
+    <a href="https://github.com/hexian2001/lingxiao-coding" target="_blank" rel="noopener">GitHub</a>
     <a href="{nav_docs}" class="nav-cta" style="padding:0.4rem 1rem;border-radius:8px;background:var(--gold-dim);color:var(--gold);font-weight:600;font-size:0.8rem;border:1px solid rgba(212,175,55,0.3)">快速上手</a>
   </div>
 </div></nav>

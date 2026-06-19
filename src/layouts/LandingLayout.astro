@@ -3,14 +3,15 @@ import '../styles/lingxiao-theme.css';
 
 interface Props {
   title?: string;
+  lang?: string;
 }
 
-const { title = '凌霄剑域 · LingXiao' } = Astro.props;
+const { title = '凌霄剑域 · LingXiao', lang = 'zh-CN' } = Astro.props;
 const base = import.meta.env.BASE_URL;
 ---
 
 <!doctype html>
-<html lang="zh-CN" data-theme="light">
+<html lang={lang} data-theme="light">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -56,6 +57,44 @@ const base = import.meta.env.BASE_URL;
           const next = current === 'dark' ? 'light' : 'dark';
           document.documentElement.setAttribute('data-theme', next);
           localStorage.setItem('lx-theme', next);
+        });
+      })();
+    </script>
+
+    <script is:inline>
+      // 滚动触发渐入动画
+      (function() {
+        const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        if (prefersReduced) return;
+        const observer = new IntersectionObserver(function(entries) {
+          entries.forEach(function(entry) {
+            if (entry.isIntersecting) {
+              entry.target.classList.add('revealed');
+              observer.unobserve(entry.target);
+            }
+          });
+        }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+        document.querySelectorAll('.reveal').forEach(function(el) {
+          observer.observe(el);
+        });
+      })();
+    </script>
+
+    <script is:inline>
+      // 按钮 ripple 效果
+      (function() {
+        var prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        if (prefersReduced) return;
+        document.addEventListener('click', function(e) {
+          var btn = e.target.closest('.home-btn');
+          if (!btn) return;
+          var rect = btn.getBoundingClientRect();
+          var ripple = document.createElement('span');
+          ripple.className = 'btn-ripple';
+          ripple.style.left = (e.clientX - rect.left) + 'px';
+          ripple.style.top = (e.clientY - rect.top) + 'px';
+          btn.appendChild(ripple);
+          setTimeout(function() { ripple.remove(); }, 650);
         });
       })();
     </script>

@@ -131,7 +131,7 @@ export default defineConfig({
       },
       sidebar: zhSidebar(),
       social: [
-        { icon: 'github', label: 'GitHub', href: 'https://github.com/hexian2001/lingxiao' },
+        { icon: 'github', label: 'GitHub', href: 'https://github.com/hexian2001/lingxiao-coding' },
       ],
       customCss: ['./src/styles/lingxiao-theme.css'],
       logo: { src: './src/assets/logo.svg', replacesTitle: false },

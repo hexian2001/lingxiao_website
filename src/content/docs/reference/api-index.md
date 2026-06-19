@@ -147,6 +147,6 @@ ACP JSON-RPC 方法包括：`session/send`、`session/command`、`session/interr
 
 ## 相关文档
 
-- [ACP 协议契约](https://github.com/hexian2001/lingxiao/blob/main/docs/contracts/acp.md)
-- [HTTP API 契约](https://github.com/hexian2001/lingxiao/blob/main/docs/contracts/http-api.md)
-- [Session 事件契约](https://github.com/hexian2001/lingxiao/blob/main/docs/contracts/session-events.md)
+- [ACP 协议契约](https://github.com/hexian2001/lingxiao-coding/blob/main/docs/contracts/acp.md)
+- [HTTP API 契约](https://github.com/hexian2001/lingxiao-coding/blob/main/docs/contracts/http-api.md)
+- [Session 事件契约](https://github.com/hexian2001/lingxiao-coding/blob/main/docs/contracts/session-events.md)

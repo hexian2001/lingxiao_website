@@ -147,6 +147,6 @@ ACP JSON-RPC methods include: `session/send`, `session/command`, `session/interr
 
 ## Related Docs
 
-- [ACP Protocol Contract](https://github.com/hexian2001/lingxiao/blob/main/docs/contracts/acp.md)
-- [HTTP API Contract](https://github.com/hexian2001/lingxiao/blob/main/docs/contracts/http-api.md)
-- [Session Event Contract](https://github.com/hexian2001/lingxiao/blob/main/docs/contracts/session-events.md)
+- [ACP Protocol Contract](https://github.com/hexian2001/lingxiao-coding/blob/main/docs/contracts/acp.md)
+- [HTTP API Contract](https://github.com/hexian2001/lingxiao-coding/blob/main/docs/contracts/http-api.md)
+- [Session Event Contract](https://github.com/hexian2001/lingxiao-coding/blob/main/docs/contracts/session-events.md)

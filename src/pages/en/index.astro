@@ -1,71 +1,69 @@
 ---
-import LandingLayout from '../layouts/LandingLayout.astro';
+import LandingLayout from '../../layouts/LandingLayout.astro';
 
 const base = import.meta.env.BASE_URL;
 const baseUrl = base.endsWith('/') ? base : `${base}/`;
 const docsUrl = `${baseUrl}getting-started/introduction`;
 const githubUrl = 'https://github.com/hexian2001/lingxiao-coding';
-const enUrl = `${baseUrl}en/`;
+const zhUrl = `${baseUrl}`;
 
 const stats = [
-  ['策', 'Leader 主控'],
-  ['阵', 'DAG 编排'],
-  ['证', '验收闭环'],
-  ['器', '百器入鞘'],
+  ['Strategy', 'Leader Control'],
+  ['Formation', 'DAG Orchestration'],
+  ['Evidence', 'Verification Loop'],
+  ['Arsenal', '100+ Tools'],
 ];
 const capabilities = [
-  ['定策', '先立目标、边界、风险与验收口径。'],
-  ['布阵', '以 DAG 分明先后，让并行有序、阻塞可见。'],
-  ['遣将', '按角色调度专家，研发、验证、审查各归其位。'],
-  ['取证', '构建、测试、浏览器、日志与契约共同落证。'],
-  ['留痕', '黑板、记忆、Git 与会话沉淀每一次决策。'],
-  ['巡天', 'Eternal Goal 持续推进，完成则收卷，遇阻则明示。'],
+  ['Strategize', 'Define goals, boundaries, risks, and acceptance criteria first.'],
+  ['Form Ranks', 'Order tasks via DAG — parallel where possible, blocking where needed.'],
+  ['Dispatch', 'Assign specialists: research, coding, testing, review — each in its place.'],
+  ['Gather Proof', 'Build, test, browser, logs, and contracts all leave verifiable traces.'],
+  ['Leave Records', 'Blackboard, memory, Git, and sessions preserve every decision.'],
+  ['Patrol', 'Eternal Goals advance continuously — complete and close, or surface blockers.'],
 ];
 const architectureBranches = [
-  ['TaskBoard DAG', '依赖、阻塞、派发、修复与评估状态'],
-  ['AgentPool', '研究、编码、测试、审查等专家并行执行'],
-  ['ToolRegistry', '文件、Shell、Git、浏览器、HTTP、MCP 入鞘'],
+  ['TaskBoard DAG', 'Dependencies, blockers, dispatch, fix & review states'],
+  ['AgentPool', 'Research, coding, testing, review experts in parallel'],
+  ['ToolRegistry', 'File, Shell, Git, Browser, HTTP, MCP — all sheathed'],
 ];
 const evidenceNodes = [
-  ['SQLite', '会话状态与任务轨迹'],
-  ['Git / Diff', '变更、提交与恢复'],
-  ['Artifacts', '构建、日志、截图、报告'],
+  ['SQLite', 'Session state & task trajectory'],
+  ['Git / Diff', 'Changes, commits & recovery'],
+  ['Artifacts', 'Builds, logs, screenshots, reports'],
 ];
 const installMac = 'curl -fsSL https://raw.githubusercontent.com/hexian2001/lingxiao-coding/main/scripts/install.sh | sh';
 const installWin = 'irm https://raw.githubusercontent.com/hexian2001/lingxiao-coding/main/scripts/install.ps1 | iex';
 ---
 
-<LandingLayout title="凌霄剑域 · LingXiao — 国风 AI 工程指挥系统" lang="zh-CN">
+<LandingLayout title="LingXiao — AI Engineering Command System" lang="en">
   <main class="home-shell">
-    <!-- 背景水墨流动层 -->
     <div class="ink-flow-bg" aria-hidden="true">
       <div class="ink-blob ink-blob-1"></div>
       <div class="ink-blob ink-blob-2"></div>
       <div class="ink-blob ink-blob-3"></div>
     </div>
-    <!-- 粒子层 -->
     <div class="particle-field" aria-hidden="true">
       {Array.from({ length: 16 }, (_, i) => <span class="particle" style={`--p-delay:${i * 0.8}s;--p-dur:${12 + (i % 5) * 3}s;--p-x:${(i * 37) % 100}%;`}></span>)}
     </div>
 
     <section class="home-hero">
       <nav class="home-nav">
-        <a class="home-brand" href={baseUrl}><img src={`${baseUrl}logo.svg`} alt="凌霄" /><span>凌霄剑域</span></a>
+        <a class="home-brand" href={baseUrl}><img src={`${baseUrl}logo.svg`} alt="LingXiao" /><span>LingXiao</span></a>
         <div class="home-links">
-          <a href="#capabilities">能力</a>
-          <a href="#showcase">界面</a>
-          <a href="#architecture">架构</a>
-          <a href={docsUrl}>文档</a>
-          <a class="lang-switch" href={enUrl} title="English">EN</a>
+          <a href="#capabilities">Features</a>
+          <a href="#showcase">Showcase</a>
+          <a href="#architecture">Architecture</a>
+          <a href={docsUrl}>Docs</a>
+          <a class="lang-switch" href={zhUrl} title="中文">中文</a>
         </div>
       </nav>
       <div class="home-hero-grid">
         <div class="home-copy">
-          <p class="home-kicker">AI 工程指挥 · 本地运行</p>
-          <h1><span>凌霄剑域</span><small>以工程为骨，以证据为锋</small></h1>
-          <p class="home-lede">一念成令，诸工有序；百器入鞘，诸证归卷。凌霄将目标、任务、工具与验收织成一条可追溯的本地工程脉络：先定势，再分锋，后收卷。</p>
-          <div class="home-actions"><a class="home-btn primary" href={docsUrl}>入门文档</a><a class="home-btn" href={githubUrl} target="_blank" rel="noopener">GitHub</a></div>
-          <div class="home-install" aria-label="安装命令">
+          <p class="home-kicker">AI Engineering Command · Local-First</p>
+          <h1><span>LingXiao</span><small>Engineering as bone, evidence as blade</small></h1>
+          <p class="home-lede">One command spawns order; a hundred tools sheathed, all evidence archived. LingXiao weaves goals, tasks, tools, and verification into a traceable local engineering fabric: define the stance, divide the blades, then close the scroll.</p>
+          <div class="home-actions"><a class="home-btn primary" href={docsUrl}>Get Started</a><a class="home-btn" href={githubUrl} target="_blank" rel="noopener">GitHub</a></div>
+          <div class="home-install" aria-label="Install command">
             <div class="install-tabs">
               <button class="install-tab active" data-cmd="mac">macOS / Linux</button>
               <button class="install-tab" data-cmd="win">Windows</button>
@@ -74,7 +72,7 @@ const installWin = 'irm https://raw.githubusercontent.com/hexian2001/lingxiao-co
               <span class="install-prompt">❯</span>
               <code class="cmd-mac">{installMac}</code>
               <code class="cmd-win" hidden>{installWin}</code>
-              <button class="install-copy" aria-label="复制命令" title="复制命令">
+              <button class="install-copy" aria-label="Copy command" title="Copy command">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
               </button>
             </div>
@@ -106,29 +104,28 @@ const installWin = 'irm https://raw.githubusercontent.com/hexian2001/lingxiao-co
         </div>
         <div class="home-showcase" id="showcase">
           <div class="ink-mountain" aria-hidden="true"></div>
-          <figure class="shot light"><figcaption>Light · 宣纸水墨</figcaption><img src={`${baseUrl}screenshots/lingxiao-web-light.png`} alt="凌霄亮色主题 WebUI" /></figure>
-          <figure class="shot dark"><figcaption>Dark · 墨夜金锋</figcaption><img src={`${baseUrl}screenshots/lingxiao-web-dark.png`} alt="凌霄暗色主题 WebUI" /></figure>
+          <figure class="shot light"><figcaption>Light · Rice Paper Ink</figcaption><img src={`${baseUrl}screenshots/lingxiao-web-light.png`} alt="LingXiao light theme WebUI" /></figure>
+          <figure class="shot dark"><figcaption>Dark · Ink Night Gold</figcaption><img src={`${baseUrl}screenshots/lingxiao-web-dark.png`} alt="LingXiao dark theme WebUI" /></figure>
         </div>
       </div>
     </section>
 
     <section class="home-section intro reveal">
-      <p class="home-kicker">产品定位</p>
-      <h2>让 AI 协作有章法、有凭据、有归处</h2>
-      <p>凌霄不追逐一次性的灵光一现，而把复杂交付拆成可执行、可观察、可恢复的工程过程。任务从目标入卷，到专家分工，再到证据验收，皆有迹可循。</p>
+      <p class="home-kicker">Product Positioning</p>
+      <h2>AI Collaboration with Method, Evidence, and Home</h2>
+      <p>LingXiao doesn't chase one-off sparks of brilliance. It breaks complex delivery into executable, observable, and recoverable engineering processes. From goal to specialist分工, to evidence-based acceptance — every step leaves a trail.</p>
     </section>
 
     <section class="home-section reveal" id="capabilities">
-      <div class="section-head"><p class="home-kicker">六器成阵</p><h2>从模型灵性，炼成工程章法</h2></div>
+      <div class="section-head"><p class="home-kicker">Six Weapons Form the Array</p><h2>From Model Intuition to Engineering Discipline</h2></div>
       <div class="cap-grid">{capabilities.map(([title,text], index) => <article class="reveal" style={`--reveal-delay:${index * 80}ms`}><b>{String(index + 1).padStart(2, '0')}</b><h3>{title}</h3><p>{text}</p></article>)}</div>
     </section>
 
     <section class="home-section architecture reveal" id="architecture">
-      <div class="section-head"><p class="home-kicker">架构</p><h2>三端入局，一核调度，百器落证</h2></div>
-      <div class="arch-topology" aria-label="凌霄运行架构图">
-        <!-- Layer 1: Entry Layer -->
+      <div class="section-head"><p class="home-kicker">Architecture</p><h2>Three Fronts, One Core, A Hundred Tools, All Evidence Filed</h2></div>
+      <div class="arch-topology" aria-label="LingXiao architecture diagram">
         <div class="arch-layer arch-layer-entry">
-          <div class="arch-layer-label">入口层</div>
+          <div class="arch-layer-label">Entry Layer</div>
           <div class="arch-entry-row">
             <div class="arch-pill"><span>WebUI</span></div>
             <div class="arch-pill"><span>TUI</span></div>
@@ -136,51 +133,43 @@ const installWin = 'irm https://raw.githubusercontent.com/hexian2001/lingxiao-co
           </div>
         </div>
 
-        <!-- Connector: Entry → Core -->
         <div class="arch-connector arch-connector-merge" aria-hidden="true">
           <svg viewBox="0 0 300 40" preserveAspectRatio="none"><path d="M50,0 L50,16 L150,28 L150,40 M150,0 L150,28 L150,40 M250,0 L250,16 L150,28 L150,40" fill="none" stroke="currentColor" stroke-width="1.5" class="connector-line"/><circle cx="150" cy="30" r="2.5" fill="currentColor" class="connector-pulse"/></svg>
         </div>
 
-        <!-- Layer 2: Session Core (Glowing) -->
         <div class="arch-core-node arch-node-glow">
           <div class="arch-core-pulse" aria-hidden="true"></div>
-          <small>会话内核</small>
+          <small>Session Core</small>
           <strong>SessionRuntime</strong>
-          <span>维护模式、事件流、任务板、工具调用和可恢复上下文。</span>
+          <span>Maintains mode, event stream, task board, tool calls, and resumable context.</span>
         </div>
 
-        <!-- Connector: Core → Leader -->
         <div class="arch-connector arch-connector-line" aria-hidden="true">
           <svg viewBox="0 0 300 30" preserveAspectRatio="none"><line x1="150" y1="0" x2="150" y2="30" stroke="currentColor" stroke-width="1.5" class="connector-line"/><circle cx="150" cy="15" r="2.5" fill="currentColor" class="connector-pulse"/></svg>
         </div>
 
-        <!-- Layer 3: Leader Hub -->
         <div class="arch-leader-node">
           <div class="arch-leader-pulse" aria-hidden="true"></div>
-          <small>中枢</small>
+          <small>Central Hub</small>
           <strong>LeaderAgent</strong>
-          <span>理解目标、拆解计划、选择角色、派发任务并最终验收。</span>
+          <span>Understands goals, decomposes plans, selects roles, dispatches tasks, and accepts final delivery.</span>
         </div>
 
-        <!-- Connector: Leader → Execution (Fan-out) -->
         <div class="arch-connector arch-connector-fanout" aria-hidden="true">
           <svg viewBox="0 0 300 40" preserveAspectRatio="none"><path d="M150,0 L150,12 L50,28 L50,40 M150,0 L150,12 L150,28 L150,40 M150,0 L150,12 L250,28 L250,40" fill="none" stroke="currentColor" stroke-width="1.5" class="connector-line"/><circle cx="50" cy="30" r="2.5" fill="currentColor" class="connector-pulse"/><circle cx="150" cy="30" r="2.5" fill="currentColor" class="connector-pulse"/><circle cx="250" cy="30" r="2.5" fill="currentColor" class="connector-pulse"/></svg>
         </div>
 
-        <!-- Layer 4: Execution Plane -->
         <div class="arch-layer arch-layer-exec">
-          <div class="arch-layer-label">执行面</div>
+          <div class="arch-layer-label">Execution Plane</div>
           <div class="arch-exec-grid">
             {architectureBranches.map(([title, text]) => <article class="arch-exec-card"><div class="arch-card-glow" aria-hidden="true"></div><strong>{title}</strong><span>{text}</span></article>)}
           </div>
         </div>
 
-        <!-- Divider -->
         <div class="arch-divider" aria-hidden="true"><span>↓</span></div>
 
-        <!-- Layer 5: Evidence Layer -->
         <div class="arch-layer arch-layer-evidence">
-          <div class="arch-layer-label">证据层</div>
+          <div class="arch-layer-label">Evidence Layer</div>
           <div class="arch-evidence-grid">
             {evidenceNodes.map(([title, text]) => <article class="arch-evidence-card"><strong>{title}</strong><span>{text}</span></article>)}
           </div>
@@ -189,15 +178,15 @@ const installWin = 'irm https://raw.githubusercontent.com/hexian2001/lingxiao-co
     </section>
 
     <section class="home-section proof reveal">
-      <p class="home-kicker">适用场景</p>
-      <h2>面向长期、复杂、必须落地的 AI 工程</h2>
-      <div class="proof-grid"><article><h3>产品交付</h3><p>接口契约、前后端实现、浏览器验收与文档同步一体推进。</p></article><article><h3>代码治理</h3><p>技术债、测试缺口、迁移计划和修复任务可持续巡逻。</p></article><article><h3>内部自动化</h3><p>Office、PDF、MCP、Workflow 与本地工具链统一编排。</p></article></div>
+      <p class="home-kicker">Use Cases</p>
+      <h2>For Long-Term, Complex, Must-Ship AI Engineering</h2>
+      <div class="proof-grid"><article><h3>Product Delivery</h3><p>API contracts, frontend/backend implementation, browser verification, and docs — all in sync.</p></article><article><h3>Code Governance</h3><p>Tech debt, test gaps, migration plans, and fix tasks continuously patrolled.</p></article><article><h3>Internal Automation</h3><p>Office, PDF, MCP, Workflow, and local toolchains — unified orchestration.</p></article></div>
     </section>
 
     <section class="home-cta reveal">
       <p class="home-kicker">LingXiao v1.0.0</p>
-      <h2>开卷立势，收卷有证</h2>
-      <div class="home-actions"><a class="home-btn primary" href={docsUrl}>开始使用</a><a class="home-btn" href={githubUrl} target="_blank" rel="noopener">查看仓库</a></div>
+      <h2>Open the Scroll, Make Your Move, Close with Proof</h2>
+      <div class="home-actions"><a class="home-btn primary" href={docsUrl}>Get Started</a><a class="home-btn" href={githubUrl} target="_blank" rel="noopener">View Repository</a></div>
     </section>
   </main>
 </LandingLayout>
