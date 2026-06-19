@@ -31,8 +31,8 @@ const evidenceNodes = [
   ['Git / Diff', '变更、提交与恢复'],
   ['Artifacts', '构建、日志、截图、报告'],
 ];
-const installMac = 'curl -fsSL https://raw.githubusercontent.com/hexian2001/lingxiao-coding/main/scripts/install.sh | sh';
-const installWin = 'powershell -c "irm https://raw.githubusercontent.com/hexian2001/lingxiao-coding/main/scripts/install.ps1 | iex"';
+const installMac = 'git clone https://github.com/hexian2001/lingxiao-coding.git && cd lingxiao-coding && npm install && npm run build && npm link';
+const installWin = 'git clone https://github.com/hexian2001/lingxiao-coding.git && cd lingxiao-coding && npm install && npm run build && npm link';
 ---
 
 <LandingLayout title="凌霄剑域 · LingXiao — 一剑开天，做你所想" lang="zh-CN">
@@ -67,8 +67,7 @@ const installWin = 'powershell -c "irm https://raw.githubusercontent.com/hexian2
           <div class="home-actions"><a class="home-btn primary" href={docsUrl}>入门文档</a><a class="home-btn" href={githubUrl} target="_blank" rel="noopener">GitHub</a></div>
           <div class="home-install" aria-label="安装命令">
             <div class="install-tabs">
-              <button class="install-tab active" data-cmd="mac">macOS / Linux</button>
-              <button class="install-tab" data-cmd="win">Windows</button>
+              <button class="install-tab active" data-cmd="mac">安装</button>
             </div>
             <div class="install-body">
               <span class="install-prompt">❯</span>

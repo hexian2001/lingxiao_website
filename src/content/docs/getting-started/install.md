@@ -1,22 +1,26 @@
 ---
 title: 安装与启动
-description: 一行命令安装凌霄剑域
+description: 从源码安装凌霄剑域
 ---
 
 # 安装与启动
 
-## 一行安装
+## 前置要求
 
-### macOS / Linux / WSL
+| 依赖 | 要求 |
+| --- | --- |
+| 操作系统 | Linux / macOS / Windows / WSL |
+| Node.js | >= 24.0.0 |
+| Git | 推荐 |
+
+## 安装
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/hexian2001/lingxiao-coding/main/scripts/install.sh | sh
-```
-
-### Windows (CMD / PowerShell)
-
-```powershell
-powershell -c "irm https://raw.githubusercontent.com/hexian2001/lingxiao-coding/main/scripts/install.ps1 | iex"
+git clone https://github.com/hexian2001/lingxiao-coding.git
+cd lingxiao-coding
+npm install
+npm run build
+npm link
 ```
 
 安装完成后直接运行：
@@ -25,45 +29,30 @@ powershell -c "irm https://raw.githubusercontent.com/hexian2001/lingxiao-coding/
 lingxiao
 ```
 
-首次运行会引导配置模型和 API 密钥。脚本会自动检测平台和架构，下载对应的便携版二进制包，解压并配置命令链接。无需预装 Node.js。
+首次运行会引导配置模型和 API 密钥。配置文件位于 `~/.lingxiao/settings.json`。
 
-> **指定版本**：macOS/Linux 追加 `-- --version v1.0.0`，Windows 使用 `-Version "v1.0.0"` 参数。
-
-## 前置条件
-
-| 依赖 | 要求 |
-| --- | --- |
-| 操作系统 | Linux / macOS / Windows / WSL |
-| Node.js | 便携版无需；从源码开发需 `>=24.0.0` |
-| Git | 推荐安装 |
+> `npm link` 会将 `lingxiao` 命令注册到全局 PATH，之后可在任意目录使用。
 
 ## 验证安装
 
 ```bash
-lingxiao
+lingxiao --version
 ```
-
-首次启动会自动引导配置。配置文件位于 `~/.lingxiao/settings.json`。
 
 ## 升级
 
 ```bash
-lingxiao upgrade
+cd lingxiao-coding
+git pull
+npm install
+npm run build
 ```
-
-自动检查 GitHub 最新 release，下载对应平台便携包并替换安装。也可以先检查是否有新版本：
-
-```bash
-lingxiao upgrade --check
-```
-
-> npm 全局安装的用户请使用 `npm update -g lingxiao_cli` 升级。
 
 ## 从源码开发
 
 ```bash
 git clone https://github.com/hexian2001/lingxiao-coding.git
-cd lingxiao
+cd lingxiao-coding
 npm install
 npm run build
 npm run cli
@@ -95,6 +84,10 @@ npm run test:architecture
 npm run build
 npm test
 ```
+
+## 许可协议
+
+本项目采用 **AGPL v3 + 商业双授权** 模式。详见 [LICENSE](https://github.com/hexian2001/lingxiao-coding/blob/main/LICENSE)。
 
 ## 下一步
 

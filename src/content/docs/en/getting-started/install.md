@@ -1,22 +1,26 @@
 ---
 title: Installation
-description: One-line install for LingXiao
+description: Install LingXiao from source
 ---
 
 # Installation
 
-## One-Line Install
+## Prerequisites
 
-### macOS / Linux / WSL
+| Dependency | Requirement |
+| --- | --- |
+| OS | Linux / macOS / Windows / WSL |
+| Node.js | >= 24.0.0 |
+| Git | Recommended |
+
+## Install
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/hexian2001/lingxiao-coding/main/scripts/install.sh | sh
-```
-
-### Windows (CMD / PowerShell)
-
-```powershell
-powershell -c "irm https://raw.githubusercontent.com/hexian2001/lingxiao-coding/main/scripts/install.ps1 | iex"
+git clone https://github.com/hexian2001/lingxiao-coding.git
+cd lingxiao-coding
+npm install
+npm run build
+npm link
 ```
 
 After installation, run:
@@ -25,45 +29,30 @@ After installation, run:
 lingxiao
 ```
 
-First launch guides you through model and API key setup. The script auto-detects your platform and architecture, downloads the matching portable binary, extracts it, and sets up the command link. No Node.js required.
+First launch guides you through model and API key setup. The config file is at `~/.lingxiao/settings.json`.
 
-> **Specific version**: append `-- --version v1.0.0` on macOS/Linux, or use `-Version "v1.0.0"` parameter on Windows.
-
-## Prerequisites
-
-| Dependency | Requirement |
-| --- | --- |
-| OS | Linux / macOS / Windows / WSL |
-| Node.js | Not required for portable; `>=24.0.0` for source development |
-| Git | Recommended |
+> `npm link` registers the `lingxiao` command globally, so you can use it from any directory.
 
 ## Verify Installation
 
 ```bash
-lingxiao
+lingxiao --version
 ```
-
-First launch auto-guides you through configuration. The config file is at `~/.lingxiao/settings.json`.
 
 ## Upgrade
 
 ```bash
-lingxiao upgrade
+cd lingxiao-coding
+git pull
+npm install
+npm run build
 ```
-
-Automatically checks for the latest GitHub release, downloads the matching platform package, and replaces the installation. You can also check for updates without upgrading:
-
-```bash
-lingxiao upgrade --check
-```
-
-> For npm global installs, use `npm update -g lingxiao_cli` to upgrade.
 
 ## Development from Source
 
 ```bash
 git clone https://github.com/hexian2001/lingxiao-coding.git
-cd lingxiao
+cd lingxiao-coding
 npm install
 npm run build
 npm run cli
@@ -95,6 +84,10 @@ npm run test:architecture
 npm run build
 npm test
 ```
+
+## License
+
+This project uses **AGPL v3 + Commercial Dual License**. See [LICENSE](https://github.com/hexian2001/lingxiao-coding/blob/main/LICENSE).
 
 ## Next Steps
 
