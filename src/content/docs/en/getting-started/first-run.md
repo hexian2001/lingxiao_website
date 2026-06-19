@@ -70,5 +70,5 @@ All session state is persisted to SQLite and recoverable after crashes.
 
 ## Next Steps
 
-- [Expert Panel](../core/expert-team) — Learn the Leader-Worker architecture
-- [Task DAG](../core/task-dag) — Understand task decomposition and scheduling
+- [Expert Panel](../../core/expert-team) — Learn the Leader-Worker architecture
+- [Task DAG](../../core/task-dag) — Understand task decomposition and scheduling

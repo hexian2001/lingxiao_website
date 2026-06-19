@@ -97,5 +97,5 @@ npm test
 
 ## 下一步
 
-- [连接模型](connect-models) — 配置 LLM 提供商
-- [第一次运行](first-run) — 启动你的第一个专家团
+- [连接模型](../connect-models) — 配置 LLM 提供商
+- [第一次运行](../first-run) — 启动你的第一个专家团

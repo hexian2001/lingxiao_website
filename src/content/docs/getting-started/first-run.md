@@ -70,5 +70,5 @@ lingxiao --session <session_id>
 
 ## 下一步
 
-- [专家团系统](../core/expert-team) — 了解 Leader-Worker 架构
-- [任务DAG编排](../core/task-dag) — 理解任务拆解和调度
+- [专家团系统](../../core/expert-team) — 了解 Leader-Worker 架构
+- [任务DAG编排](../../core/task-dag) — 理解任务拆解和调度
