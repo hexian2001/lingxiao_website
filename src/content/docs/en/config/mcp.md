@@ -1,6 +1,6 @@
 ---
 title: MCP
-description: MCP unified entry, MCP Server configuration, and MCP Forge usage
+description: MCP unified entry, MCP Server configuration, and MCP Share
 ---
 
 # MCP (Model Context Protocol)
@@ -67,51 +67,6 @@ MCP servers are configured via `settings.mcp.servers`:
 # Add stdio server
 /mcp add-stdio my-server npx -y @modelcontextprotocol/server-filesystem /tmp
 ```
-
-## MCP Forge
-
-MCP Forge is LingXiao's natural-language to running MCP server pipeline. It auto-generates, validates, and launches MCP servers from natural language descriptions.
-
-### Workflow
-
-The MCP Forge pipeline has four phases:
-
-| Phase | Description |
-| --- | --- |
-| Phase 1 | LLM generates MCP server code from natural language |
-| Phase 2 | Code generator assembles complete project |
-| Phase 3 | Sandbox runner compiles and launches server |
-| Phase 3b | Inspector validator performs MCP protocol round-trip validation |
-| Phase 4 | Server registered to runtime |
-
-### REST API
-
-MCP Forge is exposed via `/api/v1/mcp-forge/*` routes:
-
-| Endpoint | Method | Description |
-| --- | --- | --- |
-| `/api/v1/mcp-forge/jobs` | POST | Create generation job |
-| `/api/v1/mcp-forge/jobs/:id` | GET | Query job status |
-| `/api/v1/mcp-forge/jobs/:id` | DELETE | Cancel/delete job |
-| `/api/v1/mcp-forge/templates` | GET | List templates |
-
-### State Machine
-
-Job state transitions:
-
-<div class="doc-flow doc-flow-status" role="img" aria-label="MCP Forge state machine: pending, generating, compiling, validating, ready; failures enter failed from any active stage.">
-  <span>pending</span><i>→</i><span>generating</span><i>→</i><span>compiling</span><i>→</i><span>validating</span><i>→</i><strong>ready</strong>
-  <small>Any generation, compilation, or validation failure enters failed</small>
-</div>
-
-### Template Library
-
-MCP Forge includes a built-in template library with common templates:
-
-- Database query server
-- File system server
-- HTTP API proxy
-- Custom tool collection
 
 ## MCP Share
 

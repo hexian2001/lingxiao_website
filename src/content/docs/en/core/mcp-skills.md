@@ -1,40 +1,11 @@
 ---
-title: MCP Forge and Skills
-description: MCP Server generation engine, share codes, Skills 4-layer priority
+title: MCP and Skills
+description: MCP Server management, share codes, Skills 4-layer priority
 ---
 
-# MCP Forge and Skills
+# MCP and Skills
 
-LingXiao uses the MCP Forge engine and Skills system to make Agent capabilities generatable, shareable, and injectable.
-
-## MCP Forge
-
-MCP Forge is a template-driven MCP Server generation engine that automatically generates, validates, and registers MCP Servers through a state machine pipeline.
-
-### Generation Pipeline
-
-<div class="doc-flow" role="img" aria-label="MCP Forge generation pipeline: requirements, template selection, code generation, sandbox smoke test, inspector validation, registration.">
-  <span>Requirements</span><i>→</i><span>Template Selection</span><i>→</i><span>Code Generation</span><i>→</i><span>Sandbox Smoke Test</span><i>→</i><span>Inspector Validation</span><i>→</i><strong>Registration</strong>
-</div>
-
-| Phase | Description |
-| --- | --- |
-| Requirements | Describe what tools/resources/prompts are needed |
-| Template Selection | Match the best template from the template library |
-| Code Generation | Generate TypeScript MCP Server source from template |
-| Sandbox Smoke Test | Start the generated Server in an isolated sandbox for smoke testing |
-| Inspector Validation | Validate MCP protocol compliance using MCP Inspector |
-| Registration | Register to `settings.mcp.servers` after validation passes |
-
-### Core Components
-
-| Component | File | Responsibility |
-| --- | --- | --- |
-| Forge Engine | `McpForgeEngine.ts` | Manages generation state machine: idle → requirements → template → generate → sandbox → inspect → register |
-| Template Library | `TemplateLibrary.ts` | Categorized template registry with metadata, variables, and file blueprints |
-| Code Generator | `CodeGenerator.ts` | Produces TypeScript MCP Server source from templates |
-| Sandbox Runner | `SandboxRunner.ts` | Runs generated Server in isolated sandbox for smoke testing |
-| Inspector Validator | `InspectorValidator.ts` | Validates MCP protocol compliance using MCP Inspector |
+LingXiao uses the MCP protocol and Skills system to make Agent capabilities extensible, shareable, and injectable.
 
 ## MCP Share
 
@@ -74,7 +45,7 @@ Skills are execution knowledge, processes, and domain constraints injected into 
 | Project-level | `.lingxiao/skills/` | Project-specific skills, highest priority |
 | Plugin-contributed | Plugin `skills/` directory | Skills installed via plugin marketplace |
 | User-level | `~/.lingxiao/skills/` | Global user skills, cross-project |
-| Built-in | Bundled with LingXiao | 14 built-in skill packages |
+| Built-in | Bundled with LingXiao | Built-in skill packages |
 
 ### Skill Structure
 
@@ -133,7 +104,7 @@ The Leader binds skills via `skill_names` in `define_agent_role` or `create_task
 
 ## Unified MCP Entry Point
 
-All MCP Servers (including Forge-generated ones) are accessed through the unified `mcp` tool:
+All MCP Servers are accessed through the unified `mcp` tool:
 
 ```text
 mcp(action="list_servers")       # List installed MCP Servers

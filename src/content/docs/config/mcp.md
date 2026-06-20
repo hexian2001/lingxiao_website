@@ -1,6 +1,6 @@
 ---
 title: MCP
-description: MCP 统一入口、MCP Server 配置与 MCP Forge 使用
+description: MCP 统一入口、MCP Server 配置与 MCP Share
 ---
 
 # MCP（Model Context Protocol）
@@ -67,51 +67,6 @@ MCP 服务器通过 `settings.mcp.servers` 配置：
 # 添加 stdio 服务器
 /mcp add-stdio my-server npx -y @modelcontextprotocol/server-filesystem /tmp
 ```
-
-## MCP Forge
-
-MCP Forge 是凌霄的自然语言 → 运行 MCP 服务器管线。通过自然语言描述需求，自动生成、验证并启动 MCP 服务器。
-
-### 工作流程
-
-MCP Forge 的生成管线分为四个阶段：
-
-| 阶段 | 说明 |
-| --- | --- |
-| Phase 1 | LLM 根据自然语言描述生成 MCP 服务器代码 |
-| Phase 2 | 代码生成器组装完整项目 |
-| Phase 3 | 沙箱运行器编译并启动服务器 |
-| Phase 3b | Inspector 验证器进行 MCP 协议往返验证 |
-| Phase 4 | 服务器注册到运行时 |
-
-### REST API
-
-MCP Forge 通过 `/api/v1/mcp-forge/*` 路由暴露：
-
-| 端点 | 方法 | 说明 |
-| --- | --- | --- |
-| `/api/v1/mcp-forge/jobs` | POST | 创建生成任务 |
-| `/api/v1/mcp-forge/jobs/:id` | GET | 查询任务状态 |
-| `/api/v1/mcp-forge/jobs/:id` | DELETE | 取消/删除任务 |
-| `/api/v1/mcp-forge/templates` | GET | 列出模板 |
-
-### 状态机
-
-任务状态流转：
-
-<div class="doc-flow doc-flow-status" role="img" aria-label="MCP Forge 状态机：pending、generating、compiling、validating、ready；各阶段失败进入 failed。">
-  <span>pending</span><i>→</i><span>generating</span><i>→</i><span>compiling</span><i>→</i><span>validating</span><i>→</i><strong>ready</strong>
-  <small>任一生成、编译或校验阶段失败后进入 failed</small>
-</div>
-
-### 模板库
-
-MCP Forge 内置模板库，常见模板包括：
-
-- 数据库查询服务器
-- 文件系统服务器
-- HTTP API 代理
-- 自定义工具集合
 
 ## MCP Share
 
