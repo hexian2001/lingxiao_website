@@ -51,6 +51,28 @@ cd lingxiao
 
 ## 方式三：源码安装
 
+### Linux / macOS
+
+```bash
+git clone https://github.com/hexian2001/lingxiao-coding.git
+cd lingxiao-coding
+npm install
+npm run build
+npm link
+```
+
+### Windows (PowerShell)
+
+```powershell
+git clone https://github.com/hexian2001/lingxiao-coding.git
+cd lingxiao-coding
+npm install
+npm run build
+npm link
+```
+
+### Windows (WSL)
+
 ```bash
 git clone https://github.com/hexian2001/lingxiao-coding.git
 cd lingxiao-coding
@@ -89,7 +111,27 @@ lingxiao upgrade
 
 桌面版启动后自动检测更新，增量下载并提示安装。也可手动检查更新。
 
-### 手动升级（源码）
+### 手动升级（源码 — 三平台通用）
+
+#### Linux / macOS
+
+```bash
+cd lingxiao-coding
+git pull
+npm install
+npm run build
+```
+
+#### Windows (PowerShell)
+
+```powershell
+cd lingxiao-coding
+git pull
+npm install
+npm run build
+```
+
+#### Windows (WSL)
 
 ```bash
 cd lingxiao-coding

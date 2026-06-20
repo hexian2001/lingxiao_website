@@ -51,6 +51,28 @@ Launch "LingXiao" from the Start Menu after installation. Future updates are det
 
 ## Option 3: From Source
 
+### Linux / macOS
+
+```bash
+git clone https://github.com/hexian2001/lingxiao-coding.git
+cd lingxiao-coding
+npm install
+npm run build
+npm link
+```
+
+### Windows (PowerShell)
+
+```powershell
+git clone https://github.com/hexian2001/lingxiao-coding.git
+cd lingxiao-coding
+npm install
+npm run build
+npm link
+```
+
+### Windows (WSL)
+
 ```bash
 git clone https://github.com/hexian2001/lingxiao-coding.git
 cd lingxiao-coding
@@ -89,7 +111,27 @@ lingxiao upgrade
 
 The desktop app checks for updates automatically on launch and downloads incrementally. You can also check manually.
 
-### Manual Upgrade (Source)
+### Manual Upgrade (Source — All Platforms)
+
+#### Linux / macOS
+
+```bash
+cd lingxiao-coding
+git pull
+npm install
+npm run build
+```
+
+#### Windows (PowerShell)
+
+```powershell
+cd lingxiao-coding
+git pull
+npm install
+npm run build
+```
+
+#### Windows (WSL)
 
 ```bash
 cd lingxiao-coding

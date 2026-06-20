@@ -7,27 +7,76 @@ description: 版本历史和变更记录
 
 ## v1.0.2（当前版本）
 
-### 桌面版与分发
+> **版本范围：** v1.0.1 → v1.0.2 | 9 commits | 85 files changed | +5,814 / -380 lines
 
-- **Windows 桌面版**：Electron 桌面客户端，支持 MSI 安装包 + NSIS 自动更新安装包，electron-updater 增量更新
-- **全平台便携包**：Linux (x64/arm64)、macOS (arm64)、Windows (x64) 预构建便携包，开箱即用
-- **SEA 二进制**：Node.js Single Executable Application，三平台独立可执行文件
-- **跨平台自动升级**：`lingxiao upgrade` 自动定位安装路径，支持源码 / 便携包两种模式，跳过 electron 二进制下载
-- **GitHub Release 自动化**：CI/CD 全平台并行构建，tag 触发自动发布
+### ✨ 新功能
 
-### Web UI 增强
+#### Web UI
 
-- **Workspace 选择器**：后端 4 个 API + recent_workspaces.json，前端 WorkspacePicker 组件
-- **401 Token 恢复**：Web UI 401 时自动刷新 token，随机端口默认开启
-- **中文输入法修复**：IME 组合状态回车不再误触发消息发送（macOS/Windows 全平台）
-- **Git 活动监控**：git:activity 事件全链路展示，按会话隔离 + Agent 统计 + Gate 结果
+- **Workspace 选择器** — 侧边栏快速切换工作区，自动记录最近使用的工作区
+- **Git Activity 可视化** — 全新 Git 活动监控面板，展示会话级 git 事件流、Agent 统计和 Gate 结果
+- **Onboarding 引导向导** — 首次使用时引导用户配置 LLM、选择工作区和初始化项目
+- **版本更新通知** — 自动检测新版本，侧边栏显示版本徽章 + 一键更新
+- **文件变更面板增强** — 新增 FileChanges API 和 store，实时追踪文件变更状态
 
-### CI/CD 与工程
+#### TUI
 
-- **CI 类型检查**：tsc --noEmit 全量检查，src/desktop 独立 tsconfig 隔离
-- **Release Workflow**：5 个并行构建 job（portable × 4 平台 + binary × 4 平台 + desktop MSI/NSIS + source）
-- **Windows 压缩兼容**：PowerShell Compress-Archive 替代 zip 命令
-- **Desktop 编译链**：tsconfig.desktop.json 独立编译 electron 入口
+- **Onboarding 引导** — TUI 端同步新增首次引导流程（`OnboardingTui.ts`）
+- **剪贴板支持** — 新增 clipboard 模块，TUI 可复制/粘贴内容
+- **Composer 优化** — 输入框交互改进，粘贴控制器增强
+
+#### 桌面端
+
+- **Electron 桌面应用** — 全新 `src/desktop/` 模块，支持 Windows MSI/NSIS 安装包
+- IPC 通道类型安全，preload 脚本隔离渲染进程
+
+#### Git 工具
+
+- **GitTool 大幅增强**（+153 行）— 支持更多 git 操作和活动监控事件全链路
+- **GitService 增强**（+254 行）— 后端服务层全面扩展
+
+### 🐛 Bug 修复
+
+- **macOS 中文输入法回车误发送** — `ChatView.tsx` 和 `MessageInput.tsx` 增加 `isComposing` 守卫，IME 组合期间的回车不再触发发送
+- **CI tsc 编译失败** — `src/desktop/` 依赖 electron 类型，从主 tsconfig 排除，新建独立 `tsconfig.desktop.json` 编译
+- **Windows 便携包打包失败** — Windows CI 无 `zip` 命令，改用 PowerShell `Compress-Archive`
+- **release.yml YAML 语法错误** — release notes 表格行错位修复
+- **desktop 配置丢失** — 合并冲突解决时误丢 desktop scripts/deps/build config，全部恢复
+- **CircuitBreaker 状态** — LlmGuard recycle 后重置断路器，避免新 client 被旧失败计数阻塞
+
+### 🔧 工程与 CI/CD
+
+- **CI workflow** — 新增 `ci.yml`，push/PR 时自动跑 tsc 类型检查 + 构建
+- **Release workflow** — 全新 `release.yml`，tag 触发自动构建发布：
+  - 4 平台便携包（linux-x64, linux-arm64, darwin-arm64, win-x64）
+  - 3 平台 SEA 二进制（linux-x64, darwin-arm64, win-x64）
+  - Windows 桌面版（MSI artifact + NSIS 发布到 GitHub Releases，支持 electron-updater 自动更新）
+  - 源码 tarball
+  - 自动创建 GitHub Release 并汇总所有 artifacts
+- **SEA 二进制** — 新增 `sea-config.json` + `build-binary.mjs`，Node.js SEA 打包
+- **便携包打包** — 新增 `package-portable.mjs`，跨平台 tar.gz/zip 打包
+
+### 📦 依赖变更
+
+- 新增 `electron` ^42.4.1 (devDep)
+- 新增 `electron-builder` ^26.15.3 (devDep)
+- 新增 `electron-updater` ^6.8.9 (dependency)
+
+### 🌐 i18n
+
+- 中英文翻译同步更新，新增 Workspace、Git Activity、Onboarding、更新通知等模块文案
+
+### 📋 文件变更明细
+
+| 领域 | 文件数 | 关键模块 |
+| --- | --- | --- |
+| Web UI 前端 | 30+ | WorkspacePicker, GitActivityView, OnboardingWizard, UpdateNotification, FileChangesApi |
+| TUI | 8 | OnboardingTui, clipboard, Composer, paste/key controllers |
+| 后端服务 | 15+ | GitService, WorkspaceRoutes, FileChangesApi, MiscRoutes, ServerAuth |
+| Agent 核心 | 10 | AgentDefinitionService, LeaderAgent, LlmGuard, RoleRegistry, LeaderThinkingLoop |
+| 桌面端 | 3 | desktop/main.ts, desktop/preload.ts, tsconfig.desktop.json |
+| CI/CD | 6 | ci.yml, release.yml, build-binary.mjs, package-portable.mjs, sea-config.json |
+| CLI | 3 | cli.ts (重构), cli_upgrade.ts (增强), config.ts |
 
 ## v1.0.0
 
