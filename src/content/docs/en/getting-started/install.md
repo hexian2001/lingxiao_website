@@ -1,6 +1,6 @@
 ---
 title: Installation
-description: Install LingXiao from source
+description: Multiple ways to install LingXiao
 ---
 
 # Installation
@@ -10,10 +10,46 @@ description: Install LingXiao from source
 | Dependency | Requirement |
 | --- | --- |
 | OS | Linux / macOS / Windows / WSL |
-| Node.js | >= 24.0.0 |
+| Node.js | >= 24.0.0 (for source install) |
 | Git | Recommended |
 
-## Install
+## Option 1: Portable Package (Recommended)
+
+Download the portable package for your platform from [GitHub Releases](https://github.com/hexian2001/lingxiao-coding/releases) and extract.
+
+| Platform | File |
+| --- | --- |
+| Linux x64 | `lingxiao-v1.0.2-linux-x64.tar.gz` |
+| Linux arm64 | `lingxiao-v1.0.2-linux-arm64.tar.gz` |
+| macOS arm64 | `lingxiao-v1.0.2-darwin-arm64.tar.gz` |
+| Windows x64 | `lingxiao-v1.0.2-win-x64.zip` |
+
+**Linux / macOS:**
+
+```bash
+tar xzf lingxiao-v1.0.2-linux-x64.tar.gz
+cd lingxiao
+./lingxiao
+```
+
+**Windows:**
+
+Extract the zip, then double-click `lingxiao.exe` or run in PowerShell:
+
+```powershell
+.\lingxiao.exe
+```
+
+## Option 2: Windows Desktop
+
+Download the Windows installer from [Releases](https://github.com/hexian2001/lingxiao-coding/releases):
+
+- **NSIS installer** (`LingXiao-Setup-1.0.2.exe`): Recommended, supports auto-update
+- **MSI installer** (`LingXiao.1.0.2.msi`): Suitable for enterprise deployment
+
+Launch "LingXiao" from the Start Menu after installation. Future updates are detected and downloaded automatically.
+
+## Option 3: From Source
 
 ```bash
 git clone https://github.com/hexian2001/lingxiao-coding.git
@@ -23,15 +59,15 @@ npm run build
 npm link
 ```
 
-After installation, run:
+Then run:
 
 ```bash
 lingxiao
 ```
 
-First launch guides you through model and API key setup. The config file is at `~/.lingxiao/settings.json`.
+The first run guides you through model and API key configuration. Config is stored at `~/.lingxiao/settings.json`.
 
-> `npm link` registers the `lingxiao` command globally, so you can use it from any directory.
+> `npm link` registers the `lingxiao` command globally, available from any directory.
 
 ## Verify Installation
 
@@ -41,11 +77,19 @@ lingxiao --version
 
 ## Upgrade
 
+### Portable / Source Install
+
 ```bash
 lingxiao upgrade
 ```
 
-Or manually:
+`lingxiao upgrade` auto-detects the install type (source or portable), locates the install path, downloads the latest version, and completes the update.
+
+### Windows Desktop
+
+The desktop app checks for updates automatically on launch and downloads incrementally. You can also check manually.
+
+### Manual Upgrade (Source)
 
 ```bash
 cd lingxiao-coding
@@ -98,4 +142,4 @@ This project uses **AGPL v3 + Commercial Dual License**. See [LICENSE](https://g
 ## Next Steps
 
 - [Connect Models](../connect-models) — Configure LLM providers
-- [First Run](../first-run) — Launch your first expert panel
+- [First Run](../first-run) — Start your first expert team

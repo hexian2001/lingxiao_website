@@ -43,8 +43,8 @@ description: 凌霄剑域 — 面向真实工程交付的本地 AI 指挥系统
 <div class="doc-arch-map" role="img" aria-label="凌霄运行架构：入口层进入会话内核，由 Leader 调度任务 DAG、专家团、工具注册表与持久化证据层。">
   <section class="doc-arch-node doc-arch-entry">
     <small>入口层</small>
-    <strong>WebUI · TUI · CLI</strong>
-    <span>统一目标入口，实时展示任务板、Agent、工具与权限状态。</span>
+    <strong>WebUI · TUI · CLI · Desktop</strong>
+    <span>统一目标入口，实时展示任务板、Agent、工具与权限状态。Windows 桌面版支持 MSI/NSIS 安装与自动更新。</span>
   </section>
   <section class="doc-arch-node doc-arch-session">
     <small>会话内核</small>

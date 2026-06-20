@@ -43,7 +43,7 @@ LingXiao is built for long-running, complex, high-stakes AI engineering work. Fr
 <div class="doc-arch-map" role="img" aria-label="LingXiao runtime architecture: entry clients connect to the session kernel; the Leader coordinates the DAG, expert agents, tools, and evidence storage.">
   <section class="doc-arch-node doc-arch-entry">
     <small>Entry</small>
-    <strong>WebUI · TUI · CLI</strong>
+    <strong>WebUI · TUI · CLI · Desktop</strong>
     <span>Unified goal entry with live visibility into tasks, agents, tools, permissions, and evidence.</span>
   </section>
   <section class="doc-arch-node doc-arch-session">
