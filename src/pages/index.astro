@@ -55,6 +55,7 @@ const installWin = 'git clone https://github.com/hexian2001/lingxiao-coding.git 
           <a href="#capabilities">能力</a>
           <a href="#showcase">界面</a>
           <a href="#architecture">架构</a>
+          <a href="#projects">案例</a>
           <a href={docsUrl}>文档</a>
           <a class="lang-switch" href={enUrl} title="English">EN</a>
         </div>
@@ -191,6 +192,36 @@ const installWin = 'git clone https://github.com/hexian2001/lingxiao-coding.git 
       <p class="home-kicker">适用场景</p>
       <h2>面向长期、复杂、必须落地的 AI 工程</h2>
       <div class="proof-grid"><article><h3>产品交付</h3><p>接口契约、前后端实现、浏览器验收与文档同步一体推进。</p></article><article><h3>代码治理</h3><p>技术债、测试缺口、迁移计划和修复任务可持续巡逻。</p></article><article><h3>内部自动化</h3><p>Office、PDF、MCP、Workflow 与本地工具链统一编排。</p></article></div>
+    </section>
+
+    <section class="home-section showcase-projects reveal" id="projects">
+      <div class="section-head"><p class="home-kicker">以剑证道</p><h2>实战案例</h2><p class="showcase-subtitle">以下项目均由凌霄 AI 自主生成，从架构到部署全程 AI-driven</p></div>
+      <div class="showcase-grid">
+        <article class="showcase-card reveal">
+          <div class="showcase-screenshot">
+            <img src={`${baseUrl}screenshots/showcase-tribulation.png`} alt="凌霄·渡劫 — 天衍图 DAG 攻击树可视化" loading="lazy" />
+            <div class="showcase-overlay"><span>查看仓库 →</span></div>
+          </div>
+          <div class="showcase-info">
+            <div class="showcase-name"><span class="showcase-badge">⚔️</span> 凌霄·渡劫</div>
+            <p class="showcase-desc">LLM 驱动全自主渗透测试平台 · DAG + Blackboard + Plan&Execute</p>
+            <div class="showcase-tags"><span>FastAPI</span><span>Next.js 14</span><span>WebSocket</span></div>
+            <a class="home-btn" href="https://github.com/hexian2001/lingxiao-tribulation" target="_blank" rel="noopener">GitHub</a>
+          </div>
+        </article>
+        <article class="showcase-card reveal" style="--reveal-delay:100ms">
+          <div class="showcase-screenshot">
+            <img src={`${baseUrl}screenshots/showcase-inkflow.png`} alt="墨澜 Ink-Flow — Agent 实时监控大屏" loading="lazy" />
+            <div class="showcase-overlay"><span>查看仓库 →</span></div>
+          </div>
+          <div class="showcase-info">
+            <div class="showcase-name"><span class="showcase-badge">✍️</span> 墨澜 Ink-Flow</div>
+            <p class="showcase-desc">多 Agent 协同长篇小说创作平台 · 水墨鎏金设计语言</p>
+            <div class="showcase-tags"><span>Express</span><span>React 18</span><span>WebSocket</span></div>
+            <a class="home-btn" href="https://github.com/hexian2001/ink-flow" target="_blank" rel="noopener">GitHub</a>
+          </div>
+        </article>
+      </div>
     </section>
 
     <section class="home-cta reveal">
