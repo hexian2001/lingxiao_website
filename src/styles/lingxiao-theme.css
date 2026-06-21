@@ -3025,8 +3025,17 @@ main.main-wrapper {
 }
 
 .showcase-badge {
-  font-size: 1.3rem;
-  line-height: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  background: var(--lx-accent, #5FE0C7);
+  color: var(--lx-bg, #0B0E11);
+  font-size: 0.85rem;
+  font-weight: 700;
+  margin-right: 8px;
 }
 
 .showcase-desc {
