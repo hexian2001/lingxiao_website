@@ -78,11 +78,11 @@ Generate security review report...
 
 Skills support per-phase file loading:
 
-<div class="doc-file-tree" role="img" aria-label="Skill phase file structure: security-review contains index.md and analyze, review, report files under phases.">
-  <div><strong>skills/</strong></div>
-  <div><span>security-review/</span></div>
+<div class="doc-file-tree" role="img" aria-label="Skill phase file structure: skills/ root, security-review/ subdirectory, index.md main file, phases/ directory, analyze, review, report phase files.">
+  <strong>skills/</strong>
+  <div><strong>security-review/</strong><em>Skills security review directory</em></div>
   <div><span>index.md</span><em>Skill main file (frontmatter)</em></div>
-  <div><span>phases/</span></div>
+  <div><strong>phases/</strong><em>Phase directory</em></div>
   <div><span>analyze.md</span><em>Analysis phase knowledge</em></div>
   <div><span>review.md</span><em>Review phase knowledge</em></div>
   <div><span>report.md</span><em>Report phase knowledge</em></div>
