@@ -43,7 +43,7 @@ LingXiao is built for long-running, complex, high-stakes AI engineering work. Fr
 <div class="doc-arch-map" role="img" aria-label="LingXiao runtime architecture: entry clients connect to the session kernel; the Leader coordinates the DAG, expert agents, tools, and evidence storage.">
   <section class="doc-arch-node doc-arch-entry">
     <small>Entry</small>
-    <strong>WebUI · TUI · CLI · Desktop</strong>
+    <strong>WebUI / TUI / CLI / Desktop</strong>
     <span>Unified goal entry with live visibility into tasks, agents, tools, permissions, and evidence.</span>
   </section>
   <section class="doc-arch-node doc-arch-session">
@@ -73,7 +73,7 @@ LingXiao is built for long-running, complex, high-stakes AI engineering work. Fr
   </section>
   <section class="doc-arch-node doc-arch-proof">
     <small>Evidence</small>
-    <strong>SQLite · Git · Memory · Artifacts</strong>
+    <strong>SQLite / Git / Memory / Artifacts</strong>
     <span>Stores session state, diffs, work notes, artifacts, verification evidence, and recovery trails.</span>
   </section>
 </div>
@@ -86,6 +86,19 @@ LingXiao is built for long-running, complex, high-stakes AI engineering work. Fr
 | Code Governance | Tracks technical debt, migrations, test gaps, refactors, and proof-backed repair plans. |
 | Internal Automation | Turns local scripts, Office/PDF tasks, MCP, Git, workflows, and models into reusable processes. |
 | Long-Running Goals | Eternal Goal keeps pursuing a target until complete, blocked, or ready for a human decision. |
+
+## Tech Stack
+
+| Layer | Technology |
+| --- | --- |
+| Runtime | Node.js 24, TypeScript (ESM) |
+| Web Server | Fastify, @fastify/websocket |
+| Web UI | React, Zustand, Vite |
+| TUI | Ink |
+| Desktop | Electron, electron-builder |
+| Database | SQLite (WAL + FTS5) |
+| CLI | Commander.js, Inquirer, Chalk |
+| LLM | OpenAI SDK, Anthropic SDK, Vercel AI SDK |
 
 ## System Requirements
 

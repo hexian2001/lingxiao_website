@@ -43,7 +43,7 @@ description: 凌霄剑域 — 面向真实工程交付的本地 AI 指挥系统
 <div class="doc-arch-map" role="img" aria-label="凌霄运行架构：入口层进入会话内核，由 Leader 调度任务 DAG、专家团、工具注册表与持久化证据层。">
   <section class="doc-arch-node doc-arch-entry">
     <small>入口层</small>
-    <strong>WebUI · TUI · CLI · Desktop</strong>
+    <strong>WebUI / TUI / CLI / Desktop</strong>
     <span>统一目标入口，实时展示任务板、Agent、工具与权限状态。Windows 桌面版支持 MSI/NSIS 安装与自动更新。</span>
   </section>
   <section class="doc-arch-node doc-arch-session">
@@ -73,7 +73,7 @@ description: 凌霄剑域 — 面向真实工程交付的本地 AI 指挥系统
   </section>
   <section class="doc-arch-node doc-arch-proof">
     <small>留痕</small>
-    <strong>SQLite · Git · Memory · Artifacts</strong>
+    <strong>SQLite / Git / Memory / Artifacts</strong>
     <span>保存会话状态、工程 diff、工作笔记、验收证据与可恢复轨迹。</span>
   </section>
 </div>
@@ -86,6 +86,19 @@ description: 凌霄剑域 — 面向真实工程交付的本地 AI 指挥系统
 | 代码治理 | 梳理技术债、迁移计划、测试缺口、重构风险，并用证据确认每一步。 |
 | 内部自动化 | 把本地脚本、Office/PDF、MCP、Git、Workflow 和模型能力编成可复用流程。 |
 | 长线目标 | Eternal Goal 可持续巡逻目标，直到完成、遇阻或需要人工决策。 |
+
+## 技术栈
+
+| 层 | 技术 |
+| --- | --- |
+| 运行时 | Node.js 24, TypeScript (ESM) |
+| Web Server | Fastify, @fastify/websocket |
+| Web UI | React, Zustand, Vite |
+| TUI | Ink |
+| 桌面端 | Electron, electron-builder |
+| 数据库 | SQLite (WAL + FTS5) |
+| CLI | Commander.js, Inquirer, Chalk |
+| LLM | OpenAI SDK, Anthropic SDK, Vercel AI SDK |
 
 ## 系统要求
 

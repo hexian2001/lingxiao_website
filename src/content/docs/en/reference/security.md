@@ -76,11 +76,11 @@ Each Worker task can be configured with `write_scope`, limiting its file write r
 
 ### Rules
 
-1. Do not expose raw secrets through `/api/v1/settings` (API responses are masked)
-2. Do not embed secrets in generated docs or logs
-3. User-defined tools should not receive unrestricted env by default
-4. Mask Git tokens and provider keys in UI/API responses
-5. Do not put tokens into Git remote URLs. Use GitHub CLI or a credential manager
+- Do not expose raw secrets through `/api/v1/settings` (API responses are masked)
+- Do not embed secrets in generated docs or logs
+- User-defined tools should not receive unrestricted env by default
+- Mask Git tokens and provider keys in UI/API responses
+- Do not put tokens into Git remote URLs. Use GitHub CLI or a credential manager
 
 ## Git Publishing Safety
 

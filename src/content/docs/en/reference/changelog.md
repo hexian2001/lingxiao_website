@@ -80,33 +80,33 @@ description: Version history and changes
 
 ## v1.0.0
 
-### Core System
+### 🏗️ Core System
 
 - **Expert Team System**: 13 preset roles, Leader-Worker multi-role collaboration
 - **Task DAG Orchestration**: Dependency-aware task graph, parallel scheduling, speculative execution, rollback on failure
 - **Full State Sync**: WebUI/TUI/CLI real-time sync via unified snapshot + SSE + ACP JSON-RPC
 - **Orchestration Acceptance Kernel**: Structured verdict extraction, adversarial verification, adaptive orchestration, auto-repair
 
-### Tools & Capabilities
+### 🔧 Tools & Capabilities
 
 - **100+ Built-in Tools**: File I/O, shell, browser automation, Git, code search, web scraping, OCR
 - **MCP Forge Generator**: Generate MCP servers from natural language
 - **14 Built-in Skill Packs**: Phase Loader priority injection
 - **Office Document Generation**: HTML-first with PDF/PNG/DOCX/XLSX/PPTX export
 
-### Persistence & Memory
+### 💾 Persistence & Memory
 
 - **Persistent Memory**: FTS5 + BM25 + AutoDream checkpoint integration
 - **SQLite WAL**: Full crash recovery
 - **Verifiable Assumptions**: Auto-verified, falsification forces correction
 
-### Autonomy & Gateway
+### 🔄 Autonomy & Gateway
 
 - **Eternal Mode**: Autonomous loop with exponential backoff and budget circuit breaker
 - **Local LLM Gateway**: Dual-format proxy, virtual keys, per-key rate/budget limiting
 - **Bughunt DAG**: Structured bug hunting with ledger and reports
 
-### Platform & Development
+### 🖥️ Platform & Development
 
 - **CLI Tree**: `lingxiao start/list/init/doctor/about/demo/agents/daemon/worktree`
 - **Daemon Mode**: Self-healing process guard
@@ -114,30 +114,9 @@ description: Version history and changes
 - **Permission System**: Four modes, four-layer persistence
 - **Team Collaboration**: P2P messaging, task delegation, review workflows
 
-### Security
+### 🔒 Security
 
 - **Hardened Mode**: Non-loopback auto-enable, header auth enforcement
 - **Rate Limit Cooldown**: 429 → 30s cooldown
 - **Write Scope Isolation**: Worker `write_scope` enforcement
 - **Key Masking**: API response token masking
-
-## System Requirements
-
-| Dependency | Requirement |
-| --- | --- |
-| Node.js | >= 24.0.0 |
-| Git | Recommended |
-| OS | Linux / macOS / Windows / WSL |
-
-## Tech Stack
-
-| Layer | Technology |
-| --- | --- |
-| Runtime | Node.js 24, TypeScript (ESM) |
-| Web Server | Fastify, @fastify/websocket |
-| Web UI | React, Zustand, Vite |
-| TUI | Ink |
-| Desktop | Electron, electron-builder |
-| Database | SQLite (WAL + FTS5) |
-| CLI | Commander.js, Inquirer, Chalk |
-| LLM | OpenAI SDK, Anthropic SDK, Vercel AI SDK |

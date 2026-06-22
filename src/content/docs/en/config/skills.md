@@ -96,11 +96,15 @@ Regex match: `/ \$([a-zA-Z0-9_][a-zA-Z0-9_-]*) /g`, deduplicated after matching.
 
 ### Injection Budget
 
-| Limit | Value | Effect When Exceeded |
-| --- | --- | --- |
-| `maxTotalChars` | 18,000 | Subsequent skills dropped in arrival order |
-| `maxPerSkillChars` | 7,500 | Each skill body clipped to this length |
-| Visibility | `truncated: true` | Caller reads `descriptor.path` for full content |
+<table>
+  <colgroup><col style="width:28%"><col style="width:22%"><col style="width:50%"></colgroup>
+  <thead><tr><th>Limit</th><th>Value</th><th>Effect When Exceeded</th></tr></thead>
+  <tbody>
+    <tr><td><code>maxTotalChars</code></td><td>18,000</td><td>Subsequent skills dropped in arrival order</td></tr>
+    <tr><td><code>maxPerSkillChars</code></td><td>7,500</td><td>Each skill body clipped to this length</td></tr>
+    <tr><td>Visibility</td><td><code>truncated: true</code></td><td>Caller reads <code>descriptor.path</code> for full content</td></tr>
+  </tbody>
+</table>
 
 ## Built-in Skill Packs
 

@@ -9,11 +9,11 @@ description: 带依赖关系的任务图调度、并行执行与状态恢复
 
 ## 任务图结构
 
-<div class="doc-task-tree" role="img" aria-label="任务 DAG 示例：T-1 需求澄清下包含架构设计、测试验证、文档发布；架构设计下包含后端和前端实现。">
+<div class="doc-task-tree" role="img" aria-label="任务 DAG 示例：T-1 需求澄清 → T-2/T-3/T-4 架构设计/后端/前端 → T-5 测试验证 → T-6 文档发布。">
   <strong>T-1 需求澄清</strong>
-  <div><span>T-2 架构设计</span><em>T-3 后端实现</em><em>T-4 前端实现</em></div>
-  <div><span>T-5 测试验证</span></div>
-  <div><span>T-6 文档与发布</span></div>
+  <div class="doc-dag-row"><strong>T-2 架构设计</strong><strong>T-3 后端实现</strong><strong>T-4 前端实现</strong></div>
+  <strong>T-5 测试验证</strong>
+  <strong>T-6 文档与发布</strong>
 </div>
 
 每个节点是一个任务，箭头表示依赖关系。无依赖的任务自动并行执行，有依赖的任务按顺序解锁。
@@ -29,8 +29,13 @@ description: 带依赖关系的任务图调度、并行执行与状态恢复
 ## 任务状态流转
 
 <div class="doc-flow doc-flow-status" role="img" aria-label="任务状态流转：pending、dispatched、in_progress、completed；进行中也可能 failed 或 blocked。">
-  <span>pending</span><i>→</i><span>dispatched</span><i>→</i><span>in_progress</span><i>→</i><strong>completed</strong>
-  <small>分支：in_progress → failed / blocked</small>
+  <div class="doc-flow-main">
+    <span>pending</span><i>→</i><span>dispatched</span><i>→</i><span>in_progress</span>
+  </div>
+  <div class="doc-flow-right">
+    <div class="doc-flow-ok"><i>↗</i><strong>completed</strong></div>
+    <div class="doc-flow-bad"><i>↘</i><span>failed</span><span>blocked</span></div>
+  </div>
 </div>
 
 | 状态 | 说明 |
@@ -95,5 +100,3 @@ lingxiao list
 - **投机执行**：同一任务可跑多个并行分支，择优录取
 - **对抗验证**：命令级 breaker 策略验证结果
 - **契约循环**：`contract → implement → evaluate → repair → reset` 五阶段闭环
-
-详见 [编排验收内核](./orchestration.md)。

@@ -87,7 +87,7 @@ Configuration management panel:
 
 The WebUI syncs with the backend in real time via SSE event streams. All state changes are visible without page refresh:
 
-<div class="doc-flow" role="img" aria-label="WebUI realtime sync: Leader and Workers update SessionManager, routed through SseBridge and SSE to WebUI.">
+<div class="doc-flow doc-flow-accent" role="img" aria-label="WebUI realtime sync: Leader and Workers update SessionManager, routed through SseBridge and SSE to WebUI.">
   <span>Leader / Workers</span><i>→</i><span>SessionManager</span><i>→</i><span>SseBridge</span><i>→</i><span>SSE</span><i>→</i><strong>WebUI</strong>
 </div>
 

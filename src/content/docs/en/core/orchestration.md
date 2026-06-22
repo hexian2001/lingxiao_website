@@ -11,7 +11,7 @@ LingXiao doesn't just dispatch tasks — it performs structured verification on 
 
 Task lifecycle events (create/update/dispatch/complete) automatically trigger the verification pipeline, extracting PASS/FAIL/BLOCKED verdicts:
 
-<div class="doc-flow" role="img" aria-label="Orchestration verification flow: task complete enters VerificationPipeline, adversarial verification, adaptive routing, and verdict.">
+<div class="doc-flow doc-flow-accent" role="img" aria-label="Orchestration verification flow: task complete enters VerificationPipeline, adversarial verification, adaptive routing, and verdict.">
   <span>Task Complete</span><i>→</i><span>VerificationPipeline</span><i>→</i><span>Adversarial Verification</span><i>→</i><span>Adaptive Routing</span><i>→</i><strong>verdict</strong>
 </div>
 

@@ -13,21 +13,45 @@ WebUI 支持亮色和暗色双主题，基于凌霄剑炉配色：
 
 ### 暗色主题
 
-| 色彩 | 色值 | 用途 |
-| --- | --- | --- |
-| 墨黑 | `#0B0E11` | 背景 |
-| 纸白 | `#E8E4D8` | 正文文字 |
-| 青锋 | `#5FE0C7` | 强调色 |
-| 金箔 | `#C9A86A` | 装饰色 |
+<div class="doc-color-swatches" role="list" aria-label="暗色主题配色">
+  <div class="doc-swatch" role="listitem">
+    <span class="doc-swatch-chip" style="background:#0B0E11"></span>
+    <strong>墨黑</strong><code>#0B0E11</code><em>背景</em>
+  </div>
+  <div class="doc-swatch" role="listitem">
+    <span class="doc-swatch-chip" style="background:#E8E4D8"></span>
+    <strong>纸白</strong><code>#E8E4D8</code><em>正文文字</em>
+  </div>
+  <div class="doc-swatch" role="listitem">
+    <span class="doc-swatch-chip" style="background:#5FE0C7"></span>
+    <strong>青锋</strong><code>#5FE0C7</code><em>强调色</em>
+  </div>
+  <div class="doc-swatch" role="listitem">
+    <span class="doc-swatch-chip" style="background:#C9A86A"></span>
+    <strong>金箔</strong><code>#C9A86A</code><em>装饰色</em>
+  </div>
+</div>
 
 ### 亮色主题
 
-| 色彩 | 色值 | 用途 |
-| --- | --- | --- |
-| 纸白 | `#E8E4D8` | 背景 |
-| 墨黑 | `#0B0E11` | 正文文字 |
-| 青锋 | `#0B8A74` | 强调色 |
-| 金箔 | `#9d682d` | 装饰色 |
+<div class="doc-color-swatches" role="list" aria-label="亮色主题配色">
+  <div class="doc-swatch" role="listitem">
+    <span class="doc-swatch-chip" style="background:#E8E4D8"></span>
+    <strong>纸白</strong><code>#E8E4D8</code><em>背景</em>
+  </div>
+  <div class="doc-swatch" role="listitem">
+    <span class="doc-swatch-chip" style="background:#0B0E11"></span>
+    <strong>墨黑</strong><code>#0B0E11</code><em>正文文字</em>
+  </div>
+  <div class="doc-swatch" role="listitem">
+    <span class="doc-swatch-chip" style="background:#0B8A74"></span>
+    <strong>青锋</strong><code>#0B8A74</code><em>强调色</em>
+  </div>
+  <div class="doc-swatch" role="listitem">
+    <span class="doc-swatch-chip" style="background:#9d682d"></span>
+    <strong>金箔</strong><code>#9d682d</code><em>装饰色</em>
+  </div>
+</div>
 
 ### 主题切换
 

@@ -9,10 +9,20 @@ The basic unit of LingXiao is not "an assistant" but a **Leader + Worker expert 
 
 ## Leader-Worker Architecture
 
-<div class="doc-hub-flow" role="img" aria-label="Leader Worker architecture: user goal enters Leader, Leader builds a DAG and dispatches Backend, Frontend, Researcher, and QA Reviewer workers; results and evidence return to Leader.">
-  <div class="doc-hub-line"><span>User Goal</span><i>→</i><strong>LeaderAgent</strong><i>→</i><span>TaskBoard / DAG</span></div>
-  <div class="doc-hub-workers"><span>Backend</span><span>Frontend</span><span>Researcher</span><span>QA / Reviewer</span></div>
-  <div class="doc-hub-line"><span>Result + Evidence Receipt</span><i>→</i><strong>Leader Verification</strong></div>
+<div class="doc-hub-flow" role="img" aria-label="LingXiao architecture: User Goal → LeaderAgent command → Worker agents → TaskBoard DAG, AgentPool, ToolRegistry execution pillars.">
+  <div class="doc-hub-line"><span>User Goal</span></div>
+  <div class="doc-hub-down"><i>↓</i></div>
+  <div class="doc-hub-leader-box"><strong>LeaderAgent</strong><span>Command · Plan · Dispatch · Verify</span></div>
+  <div class="doc-hub-down"><i>↓</i></div>
+  <div class="doc-hub-workers-box">
+    <div class="doc-hub-workers"><span>Backend</span><span>Frontend</span><span>Researcher</span><span>QA / Reviewer</span></div>
+  </div>
+  <div class="doc-hub-arrows"><i>↓</i><i>↓</i><i>↓</i></div>
+  <div class="doc-hub-triple">
+    <div><strong>TaskBoard&nbsp;DAG</strong></div>
+    <div><strong>AgentPool</strong></div>
+    <div><strong>ToolRegistry</strong></div>
+  </div>
 </div>
 
 ### Leader Responsibilities

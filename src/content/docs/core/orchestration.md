@@ -11,7 +11,7 @@ description: 投机执行、对抗验证、自适应编排、契约循环、Bug 
 
 任务生命周期事件（创建/更新/派发/完成）自动触发验收流程，提取 PASS/FAIL/BLOCKED verdict：
 
-<div class="doc-flow" role="img" aria-label="编排验收流程：任务完成后进入 VerificationPipeline、对抗验证、自适应路由并产出 verdict。">
+<div class="doc-flow doc-flow-accent" role="img" aria-label="编排验收流程：任务完成后进入 VerificationPipeline、对抗验证、自适应路由并产出 verdict。">
   <span>任务完成</span><i>→</i><span>VerificationPipeline</span><i>→</i><span>对抗验证</span><i>→</i><span>自适应路由</span><i>→</i><strong>verdict</strong>
 </div>
 

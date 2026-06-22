@@ -9,11 +9,11 @@ Complex goals are decomposed into a dependency-aware task graph (DAG). The Leade
 
 ## Task Graph Structure
 
-<div class="doc-task-tree" role="img" aria-label="Task DAG example: T-1 requirements contains architecture, testing, docs and release; architecture contains backend and frontend implementation.">
+<div class="doc-task-tree" role="img" aria-label="Task DAG example: T-1 Requirements → T-2/T-3/T-4 Architecture/Backend/Frontend → T-5 Testing → T-6 Docs & Release.">
   <strong>T-1 Requirements</strong>
-  <div><span>T-2 Architecture</span><em>T-3 Backend</em><em>T-4 Frontend</em></div>
-  <div><span>T-5 Testing</span></div>
-  <div><span>T-6 Docs & Release</span></div>
+  <div class="doc-dag-row"><strong>T-2 Architecture</strong><strong>T-3 Backend</strong><strong>T-4 Frontend</strong></div>
+  <strong>T-5 Testing</strong>
+  <strong>T-6 Docs & Release</strong>
 </div>
 
 Each node is a task; arrows represent dependencies. Tasks without dependencies execute automatically in parallel; tasks with dependencies are unlocked in order.
@@ -29,8 +29,13 @@ Each node is a task; arrows represent dependencies. Tasks without dependencies e
 ## Task State Transitions
 
 <div class="doc-flow doc-flow-status" role="img" aria-label="Task state transition: pending, dispatched, in progress, completed; in progress can also become failed or blocked.">
-  <span>pending</span><i>→</i><span>dispatched</span><i>→</i><span>in_progress</span><i>→</i><strong>completed</strong>
-  <small>Branch: in_progress → failed / blocked</small>
+  <div class="doc-flow-main">
+    <span>pending</span><i>→</i><span>dispatched</span><i>→</i><span>in_progress</span>
+  </div>
+  <div class="doc-flow-right">
+    <div class="doc-flow-ok"><i>↗</i><strong>completed</strong></div>
+    <div class="doc-flow-bad"><i>↘</i><span>failed</span><span>blocked</span></div>
+  </div>
 </div>
 
 | State | Description |
@@ -96,4 +101,3 @@ Task completion automatically triggers the verification pipeline:
 - **Adversarial verification**: Command-level breaker strategies verify results
 - **Contract loop**: `contract → implement → evaluate → repair → reset` five-phase loop
 
-See [Orchestration Kernel](./orchestration.md).

@@ -243,8 +243,3 @@ lingxiao worktree prune
 | `LINGXIAO_LOG_PATH` | 日志文件路径 |
 | `FORCE_NO_TUI` | 设为 `1` 时强制禁用 TUI |
 
-## 系统要求
-
-- **Node.js** >= 24.0.0
-- **Git**（推荐）
-- **操作系统**：Linux / macOS / Windows / WSL

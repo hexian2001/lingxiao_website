@@ -23,10 +23,14 @@ Eternal mode lets the Leader self-patrol, continuously monitoring and managing e
 
 ### State Flow
 
-<div class="doc-decision-flow" role="img" aria-label="Eternal state flow: after idle check, issues trigger patrol, thinking, and optional execution; no issues or no action return to wait and idle.">
-  <div><span>IDLE (30s)</span><i>→</i><span>CHECK</span><i>→</i><span>Issues found?</span><i>→</i><span>PATROL</span><i>→</i><span>THINK</span><i>→</i><span>Action needed?</span><i>→</i><strong>Execute</strong></div>
-  <div><span>No issues</span><i>→</i><span>WAIT</span><i>→</i><span>IDLE (backoff increases)</span></div>
-  <div><span>Not needed</span><i>→</i><span>WAIT</span></div>
+<div class="doc-decision-flow" role="img" aria-label="Eternal state flow: IDLE→CHECK→Issues?→PATROL→THINK→Action?→Execute. Branches: ↘No issues→WAIT→IDLE backoff, ↘Not needed→WAIT.">
+  <div class="dc-row">
+    <span>IDLE (30s)</span><i> → </i><span>CHECK</span><i> → </i><span>Issues?</span><i> → </i><span>PATROL</span><i> → </i><span>THINK</span><i> → </i><span>Action?</span><i> → </i><strong>Execute</strong>
+  </div>
+  <div class="dc-row">
+    <i class="dc-fork">↘</i><span>No issues</span><i> → </i><span>WAIT</span><i> → </i><span>IDLE (backoff)</span>
+    <i class="dc-fork dc-fork-2">↘</i><span>Not needed</span><i> → </i><span>WAIT</span>
+  </div>
 </div>
 
 ## Budget Circuit Breaker

@@ -76,11 +76,11 @@ description: Web server token、权限控制、密钥管理与安全最佳实践
 
 ### 规则
 
-1. 不要通过 `/api/v1/settings` 暴露原始密钥（API 响应已脱敏）
-2. 不要在生成的文档或日志中嵌入密钥
-3. 用户自定义工具默认不应接收不受限的环境变量
-4. UI/API 响应中 mask Git token 和 provider key
-5. 不要将 token 放入 Git remote URL，使用 GitHub CLI 或凭据管理器
+- 不要通过 `/api/v1/settings` 暴露原始密钥（API 响应已脱敏）
+- 不要在生成的文档或日志中嵌入密钥
+- 用户自定义工具默认不应接收不受限的环境变量
+- UI/API 响应中 mask Git token 和 provider key
+- 不要将 token 放入 Git remote URL，使用 GitHub CLI 或凭据管理器
 
 ## Git 发布安全
 
