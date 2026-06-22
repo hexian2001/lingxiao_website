@@ -171,13 +171,17 @@ description: 内置 Slash 命令完整列表与说明
 
 每个命令结果携带 `content` 字符串和可选 `type`。结果通过 `action` 字段区分：
 
-| 类型 | action | 附加字段 |
-| --- | --- | --- |
-| `CommandMessageResult` | 无 | 无，纯系统消息 |
-| `CommandResumeModalResult` | `resume_modal` | `sessions` |
-| `CommandItemsModalResult` | `history_modal` / `skills_modal` / `doctor_modal` / `permissions_modal` / `projects_modal` | `items` |
-| `CommandReportModalResult` | `report_modal` | `title`, `report` |
-| `CommandHydrateResult` | `hydrate` | `sessionStatus`, `tasks`, `messages`, `channels`, `tokenUsage?`, `agentTokens?`, `leaderStatus`, `leaderMode?`, `leaderReason?` |
+<table>
+  <colgroup><col style="width:38%"><col style="width:25%"><col style="width:37%"></colgroup>
+  <thead><tr><th>类型</th><th>action</th><th>附加字段</th></tr></thead>
+  <tbody>
+    <tr><td><code>CommandMessageResult</code></td><td>无</td><td>无，纯系统消息</td></tr>
+    <tr><td><code>CommandResumeModalResult</code></td><td><code>resume_modal</code></td><td><code>sessions</code></td></tr>
+    <tr><td><code>CommandItemsModalResult</code></td><td><code>history_modal</code> / <code>skills_modal</code> / <code>doctor_modal</code> / <code>permissions_modal</code> / <code>projects_modal</code></td><td><code>items</code></td></tr>
+    <tr><td><code>CommandReportModalResult</code></td><td><code>report_modal</code></td><td><code>title</code>, <code>report</code></td></tr>
+    <tr><td><code>CommandHydrateResult</code></td><td><code>hydrate</code></td><td><code>sessionStatus</code>, <code>tasks</code>, <code>messages</code>, <code>channels</code>, <code>tokenUsage?</code>, <code>agentTokens?</code>, <code>leaderStatus</code>, <code>leaderMode?</code>, <code>leaderReason?</code></td></tr>
+  </tbody>
+</table>
 
 ## 已知限制
 

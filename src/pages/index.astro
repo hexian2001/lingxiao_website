@@ -52,8 +52,8 @@ const installWin = 'git clone https://github.com/hexian2001/lingxiao-coding.git 
       <nav class="home-nav">
         <a class="home-brand" href={baseUrl}><img src={`${baseUrl}logo.svg`} alt="凌霄" /><span>凌霄剑域</span></a>
         <div class="home-links">
-          <a href="#capabilities">能力</a>
           <a href="#showcase">界面</a>
+          <a href="#capabilities">能力</a>
           <a href="#architecture">架构</a>
           <a href="#projects">案例</a>
           <a href={docsUrl}>文档</a>
@@ -120,7 +120,7 @@ const installWin = 'git clone https://github.com/hexian2001/lingxiao-coding.git 
 
     <section class="home-section reveal" id="capabilities">
       <div class="section-head"><p class="home-kicker">六器成阵</p><h2>从模型灵性，炼成工程章法</h2></div>
-      <div class="cap-grid">{capabilities.map(([title,text], index) => <article class="reveal" style={`--reveal-delay:${index * 80}ms`}><b>{String(index + 1).padStart(2, '0')}</b><h3>{title}</h3><p>{text}</p></article>)}</div>
+      <div class="cap-grid">{capabilities.map(([title,text], index) => <article class="reveal" style={`--reveal-delay:${index * 80}ms`}><h3><b>{String(index + 1).padStart(2, '0')}</b> {title}</h3><p>{text}</p></article>)}</div>
     </section>
 
     <section class="home-section architecture reveal" id="architecture">
@@ -195,33 +195,32 @@ const installWin = 'git clone https://github.com/hexian2001/lingxiao-coding.git 
     </section>
 
     <section class="home-section showcase-projects reveal" id="projects">
-      <div class="section-head"><p class="home-kicker">以剑证道</p><h2>实战案例</h2><p class="showcase-subtitle">以下项目均由凌霄 AI 自主生成，从架构到部署全程 AI-driven</p></div>
+      <div class="section-head"><p class="home-kicker">以剑证道</p><h2>实战案例</h2></div>
       <div class="showcase-grid">
         <article class="showcase-card reveal">
-          <div class="showcase-screenshot">
+          <a class="showcase-screenshot" href="https://github.com/hexian2001/lingxiao-tribulation" target="_blank" rel="noopener">
             <img src={`${baseUrl}screenshots/showcase-tribulation.png`} alt="凌霄·渡劫 — 天衍图 DAG 攻击树可视化" loading="lazy" />
             <div class="showcase-overlay"><span>查看仓库 →</span></div>
-          </div>
+          </a>
           <div class="showcase-info">
             <div class="showcase-name"><span class="showcase-badge">劫</span> 凌霄·渡劫</div>
             <p class="showcase-desc">LLM 驱动全自主渗透测试平台 · DAG + Blackboard + Plan&Execute</p>
             <div class="showcase-tags"><span>FastAPI</span><span>Next.js 14</span><span>WebSocket</span></div>
-            <a class="home-btn" href="https://github.com/hexian2001/lingxiao-tribulation" target="_blank" rel="noopener">GitHub</a>
           </div>
         </article>
         <article class="showcase-card reveal" style="--reveal-delay:100ms">
-          <div class="showcase-screenshot">
+          <a class="showcase-screenshot" href="https://github.com/hexian2001/ink-flow" target="_blank" rel="noopener">
             <img src={`${baseUrl}screenshots/showcase-inkflow.png`} alt="墨澜 Ink-Flow — Agent 实时监控大屏" loading="lazy" />
             <div class="showcase-overlay"><span>查看仓库 →</span></div>
-          </div>
+          </a>
           <div class="showcase-info">
             <div class="showcase-name"><span class="showcase-badge">墨</span> 墨澜 Ink-Flow</div>
             <p class="showcase-desc">多 Agent 协同长篇小说创作平台 · 水墨鎏金设计语言</p>
             <div class="showcase-tags"><span>Express</span><span>React 18</span><span>WebSocket</span></div>
-            <a class="home-btn" href="https://github.com/hexian2001/ink-flow" target="_blank" rel="noopener">GitHub</a>
           </div>
         </article>
       </div>
+      <p class="showcase-subtitle">以上项目均由凌霄 AI 自主生成，从架构到部署全程 AI-driven</p>
     </section>
 
     <section class="home-cta reveal">

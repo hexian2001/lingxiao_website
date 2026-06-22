@@ -25,18 +25,17 @@ Enter your engineering goal in TUI or WebUI, for example:
 
 The Leader will:
 
-1. Understand the goal and decompose tasks
-2. Build a DAG task graph
-3. Assemble an expert panel (Architect, Backend, QA, etc.)
-4. Dispatch tasks to Workers
-5. Supervise execution and verification
-6. Summarize results
+<div class="doc-vertical-flow">
+  <strong>Leader Scheduling Flow</strong>
+  <span>Understand the goal and decompose tasks</span>
+  <span>Build a DAG task graph</span>
+  <span>Assemble an expert panel (Architect, Backend, QA, etc.)</span>
+  <span>Dispatch tasks to Workers</span>
+  <span>Supervise execution and verification</span>
+  <span>Summarize results</span>
+</div>
 
 ## Observe Runtime State
-
-### TUI Interface
-
-The TUI displays task lists, agent status, and tool calls in real time.
 
 ### WebUI Command Center
 
@@ -46,6 +45,14 @@ Open the WebUI address printed in the terminal to see:
 - **Agent Panel**: Each Worker's role, progress, and output
 - **Tool Calls**: Parameters, permissions, and results for every invocation
 - **Code Changes**: File diffs and Git operations
+
+<img src="/lingxiao_website/screenshots/WebUI.png" alt="LingXiao WebUI Command Center" />
+
+### TUI Interface
+
+The TUI displays task lists, agent status, and tool calls in real time.
+
+<img src="/lingxiao_website/screenshots/TUI.png" alt="LingXiao TUI Terminal Interface" />
 
 ## Session Management
 
@@ -68,7 +75,3 @@ All session state is persisted to SQLite and recoverable after crashes.
 | `lingxiao list` | List all sessions |
 | `lingxiao doctor` | Environment diagnostics |
 
-## Next Steps
-
-- [Expert Panel](../../core/expert-team) — Learn the Leader-Worker architecture
-- [Task DAG](../../core/task-dag) — Understand task decomposition and scheduling

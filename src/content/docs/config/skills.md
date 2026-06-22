@@ -96,11 +96,15 @@ $explore_implement_verify
 
 ### 注入预算
 
-| 限制 | 值 | 超限效果 |
-| --- | --- | --- |
-| `maxTotalChars` | 18,000 | 后续技能按到达顺序丢弃 |
-| `maxPerSkillChars` | 7,500 | 每个技能 body 截断到此长度 |
-| 可见性 | `truncated: true` | 调用方可读取 `descriptor.path` 获取完整内容 |
+<table>
+  <colgroup><col style="width:28%"><col style="width:22%"><col style="width:50%"></colgroup>
+  <thead><tr><th>限制</th><th>值</th><th>超限效果</th></tr></thead>
+  <tbody>
+    <tr><td><code>maxTotalChars</code></td><td>18,000</td><td>后续技能按到达顺序丢弃</td></tr>
+    <tr><td><code>maxPerSkillChars</code></td><td>7,500</td><td>每个技能 body 截断到此长度</td></tr>
+    <tr><td>可见性</td><td><code>truncated: true</code></td><td>调用方可读取 <code>descriptor.path</code> 获取完整内容</td></tr>
+  </tbody>
+</table>
 
 ## 内置技能包
 

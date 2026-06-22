@@ -23,20 +23,17 @@ lingxiao
 
 > 帮我创建一个 Express REST API，包含用户 CRUD 和 JWT 鉴权
 
-Leader 会：
-
-1. 理解目标并拆解任务
-2. 构建 DAG 任务图
-3. 组建专家团（Architect、Backend、QA 等）
-4. 派发任务给 Worker
-5. 监督执行和验收
-6. 汇总结果
+<div class="doc-vertical-flow">
+  <strong>Leader 调度流程</strong>
+  <span>理解目标并拆解任务</span>
+  <span>构建 DAG 任务图</span>
+  <span>组建专家团（Architect、Backend、QA 等）</span>
+  <span>派发任务给 Worker</span>
+  <span>监督执行和验收</span>
+  <span>汇总结果</span>
+</div>
 
 ## 观察运行态
-
-### TUI 界面
-
-TUI 实时显示任务列表、Agent 状态和工具调用。
 
 ### WebUI 指挥中心
 
@@ -46,6 +43,14 @@ TUI 实时显示任务列表、Agent 状态和工具调用。
 - **Agent 面板**：各 Worker 的角色、进度和输出
 - **工具调用**：每次工具的参数、权限和结果
 - **代码变更**：文件 diff 和 Git 操作
+
+<img src="/lingxiao_website/screenshots/WebUI.png" alt="凌霄 WebUI 指挥中心" />
+
+### TUI 界面
+
+TUI 实时显示任务列表、Agent 状态和工具调用。
+
+<img src="/lingxiao_website/screenshots/TUI.png" alt="凌霄 TUI 终端界面" />
 
 ## 会话管理
 
@@ -67,8 +72,3 @@ lingxiao --session <session_id>
 | `lingxiao --session <id>` | 恢复指定会话 |
 | `lingxiao list` | 列出所有会话 |
 | `lingxiao doctor` | 环境诊断 |
-
-## 下一步
-
-- [专家团系统](../../core/expert-team) — 了解 Leader-Worker 架构
-- [任务DAG编排](../../core/task-dag) — 理解任务拆解和调度

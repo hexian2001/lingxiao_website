@@ -78,11 +78,11 @@ priority: high
 
 Skill 支持按阶段分文件加载：
 
-<div class="doc-file-tree" role="img" aria-label="Skill 阶段文件结构：security-review 包含 index.md 和 phases 下的 analyze、review、report 文件。">
-  <div><strong>skills/</strong></div>
-  <div><span>security-review/</span></div>
+<div class="doc-file-tree" role="img" aria-label="Skill 阶段文件结构：skills/ 根目录，security-review/ 子目录，index.md 主文件，phases/ 阶段目录，analyze、review、report 阶段文件。">
+  <strong>skills/</strong>
+  <div><strong>security-review/</strong><em>Skills安全审查目录</em></div>
   <div><span>index.md</span><em>Skill 主文件（frontmatter）</em></div>
-  <div><span>phases/</span></div>
+  <div><strong>phases/</strong><em>阶段目录</em></div>
   <div><span>analyze.md</span><em>分析阶段知识</em></div>
   <div><span>review.md</span><em>审查阶段知识</em></div>
   <div><span>report.md</span><em>报告阶段知识</em></div>

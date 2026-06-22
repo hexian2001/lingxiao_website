@@ -13,21 +13,45 @@ WebUI supports light and dark dual themes, based on the LingXiao Sword Forge pal
 
 ### Dark Theme
 
-| Color | Hex | Usage |
-| --- | --- | --- |
-| Ink Black | `#0B0E11` | Background |
-| Paper White | `#E8E4D8` | Body text |
-| Cyan Edge | `#5FE0C7` | Accent |
-| Gold Foil | `#C9A86A` | Decoration |
+<div class="doc-color-swatches" role="list" aria-label="Dark theme colors">
+  <div class="doc-swatch" role="listitem">
+    <span class="doc-swatch-chip" style="background:#0B0E11"></span>
+    <strong>Ink Black</strong><code>#0B0E11</code><em>Background</em>
+  </div>
+  <div class="doc-swatch" role="listitem">
+    <span class="doc-swatch-chip" style="background:#E8E4D8"></span>
+    <strong>Paper White</strong><code>#E8E4D8</code><em>Body text</em>
+  </div>
+  <div class="doc-swatch" role="listitem">
+    <span class="doc-swatch-chip" style="background:#5FE0C7"></span>
+    <strong>Cyan Edge</strong><code>#5FE0C7</code><em>Accent</em>
+  </div>
+  <div class="doc-swatch" role="listitem">
+    <span class="doc-swatch-chip" style="background:#C9A86A"></span>
+    <strong>Gold Foil</strong><code>#C9A86A</code><em>Decoration</em>
+  </div>
+</div>
 
 ### Light Theme
 
-| Color | Hex | Usage |
-| --- | --- | --- |
-| Paper White | `#E8E4D8` | Background |
-| Ink Black | `#0B0E11` | Body text |
-| Cyan Edge | `#0B8A74` | Accent |
-| Gold Foil | `#9d682d` | Decoration |
+<div class="doc-color-swatches" role="list" aria-label="Light theme colors">
+  <div class="doc-swatch" role="listitem">
+    <span class="doc-swatch-chip" style="background:#E8E4D8"></span>
+    <strong>Paper White</strong><code>#E8E4D8</code><em>Background</em>
+  </div>
+  <div class="doc-swatch" role="listitem">
+    <span class="doc-swatch-chip" style="background:#0B0E11"></span>
+    <strong>Ink Black</strong><code>#0B0E11</code><em>Body text</em>
+  </div>
+  <div class="doc-swatch" role="listitem">
+    <span class="doc-swatch-chip" style="background:#0B8A74"></span>
+    <strong>Cyan Edge</strong><code>#0B8A74</code><em>Accent</em>
+  </div>
+  <div class="doc-swatch" role="listitem">
+    <span class="doc-swatch-chip" style="background:#9d682d"></span>
+    <strong>Gold Foil</strong><code>#9d682d</code><em>Decoration</em>
+  </div>
+</div>
 
 ### Theme Switching
 

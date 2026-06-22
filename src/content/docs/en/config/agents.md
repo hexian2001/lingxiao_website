@@ -142,9 +142,14 @@ Tasks are stored in the `tasks` table and managed through `TaskBoard`:
 
 ### Task State Transitions
 
-<div class="doc-flow doc-flow-status" role="img" aria-label="Task state transition: pending, ready, dispatched, in progress, completed; in progress can branch to failed or cancelled.">
-  <span>pending</span><i>→</i><span>ready</span><i>→</i><span>dispatched</span><i>→</i><span>in_progress</span><i>→</i><strong>completed</strong>
-  <small>Branch: in_progress → failed / cancelled</small>
+<div class="doc-flow doc-flow-status doc-flow-status-agents" role="img" aria-label="Task state flow: pending, dispatched, in progress; completes to ↗completed, or may ↘failed or blocked.">
+  <div class="doc-flow-main">
+    <span>pending</span><i>→</i><span>dispatched</span><i>→</i><span>in_progress</span>
+  </div>
+  <div class="doc-flow-right">
+    <div class="doc-flow-ok"><i>↗</i><strong>completed</strong></div>
+    <div class="doc-flow-bad"><i>↘</i><span>failed</span><span>blocked</span></div>
+  </div>
 </div>
 
 ## Worker Runtime
