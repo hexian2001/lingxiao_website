@@ -19,15 +19,15 @@ description: 多种方式安装凌霄剑域
 
 | 平台 | 文件 |
 | --- | --- |
-| Linux x64 | `lingxiao-v1.0.2-linux-x64.tar.gz` |
-| Linux arm64 | `lingxiao-v1.0.2-linux-arm64.tar.gz` |
-| macOS arm64 | `lingxiao-v1.0.2-darwin-arm64.tar.gz` |
-| Windows x64 | `lingxiao-v1.0.2-win-x64.zip` |
+| Linux x64 | `lingxiao-v1.0.3-linux-x64.tar.gz` |
+| Linux arm64 | `lingxiao-v1.0.3-linux-arm64.tar.gz` |
+| macOS arm64 | `lingxiao-v1.0.3-darwin-arm64.tar.gz` |
+| Windows x64 | `lingxiao-v1.0.3-win-x64.zip` |
 
 **Linux / macOS：**
 
 ```bash
-tar xzf lingxiao-v1.0.2-linux-x64.tar.gz
+tar xzf lingxiao-v1.0.3-linux-x64.tar.gz
 cd lingxiao
 ./lingxiao
 ```
@@ -44,8 +44,8 @@ cd lingxiao
 
 从 [Releases](https://github.com/hexian2001/lingxiao-coding/releases) 下载 Windows 安装包：
 
-- **NSIS 安装包**（`LingXiao-Setup-1.0.2.exe`）：推荐，支持自动更新
-- **MSI 安装包**（`LingXiao.1.0.2.msi`）：适合企业部署
+- **NSIS 安装包**（`LingXiao-Setup-1.0.3.exe`）：推荐，支持自动更新
+- **MSI 安装包**（`LingXiao.1.0.3.msi`）：适合企业部署
 
 安装后从开始菜单启动「凌霄」，后续版本更新会自动检测并增量下载。
 

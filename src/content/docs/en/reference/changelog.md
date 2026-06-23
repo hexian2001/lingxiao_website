@@ -5,7 +5,38 @@ description: Version history and changes
 
 # Changelog
 
-## v1.0.2 (Current)
+## v1.0.3 (Current)
+
+> **Version range:** v1.0.2 → v1.0.3 | 19 commits | 183 files changed | +13,244 / -2,340 lines
+
+### ✨ New Features
+
+#### Web UI
+
+- **Beta Badges** — Ink-wash style Beta badges for experimental features, clearer visual identification
+- **Session Recovery** — Revive running worker conversations from snapshot, no state loss on refresh/disconnect
+
+### 🐛 Bug Fixes
+
+- **Long Task Stall P0/P1** — CircuitBreaker bypassed by `resetCircuitBreakersForProvider` blocking all LLM calls, root cause fixed
+- **Thinking Budget Squashed** — LLM thinking budget calculation error + user config priority override fix
+- **User Message Queue Sequential Processing** — N rapid-fire messages required N patrol rounds, now batch-drained in a single LLM turn
+- **Worker `missing_contract_compliance_proof` Loop** — Contract compliance proof missing caused repeated worker failures, three-layer fix
+- **Agent Continuation Prompt Injection** — Prevent continuation prompt injection on agent resume to avoid context pollution
+- **Web UI Duplicate Message Cards** — Duplicate message rendering + Git activity page blank
+- **Web Search Hang** — Search tool call timeout causing agent hang
+- **Gateway URL Hint** — LLM Gateway address hint inaccuracy
+- **Git Activity Frontend Loading** — Frontend data loading sequence issue
+- **Desktop MSI Packaging** — Reduced MSI installer size and redundancy
+
+### 🔧 Engineering Improvements
+
+- **Leader Tool Descriptions** — Structured intervention hierarchy (pause < nudge < intervene < terminate), clearer tool descriptions
+- **Intent Recognition Tool Exemption** — `record_capability_intent` exempted from tool suppression checks
+- **Orchestration Kernel** — Accept blackboard contract evidence as compliance proof
+- **Unified Version Management** — Enforce single version source, eliminate version drift
+
+## v1.0.2
 
 > **Version range:** v1.0.1 → v1.0.2 | 9 commits | 85 files changed | +5,814 / -380 lines
 

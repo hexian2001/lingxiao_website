@@ -5,7 +5,38 @@ description: 版本历史和变更记录
 
 # 更新日志
 
-## v1.0.2（当前版本）
+## v1.0.3（当前版本）
+
+> **版本范围：** v1.0.2 → v1.0.3 | 19 commits | 183 files changed | +13,244 / -2,340 lines
+
+### ✨ 新功能
+
+#### Web UI
+
+- **Beta 徽章** — 为实验性功能添加水墨丹青风格 Beta 徽章，视觉标识更清晰
+- **会话恢复** — 从快照恢复运行中 Worker 的对话上下文，刷新/断线不丢状态
+
+### 🐛 Bug 修复
+
+- **长任务卡住 P0/P1** — CircuitBreaker 被 `resetCircuitBreakersForProvider` 架空导致 LLM 调用全部阻断，彻底修复断路器重置逻辑
+- **思考预算被压扁** — LLM 思考预算（thinking budget）计算错误 + 用户配置优先级覆盖修复
+- **用户消息队列逐条处理** — 用户连发 N 条消息需 N 轮 patrol 逐条处理，改为一次性 drain 队列让 LLM 单轮消化
+- **Worker `missing_contract_compliance_proof` 反复失败** — 契约合规证明缺失导致 Worker 循环失败，三层修复
+- **Agent 续跑注入 continuation prompt** — Agent 恢复续跑时不应注入续跑提示，避免上下文污染
+- **Web UI 消息重复卡片** — 消息渲染重复 + Git 活动页面空白
+- **Web 搜索卡死** — 搜索工具调用超时导致 Agent 卡死
+- **网关 URL 提示** — LLM Gateway 地址提示信息不准确
+- **Git Activity 前端加载** — 前端数据加载时序问题
+- **桌面端 MSI 打包** — 减小 MSI 安装包体积和冗余
+
+### 🔧 工程改进
+
+- **Leader 工具描述增强** — 结构化干预层级（pause < nudge < intervene < terminate），工具描述更清晰
+- **意图识别工具豁免** — `record_capability_intent` 豁免工具抑制检查
+- **编排内核** — 接受黑板契约证据作为合规证明
+- **版本管理统一** — 强制单一版本源，消除多处版本号不一致
+
+## v1.0.2
 
 > **版本范围：** v1.0.1 → v1.0.2 | 9 commits | 85 files changed | +5,814 / -380 lines
 
