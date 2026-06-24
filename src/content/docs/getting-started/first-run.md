@@ -50,7 +50,7 @@ lingxiao
 
 TUI 实时显示任务列表、Agent 状态和工具调用。
 
-<img src="/lingxiao_website/screenshots/TUI.png" alt="凌霄 TUI 终端界面" />
+<img src="/lingxiao_website/screenshots/TUI-ui.png" alt="凌霄 TUI 终端界面" />
 
 ## 会话管理
 
