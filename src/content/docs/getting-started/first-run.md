@@ -44,13 +44,13 @@ lingxiao
 - **工具调用**：每次工具的参数、权限和结果
 - **代码变更**：文件 diff 和 Git 操作
 
-<img src="../../static/screenshots/WebUI.png" alt="凌霄 WebUI 指挥中心" />
+<img src="../../../../static/screenshots/WebUI.png" alt="凌霄 WebUI 指挥中心" />
 
 ### TUI 界面
 
 TUI 实时显示任务列表、Agent 状态和工具调用。
 
-<img src="../../static/screenshots/TUI.png" alt="凌霄 TUI 终端界面" />
+<img src="../../../../../static/screenshots/TUI.png" alt="凌霄 TUI 终端界面" />
 
 ## 会话管理
 
