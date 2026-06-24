@@ -52,7 +52,7 @@ Open the WebUI address printed in the terminal to see:
 
 The TUI displays task lists, agent status, and tool calls in real time.
 
-<img src="/lingxiao_website/screenshots/TUI.png" alt="LingXiao TUI Terminal Interface" />
+<img src="/lingxiao_website/screenshots/TUI-ui.png" alt="LingXiao TUI Terminal Interface" />
 
 ## Session Management
 
