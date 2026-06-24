@@ -19,15 +19,15 @@ Download the portable package for your platform from [GitHub Releases](https://g
 
 | Platform | File |
 | --- | --- |
-| Linux x64 | `lingxiao-v1.0.3-linux-x64.tar.gz` |
-| Linux arm64 | `lingxiao-v1.0.3-linux-arm64.tar.gz` |
-| macOS arm64 | `lingxiao-v1.0.3-darwin-arm64.tar.gz` |
-| Windows x64 | `lingxiao-v1.0.3-win-x64.zip` |
+| Linux x64 | `lingxiao-vLINGXIAO_VERSION-linux-x64.tar.gz` |
+| Linux arm64 | `lingxiao-vLINGXIAO_VERSION-linux-arm64.tar.gz` |
+| macOS arm64 | `lingxiao-vLINGXIAO_VERSION-darwin-arm64.tar.gz` |
+| Windows x64 | `lingxiao-vLINGXIAO_VERSION-win-x64.zip` |
 
 **Linux / macOS:**
 
 ```bash
-tar xzf lingxiao-v1.0.3-linux-x64.tar.gz
+tar xzf lingxiao-vLINGXIAO_VERSION-linux-x64.tar.gz
 cd lingxiao
 ./lingxiao
 ```
@@ -44,8 +44,8 @@ Extract the zip, then double-click `lingxiao.exe` or run in PowerShell:
 
 Download the Windows installer from [Releases](https://github.com/hexian2001/lingxiao-coding/releases):
 
-- **NSIS installer** (`LingXiao-Setup-1.0.3.exe`): Recommended, supports auto-update
-- **MSI installer** (`LingXiao.1.0.3.msi`): Suitable for enterprise deployment
+- **NSIS installer** (`LingXiao-Setup-LINGXIAO_VERSION.exe`): Recommended, supports auto-update
+- **MSI installer** (`LingXiao.LINGXIAO_VERSION.msi`): Suitable for enterprise deployment
 
 Launch "LingXiao" from the Start Menu after installation. Future updates are detected and downloaded automatically.
 

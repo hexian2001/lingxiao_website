@@ -1,5 +1,6 @@
 ---
 import LandingLayout from '../layouts/LandingLayout.astro';
+import { SITE_VERSION } from '../version';
 
 const base = import.meta.env.BASE_URL;
 const baseUrl = base.endsWith('/') ? base : `${base}/`;
@@ -65,7 +66,7 @@ const installWin = 'git clone https://github.com/hexian2001/lingxiao-coding.git 
           <p class="home-kicker">AI 工程指挥 · 本地运行</p>
           <h1><span>凌霄剑域</span><small>以工程为骨，以证据为锋</small></h1>
           <p class="home-lede">一念成令，诸工有序；百器入鞘，诸证归卷。凌霄将目标、任务、工具与验收织成一条可追溯的本地工程脉络：先定势，再分锋，后收卷。</p>
-          <div class="home-actions"><a class="home-btn primary" href={docsUrl}>入门文档</a><a class="home-btn" href="https://github.com/hexian2001/lingxiao-coding/releases" target="_blank" rel="noopener">下载 v1.0.3</a><a class="home-btn" href={githubUrl} target="_blank" rel="noopener">GitHub</a></div>
+          <div class="home-actions"><a class="home-btn primary" href={docsUrl}>入门文档</a><a class="home-btn" href="https://github.com/hexian2001/lingxiao-coding/releases" target="_blank" rel="noopener">下载 v{SITE_VERSION}</a><a class="home-btn" href={githubUrl} target="_blank" rel="noopener">GitHub</a></div>
           <div class="home-install" aria-label="安装命令">
             <div class="install-tabs">
               <button class="install-tab active" data-cmd="mac">安装</button>
@@ -224,7 +225,7 @@ const installWin = 'git clone https://github.com/hexian2001/lingxiao-coding.git 
     </section>
 
     <section class="home-cta reveal">
-      <p class="home-kicker">LingXiao v1.0.3</p>
+      <p class="home-kicker">LingXiao v{SITE_VERSION}</p>
       <h2>开卷立势，收卷有证</h2>
       <div class="home-actions"><a class="home-btn primary" href={docsUrl}>开始使用</a><a class="home-btn" href={githubUrl} target="_blank" rel="noopener">查看仓库</a></div>
     </section>

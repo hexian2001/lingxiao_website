@@ -1,5 +1,6 @@
 ---
 import LandingLayout from '../../layouts/LandingLayout.astro';
+import { SITE_VERSION } from '../../version';
 
 const base = import.meta.env.BASE_URL;
 const baseUrl = base.endsWith('/') ? base : `${base}/`;
@@ -63,7 +64,7 @@ const installWin = 'git clone https://github.com/hexian2001/lingxiao-coding.git 
           <p class="home-kicker">AI Engineering Command · Local-First</p>
           <h1><span>LingXiao</span><small>Engineering as bone, evidence as blade</small></h1>
           <p class="home-lede">One command spawns order; a hundred tools sheathed, all evidence archived. LingXiao weaves goals, tasks, tools, and verification into a traceable local engineering fabric: define the stance, divide the blades, then close the scroll.</p>
-          <div class="home-actions"><a class="home-btn primary" href={docsUrl}>Get Started</a><a class="home-btn" href="https://github.com/hexian2001/lingxiao-coding/releases" target="_blank" rel="noopener">Download v1.0.3</a><a class="home-btn" href={githubUrl} target="_blank" rel="noopener">GitHub</a></div>
+          <div class="home-actions"><a class="home-btn primary" href={docsUrl}>Get Started</a><a class="home-btn" href="https://github.com/hexian2001/lingxiao-coding/releases" target="_blank" rel="noopener">Download v{SITE_VERSION}</a><a class="home-btn" href={githubUrl} target="_blank" rel="noopener">GitHub</a></div>
           <div class="home-install" aria-label="Install command">
             <div class="install-tabs">
               <button class="install-tab active" data-cmd="mac">Install</button>
@@ -214,7 +215,7 @@ const installWin = 'git clone https://github.com/hexian2001/lingxiao-coding.git 
     </section>
 
     <section class="home-cta reveal">
-      <p class="home-kicker">LingXiao v1.0.3</p>
+      <p class="home-kicker">LingXiao v{SITE_VERSION}</p>
       <h2>Open the Scroll, Make Your Move, Close with Proof</h2>
       <div class="home-actions"><a class="home-btn primary" href={docsUrl}>Get Started</a><a class="home-btn" href={githubUrl} target="_blank" rel="noopener">View Repository</a></div>
     </section>

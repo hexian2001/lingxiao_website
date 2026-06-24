@@ -1,6 +1,19 @@
 import { defineConfig } from 'astro/config';
 import starlight from '@astrojs/starlight';
 import sitemap from '@astrojs/sitemap';
+import { readFileSync } from 'fs';
+import { visit } from 'unist-util-visit';
+
+const pkg = JSON.parse(readFileSync('./package.json', 'utf-8'));
+const VERSION = pkg.version;
+
+function remarkVersionSubstitution() {
+  return (tree) => {
+    visit(tree, 'text', (node) => {
+      node.value = node.value.replace(/LINGXIAO_VERSION/g, VERSION);
+    });
+  };
+}
 
 const siteUrl = 'https://hexian2001.github.io';
 const base = '/lingxiao_website';
@@ -106,6 +119,9 @@ function sidebar() {
 export default defineConfig({
   site: siteUrl,
   base,
+  markdown: {
+    remarkPlugins: [remarkVersionSubstitution],
+  },
   integrations: [
     sitemap(),
     starlight({
