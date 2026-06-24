@@ -46,13 +46,13 @@ Open the WebUI address printed in the terminal to see:
 - **Tool Calls**: Parameters, permissions, and results for every invocation
 - **Code Changes**: File diffs and Git operations
 
-<img src="../../../../../static/screenshots/WebUI.png" alt="LingXiao WebUI Command Center" />
+<img src="/lingxiao_website/screenshots/WebUI.png" alt="LingXiao WebUI Command Center" />
 
 ### TUI Interface
 
 The TUI displays task lists, agent status, and tool calls in real time.
 
-<img src="../../../../../static/screenshots/TUI.png" alt="LingXiao TUI Terminal Interface" />
+<img src="/lingxiao_website/screenshots/TUI.png" alt="LingXiao TUI Terminal Interface" />
 
 ## Session Management
 
